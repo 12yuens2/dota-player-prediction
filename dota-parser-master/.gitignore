@@ -1,0 +1,6 @@
+
+*.bz2
+*.dem
+dependency-reduced-pom.xml
+output/
+target/
