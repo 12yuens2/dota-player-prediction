@@ -1,0 +1,7 @@
+
+# Eclipse metadata
+.metadata/
+.recommenders/
+
+# Latex
+report/bin/

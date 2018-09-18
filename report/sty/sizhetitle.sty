@@ -1,0 +1,42 @@
+
+
+% Set title/author/date for title page
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+
+% Title page
+% #1 - Module code/name
+% #2 - Lecturer
+\newcommand{\maketitlepage}[2]{
+\begin{titlepage}
+	\centering
+        \includegraphics[scale=0.4]{imgs/logo.png}\\ % University Logo
+	\textsc{\LARGE #1}\\[0.5 cm] % Course Code
+	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	{ \huge \bfseries \thetitle}
+	\rule{\linewidth}{0.2 mm} \\[0.5 cm]
+	\textsc{\large \thedate}\\[1.5 cm]
+	
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushleft} \large
+			\emph{Lecturer:}\\
+			#2
+			\end{flushleft}
+			\end{minipage}~
+			\begin{minipage}{0.4\textwidth}
+            
+			\begin{flushright} \large
+			\emph{Submitted By:} \\
+			\theauthor
+		\end{flushright}
+        
+	\end{minipage}\\[2 cm]
+	
+\end{titlepage}
+}
+
+
