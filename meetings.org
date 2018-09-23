@@ -1,0 +1,14 @@
+* 18/09/18
+First meeting to discuss project. Main idea of the project is to predict who the player is in a game of DOTA based on replay data. 
+
+** Initial plan (technical)
+Start with parsing mouse movement from replays using ~clarity~ or the python replay parser to get angles/curves. 
+- http://www.ise.bgu.ac.il/faculty/liorr/clint1.pdf
+
+Start with the same player on the same hero using binary classification - is the player playing this hero X or not?
+
+Further game knowledge prediction features later and predict with features both independently and combined
+
+Other ideas:
+- Predicting strategies of players
+- 
