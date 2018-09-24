@@ -11,4 +11,19 @@ Further game knowledge prediction features later and predict with features both 
 
 Other ideas:
 - Predicting strategies of players
-- 
+
+- tracking statistics for pro players
+- detect previously banned players
+- anonymity in online games leading to antisocial behaviour due to lack of consequences > easily make new accounts to continue behaviour despite bans, especially in free to play games
+- smurfing ranked games affecting players at lower skill level
+- elo boosting and selling high ranked accounts (hard to detect)
+- use case of 'stolen' accounts, where player behaviour suddenly changes to be very different
+- 'identity theft' in online amateur tournaments
+
+* 27/09/18
+** Before meeting notes
+DOER:
+- need to add objective about identifying features to extract from replays?
+
+Parser:
+
