@@ -1,0 +1,2817 @@
+CAI_BaseNPC = 0 - DT_Embers, count 5
+	baseclass: +00000000
+	m_nDensity: +00000730
+	m_nLifetime: +00000734
+	m_nSpeed: +00000738
+	m_bEmit: +0000073C
+
+CBaseAnimating = 1 - DT_BaseAnimating, count 20
+	baseclass: +00000000
+	m_nSequence: +000009AC
+	m_nForceBone: +000007B0
+	m_vecForce: +000007A4
+	m_nSkin: +00000764
+	m_nBody: +00000768
+	m_nHitboxSet: +0000073C
+	m_flModelScale: +00000838
+	m_flPoseParameter: +00000864
+	m_flPlaybackRate: +00000760
+	m_flEncodedController: +0000077C
+	m_bClientSideAnimation: +0000098C
+	m_bClientSideFrameReset: +000007E4
+	m_bClientSideRagdoll: +0000027D
+	m_nNewSequenceParity: +0000076C
+	m_nResetEventsParity: +00000770
+	m_nMuzzleFlashParity: +0000078C
+	m_hLightingOrigin: +00000A34
+	serveranimdata: +00000000
+	m_flFrozen: +000007E8
+
+CBaseAnimatingOverlay = 2 - DT_BaseAnimatingOverlay, count 2
+	baseclass: +00000000
+	overlay_vars: +00000000
+
+CBaseAttributableItem = 3 - DT_BaseAttributableItem, count 2
+	baseclass: +00000000
+	m_AttributeManager: +00000E58
+
+CBaseButton = 4 - DT_BaseButton, count 2
+	baseclass: +00000000
+	m_usable: +00000730
+
+CBaseCombatCharacter = 5 - DT_BaseCombatCharacter, count 3
+	baseclass: +00000000
+	bcc_localdata: +00000000
+	m_hActiveWeapon: +00000F8C
+
+CBaseCombatWeapon = 6 - DT_BaseCombatWeapon, count 7
+	baseclass: +00000000
+	LocalWeaponData: +00000000
+	LocalActiveWeaponData: +00000000
+	m_iViewModelIndex: +00000A70
+	m_iWorldModelIndex: +00000A74
+	m_iState: +00000A78
+	m_hOwner: +00000A60
+
+CBaseDoor = 7 - DT_BaseDoor, count 2
+	baseclass: +00000000
+	m_flWaveHeight: +00000730
+
+CBaseEntity = 8 - DT_BaseEntity, count 38
+	AnimTimeMustBeFirst: +00000000
+	m_flSimulationTime: +00000264
+	m_flCreateTime: +0000026C
+	m_ubInterpolationFrame: +00000270
+	m_cellbits: +00000070
+	m_cellX: +00000078
+	m_cellY: +0000007C
+	m_cellZ: +00000080
+	m_vecOrigin: +00000134
+	m_angRotation: +00000128
+	m_nModelIndex: +00000254
+	m_fEffects: +000000F0
+	m_nRenderMode: +00000257
+	m_nRenderFX: +00000256
+	m_clrRender: +0000006C
+	m_iTeamNum: +000000F4
+	m_CollisionGroup: +00000460
+	m_flElasticity: +000003B0
+	m_flShadowCastDistance: +000003B4
+	m_hOwnerEntity: +00000148
+	m_hEffectEntity: +000006D8
+	moveparent: +00000144
+	m_iParentAttachment: +00000304
+	m_iName: +00000150
+	movetype: +00000000
+	movecollide: +00000000
+	m_Collision: +00000328
+	m_iTextureFrameIndex: +000006CC
+	m_bSimulatedEveryTick: +000006C5
+	m_bAnimatedEveryTick: +000006C6
+	m_bAlternateSorting: +000006C7
+	m_fadeMinDist: +00000718
+	m_fadeMaxDist: +0000071C
+	m_flFadeScale: +000002FC
+	m_nMinCPULevel: +000006C8
+	m_nMaxCPULevel: +000006C9
+	m_nMinGPULevel: +000006CA
+	m_nMaxGPULevel: +000006CB
+
+CBaseFlex = 9 - DT_BaseFlex, count 4
+	baseclass: +00000000
+	m_flexWeight: +00000B00
+	m_blinktoggle: +00000CAC
+	m_viewtarget: +00000AC8
+
+CBaseGrenade = 10 - DT_BaseGrenade, count 7
+	baseclass: +00000000
+	m_flDamage: +00000FB8
+	m_DmgRadius: +00000FAC
+	m_bIsLive: +00000FA9
+	m_hThrower: +00000FC0
+	m_vecVelocity: +00000110
+	m_fFlags: +00000100
+
+CBaseParticleEntity = 11 - DT_BaseParticleEntity, count 1
+	baseclass: +00000000
+
+CBasePlayer = 12 - DT_BasePlayer, count 29
+	baseclass: +00000000
+	localdata: +00000000
+	pl: +00001268
+	m_iFOV: +0000127C
+	m_iFOVStart: +00001280
+	m_flFOVTime: +000012A0
+	m_iDefaultFOV: +00001308
+	m_hZoomOwner: +000012F0
+	m_hVehicle: +000012F4
+	m_hUseEntity: +00001364
+	m_hViewEntity: +00001314
+	m_hGroundEntity: +0000014C
+	m_iHealth: +000000FC
+	m_lifeState: +0000025B
+	m_iBonusProgress: +000012E4
+	m_iBonusChallenge: +000012E8
+	m_flMaxspeed: +000012EC
+	m_fFlags: +00000100
+	m_iObserverMode: +00001338
+	m_hObserverTarget: +0000133C
+	m_hViewModel[0]: +000012FC
+	m_hViewModel: +00000000
+	m_szLastPlaceName: +00001578
+	m_vecLadderNormal: +000012B4
+	m_ladderSurfaceProps: +00001298
+	m_hPostProcessCtrl: +0000172C
+	m_hColorCorrectionCtrl: +00001730
+	m_PlayerFog.m_hCtrl: +00001738
+	m_currentSCLPacked: +00001030
+
+CBasePropDoor = 13 - DT_BasePropDoor, count 1
+	baseclass: +00000000
+
+CBaseTempEntity = 14 - DT_BaseTempEntity, count 0
+
+CBaseToggle = 15 - DT_BaseToggle, count 1
+	baseclass: +00000000
+
+CBaseTrigger = 16 - DT_BaseTrigger, count 3
+	baseclass: +00000000
+	m_bClientSidePredicted: +00000730
+	m_spawnflags: +000002E0
+
+CBaseViewModel = 17 - DT_BaseViewModel, count 13
+	m_nModelIndex: +00000254
+	m_hWeapon: +00000A74
+	m_nSkin: +00000764
+	m_nBody: +00000768
+	m_nSequence: +000009AC
+	m_nViewModelIndex: +00000A6C
+	m_flPlaybackRate: +00000760
+	m_fEffects: +000000F0
+	m_nAnimationParity: +00000A70
+	m_hOwner: +00000A78
+	m_nNewSequenceParity: +0000076C
+	m_nResetEventsParity: +00000770
+	m_nMuzzleFlashParity: +0000078C
+
+CBeam = 18 - DT_Beam, count 24
+	m_nBeamType: +0000074C
+	m_nBeamFlags: +00000750
+	m_nNumBeamEnts: +00000740
+	m_hAttachEntity: +00000754
+	m_nAttachIndex: +0000077C
+	m_nHaloIndex: +00000748
+	m_fHaloScale: +000007B0
+	m_fWidth: +000007A4
+	m_fEndWidth: +000007A8
+	m_fFadeLength: +000007AC
+	m_fAmplitude: +000007B4
+	m_fStartFrame: +000007B8
+	m_fSpeed: +000007BC
+	m_flFrameRate: +00000730
+	m_flHDRColorScale: +00000734
+	m_clrRender: +0000006C
+	m_nRenderFX: +00000256
+	m_nRenderMode: +00000257
+	m_flFrame: +000007C0
+	m_nClipStyle: +000007C4
+	m_vecEndPos: +000007C8
+	m_nModelIndex: +00000254
+	m_vecOrigin: +00000134
+	moveparent: +00000144
+
+CBeamSpotlight = 19 - DT_BeamSpotlight, count 9
+	baseclass: +00000000
+	m_nHaloIndex: +00000730
+	m_bSpotlightOn: +0000073C
+	m_bHasDynamicLight: +0000073D
+	m_flSpotlightMaxLength: +00000740
+	m_flSpotlightGoalWidth: +00000744
+	m_flHDRColorScale: +00000748
+	m_nRotationAxis: +00000734
+	m_flRotationSpeed: +00000738
+
+CBoneFollower = 20 - DT_BoneFollower, count 3
+	baseclass: +00000000
+	m_modelIndex: +00000730
+	m_solidIndex: +00000734
+
+CBreakableProp = 21 - DT_BreakableProp, count 2
+	baseclass: +00000000
+	m_bClientPhysics: +00000A60
+
+CBreakableSurface = 22 - DT_BreakableSurface, count 10
+	baseclass: +00000000
+	m_nNumWide: +00000734
+	m_nNumHigh: +00000738
+	m_flPanelWidth: +0000073C
+	m_flPanelHeight: +00000740
+	m_vNormal: +00000744
+	m_vCorner: +00000750
+	m_bIsBroken: +0000075C
+	m_nSurfaceType: +00000760
+	m_RawPanelBitVec: +00000784
+
+CColorCorrection = 23 - DT_ColorCorrection, count 13
+	baseclass: +00000000
+	m_vecOrigin: +00000730
+	m_minFalloff: +0000073C
+	m_maxFalloff: +00000740
+	m_flCurWeight: +00000750
+	m_flMaxWeight: +0000074C
+	m_flFadeInDuration: +00000744
+	m_flFadeOutDuration: +00000748
+	m_netLookupFilename: +00000754
+	m_bEnabled: +00000858
+	m_bMaster: +00000859
+	m_bClientSide: +0000085A
+	m_bExclusive: +0000085B
+
+CColorCorrectionVolume = 24 - DT_ColorCorrectionVolume, count 6
+	baseclass: +00000000
+	m_bEnabled: +00000748
+	m_MaxWeight: +0000074C
+	m_FadeDuration: +00000750
+	m_Weight: +00000754
+	m_lookupFilename: +00000758
+
+CDOTA_Ability_Alchemist_AcidSpray = 25 - DT_DOTA_Ability_Alchemist_AcidSpray, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_AncientApparition_ChillingTouch = 26 - DT_DOTA_Ability_AncientApparition_ChillingTouch, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_AncientApparition_ColdFeet = 27 - DT_DOTA_Ability_AncientApparition_ColdFeet, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_AncientApparition_IceBlast = 28 - DT_DOTA_Ability_AncientApparition_RocketFlare, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_AncientApparition_IceVortex = 29 - DT_DOTA_Ability_AncientApparition_IceVortex, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_AntiMage_Blink = 30 - DT_DOTA_Ability_AntiMage_Blink, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_AttributeBonus = 31 - DT_DOTA_Ability_AttributeBonus, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Axe_BerserkersCall = 32 - DT_DOTA_Ability_Axe_BerserkersCall, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Axe_CounterHelix = 33 - DT_DOTA_Ability_Axe_CounterHelix, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Axe_CullingBlade = 34 - DT_DOTA_Ability_Axe_CullingBlade, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Batrider_Flamebreak = 35 - DT_DOTA_Ability_Batrider_Flamebreak, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Batrider_StickyNapalm = 36 - DT_DOTA_Ability_Batrider_StickyNapalm, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Beastmaster_PrimalRoar = 37 - DT_DOTA_Ability_Beastmaster_PrimalRoar, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_BountyHunter_ShurikenToss = 38 - DT_DOTA_Ability_BountyHunter_ShurikenToss, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Brewmaster_DispelMagic = 39 - DT_DOTA_Ability_Brewmaster_DispelMagic, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Brewmaster_PrimalSplit = 40 - DT_DOTA_Ability_Brewmaster_PrimalSplit, count 4
+	baseclass: +00000000
+	m_hPrimary: +00000780
+	m_hSecondary: +00000784
+	m_hTertiary: +00000788
+
+CDOTA_Ability_Bristleback_QuillSpray = 41 - DT_DOTA_Ability_Bristleback_QuillSpray, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Broodmother_SpinWeb = 42 - DT_DOTA_Ability_Broodmother_SpinWeb, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Centaur_Stampede = 43 - DT_DOTA_Ability_Centaur_Stampede, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_ChaosKnight_Phantasm = 44 - DT_DOTA_Ability_ChaosKnight_Phantasm, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Chen_HandOfGod = 45 - DT_DOTA_Ability_Chen_HandOfGod, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Chen_HolyPersuasion = 46 - DT_DOTA_Ability_Chen_HolyPersuasion, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Chen_TestOfFaithTeleport = 47 - DT_DOTA_Ability_Chen_TestOfFaithTeleport, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Courier_TakeStashItems = 48 - DT_DOTA_Ability_Courier_TakeStashItems, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Courier_TransferItems = 49 - DT_DOTA_Ability_Courier_TransferItems, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_CrystalMaiden_CrystalNova = 50 - DT_DOTA_Ability_CrystalMaiden_CrystalNova, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_CrystalMaiden_FreezingField = 51 - DT_DOTA_Ability_CrystalMaiden_FreezingField, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_DarkSeer_Vacuum = 52 - DT_DOTA_Ability_DarkSeer_Vacuum, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Dazzle_Weave = 53 - DT_DOTA_Ability_Dazzle_Weave, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_DeathProphet_CarrionSwarm = 54 - DT_DOTA_Ability_DeathProphet_CarrionSwarm, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_DeathProphet_Silence = 55 - DT_DOTA_Ability_DeathProphet_Silence, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Disruptor_KineticField = 56 - DT_DOTA_Ability_Disruptor_KineticField, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Disruptor_StaticStorm = 57 - DT_DOTA_Ability_Disruptor_StaticStorm, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_DoomBringer_Devour = 58 - DT_DOTA_Ability_DoomBringer_Devour, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_DrowRanger_Silence = 59 - DT_DOTA_Ability_DrowRanger_Silence, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Enchantress_Impetus = 60 - DT_DOTA_Ability_Enchantress_Impetus, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Enchantress_NaturesAttendants = 61 - DT_DOTA_Ability_Enchantress_NaturesAttendants, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Enchantress_Untouchable = 62 - DT_DOTA_Ability_Enchantress_Untouchable, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Enigma_BlackHole = 63 - DT_DOTA_Ability_Enigma_BlackHole, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Enigma_DemonicConversion = 64 - DT_DOTA_Ability_Enigma_DemonicConversion, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Enigma_MidnightPulse = 65 - DT_DOTA_Ability_Enigma_MidnightPulse, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_FacelessVoid_Chronosphere = 66 - DT_DOTA_Ability_FacelessVoid_Chronosphere, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Furion_ForceOfNature = 67 - DT_DOTA_Ability_Furion_ForceOfNature, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Furion_Teleportation = 68 - DT_DOTA_Ability_Furion_Teleportation, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_BlackHole = 69 - DT_DOTA_Ability_Greevil_BlackHole, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_BladeFury = 70 - DT_DOTA_Ability_Greevil_BladeFury, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Bloodlust = 71 - DT_DOTA_Ability_Greevil_Bloodlust, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_ColdSnap = 72 - DT_DOTA_Ability_Greevil_ColdSnap, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Decrepify = 73 - DT_DOTA_Ability_Greevil_Decrepify, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Diabolic_Edict = 74 - DT_DOTA_Ability_Greevil_Diabolic_Edict, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_EchoSlam = 75 - DT_DOTA_Ability_Greevil_EchoSlam, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Fatal_Bonds = 76 - DT_DOTA_Ability_Greevil_Fatal_Bonds, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_FleshGolem = 77 - DT_DOTA_Ability_Greevil_FleshGolem, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_IceWall = 78 - DT_DOTA_Ability_Greevil_IceWall, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_LagunaBlade = 79 - DT_DOTA_Ability_Greevil_LagunaBlade, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_LeechSeed = 80 - DT_DOTA_Ability_Greevil_LeechSeed, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Magic_Missile = 81 - DT_DOTA_Ability_Greevil_Magic_Missile, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Maledict = 82 - DT_DOTA_Ability_Greevil_Maledict, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_MeatHook = 83 - DT_DOTA_Ability_Greevil_MeatHook, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Black_BrainSap = 84 - DT_DOTA_Ability_Greevil_Miniboss_Black_BrainSap, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Black_Nightmare = 85 - DT_DOTA_Ability_Greevil_Miniboss_Black_Nightmare, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Blue_ColdFeet = 86 - DT_DOTA_Ability_Greevil_Miniboss_White_ColdFeet, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Blue_IceVortex = 87 - DT_DOTA_Ability_Greevil_Miniboss_White_IceVortex, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Green_LivingArmor = 88 - DT_DOTA_Ability_Greevil_Miniboss_Green_LivingArmor, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Green_Overgrowth = 89 - DT_DOTA_Ability_Greevil_Miniboss_Green_Overgrowth, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Orange_DragonSlave = 90 - DT_DOTA_Ability_Greevil_Miniboss_Orange_DragonSlave, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Orange_LightStrikeArray = 91 - DT_DOTA_Ability_Greevil_Miniboss_Orange_LightStrikeArray, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Purple_PlagueWard = 92 - DT_DOTA_Ability_Greevil_Miniboss_Purple_PlagueWard, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Purple_VenomousGale = 93 - DT_DOTA_Ability_Greevil_Miniboss_Purple_VenomousGale, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Red_Earthshock = 94 - DT_DOTA_Ability_Greevil_Miniboss_Red_Earthshock, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Red_Overpower = 95 - DT_DOTA_Ability_Greevil_Miniboss_Red_Overpower, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Sight = 96 - DT_DOTA_Ability_Greevil_Miniboss_Sight, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_White_Degen_Aura = 97 - DT_DOTA_Ability_Greevil_Miniboss_White_Degen_Aura, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_White_Purification = 98 - DT_DOTA_Ability_Greevil_Miniboss_White_Purification, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Yellow_IonShell = 99 - DT_DOTA_Ability_Greevil_Miniboss_Yellow_IonShell, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Miniboss_Yellow_Surge = 100 - DT_DOTA_Ability_Greevil_Miniboss_Yellow_Surge, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_NaturesAttendants = 101 - DT_DOTA_Ability_Greevil_NaturesAttendants, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_PhantomStrike = 102 - DT_DOTA_Ability_Greevil_PhantomStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_PoisonNova = 103 - DT_DOTA_Ability_Greevil_PoisonNova, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Purification = 104 - DT_DOTA_Ability_Greevil_Purification, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_Rot = 105 - DT_DOTA_Ability_Greevil_Rot, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_ShadowStrike = 106 - DT_DOTA_Ability_Greevil_ShadowStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_ShadowWave = 107 - DT_DOTA_Ability_Greevil_ShadowWave, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Greevil_TimeLock = 108 - DT_DOTA_Ability_Greevil_TimeLock, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Gyrocopter_Call_Down = 109 - DT_DOTA_Ability_Gyrocopter_Call_Down, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Healing_Campfire = 110 - DT_DOTA_Ability_Healing_Campfire, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Huskar_Life_Break = 111 - DT_DOTA_Ability_Huskar_Life_Break, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Invoker_EMP = 112 - DT_DOTA_Ability_Invoker_EMP, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Invoker_Invoke = 113 - DT_DOTA_Ability_Invoker_Invoke, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Invoker_InvokedBase = 114 - DT_DOTA_Ability_Invoker_InvokedBase, count 4
+	baseclass: +00000000
+	m_nQuasLevel: +00000780
+	m_nWexLevel: +00000784
+	m_nExortLevel: +00000788
+
+CDOTA_Ability_Invoker_SunStrike = 115 - DT_DOTA_Ability_Invoker_SunStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Juggernaut_HealingWard = 116 - DT_DOTA_Ability_Juggernaut_HealingWard, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Juggernaut_Omnislash = 117 - DT_DOTA_Ability_Juggernaut_Omnislash, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_KeeperOfTheLight_BlindingLight = 118 - DT_DOTA_Ability_KeeperOfTheLight_BlindingLight, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_KeeperOfTheLight_Recall = 119 - DT_DOTA_Ability_KeeperOfTheLight_Recall, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Kunkka_Tidebringer = 120 - DT_DOTA_Ability_Kunkka_Tidebringer, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Kunkka_Torrent = 121 - DT_DOTA_Ability_Kunkka_Torrent, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Leshrac_Diabolic_Edict = 122 - DT_DOTA_Ability_Leshrac_Diabolic_Edict, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Leshrac_Pulse_Nova = 123 - DT_DOTA_Ability_Leshrac_Pulse_Nova, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Leshrac_Split_Earth = 124 - DT_DOTA_Ability_Leshrac_Split_Earth, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lich_ChainFrost = 125 - DT_DOTA_Ability_Lich_ChainFrost, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lich_FrostNova = 126 - DT_DOTA_Ability_Lich_FrostNova, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Life_Stealer_Infest = 127 - DT_DOTA_Ability_Life_Stealer_Infest, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lina_LagunaBlade = 128 - DT_DOTA_Ability_Lina_LagunaBlade, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lina_LightStrikeArray = 129 - DT_DOTA_Ability_Lina_LightStrikeArray, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lion_FingerOfDeath = 130 - DT_DOTA_Ability_Lion_FingerOfDeath, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lion_ManaDrain = 131 - DT_DOTA_Ability_Lion_ManaDrain, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_LoneDruid_Rabid = 132 - DT_DOTA_Ability_LoneDruid_Rabid, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_LoneDruid_SpiritBear = 133 - DT_DOTA_Ability_LoneDruid_SpiritBear, count 2
+	baseclass: +00000000
+	m_hBear: +00000784
+
+CDOTA_Ability_LoneDruid_SpiritBear_Return = 134 - DT_DOTA_Ability_LoneDruid_SpiritBear_Return, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_LoneDruid_TrueForm_BattleCry = 135 - DT_DOTA_Ability_LoneDruid_TrueForm_BattleCry, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_LoneDruid_TrueForm_Druid = 136 - DT_DOTA_Ability_LoneDruid_TrueForm_Druid, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lycan_Howl = 137 - DT_DOTA_Ability_Lycan_Howl, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Lycan_SummonWolves = 138 - DT_DOTA_Ability_Lycan_SummonWolves, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Magnataur_ReversePolarity = 139 - DT_DOTA_Ability_Magnataur_ReversePolarity, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Meepo_Earthbind = 140 - DT_DOTA_Ability_Meepo_Earthbind, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Meepo_Poof = 141 - DT_DOTA_Ability_Meepo_Poof, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Morphling_Replicate = 142 - DT_DOTA_Ability_Morphling_Replicate, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_NagaSiren_MirrorImage = 143 - DT_DOTA_Ability_NagaSiren_MirrorImage, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_NagaSiren_RipTide = 144 - DT_DOTA_Ability_NagaSiren_RipTide, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Necrolyte_ReapersScythe = 145 - DT_DOTA_Ability_Necrolyte_ReapersScythe, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Nevermore_Requiem = 146 - DT_Ability_Nevermore_Requiem, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Obsidian_Destroyer_ArcaneOrb = 147 - DT_DOTA_Ability_Obsidian_Destroyer_ArcaneOrb, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Obsidian_Destroyer_AstralImprisonment = 148 - DT_DOTA_Ability_Obsidian_Destroyer_AstralImprisonment, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Obsidian_Destroyer_SanityEclipse = 149 - DT_Ability_Obsidian_Destroyer_SanityEclipse, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Ogre_Magi_Bloodlust = 150 - DT_DOTA_Ability_Ogre_Magi_Bloodlust, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Ogre_Magi_Fireblast = 151 - DT_DOTA_Ability_Ogre_Magi_Fireblast, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Ogre_Magi_Multicast = 152 - DT_DOTA_Ability_Ogre_Magi_Multicast, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Ogre_Magi_Unrefined_Fireblast = 153 - DT_DOTA_Ability_Ogre_Magi_Unrefined_Fireblast, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_PhantomAssassin_PhantomStrike = 154 - DT_DOTA_Ability_PhantomAssassin_PhantomStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Puck_DreamCoil = 155 - DT_DOTA_Ability_Puck_DreamCoil, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Puck_WaningRift = 156 - DT_DOTA_Ability_Puck_WaningRift, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Pudge_Dismember = 157 - DT_DOTA_Ability_Pudge_Dismember, count 2
+	baseclass: +00000000
+	m_hVictim: +00000780
+
+CDOTA_Ability_Pugna_Decrepify = 158 - DT_DOTA_Ability_Pugna_Decrepify, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Pugna_LifeDrain = 159 - DT_DOTA_Ability_Pugna_LifeDrain, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Pugna_NetherBlast = 160 - DT_DOTA_Ability_Pugna_NetherBlast, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_QueenOfPain_Blink = 161 - DT_DOTA_Ability_QueenOfPain_Blink, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_QueenOfPain_SonicWave = 162 - DT_DOTA_Unit_Ability_QueenOfPain_SonicWave, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Rattletrap_BatteryAssault = 163 - DT_DOTA_Ability_Rattletrap_BatteryAssault, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Rattletrap_Hookshot = 164 - DT_DOTA_Ability_Rattletrap_Hookshot, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Rattletrap_RocketFlare = 165 - DT_DOTA_Ability_Rattletrap_RocketFlare, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Riki_BlinkStrike = 166 - DT_DOTA_Ability_Riki_BlinkStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Riki_SmokeScreen = 167 - DT_DOTA_Ability_Riki_SmokeScreen, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Roshan_Halloween_Apocalypse = 168 - DT_DOTA_Ability_Roshan_Halloween_Apocalypse, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Roshan_Halloween_Burn = 169 - DT_DOTA_Ability_Roshan_Halloween_Burn, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Roshan_Toss = 170 - DT_DOTA_Ability_Roshan_Toss, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Roshan_WaveOfForce = 171 - DT_DOTA_Ability_Roshan_WaveOfForce, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Rubick_SpellSteal = 172 - DT_DOTA_Ability_Rubick_SpellSteal, count 3
+	baseclass: +00000000
+	m_ActivityModifier: +00000780
+	m_fStolenCastPoint: +00000880
+
+CDOTA_Ability_Rubick_TelekinesisLand = 173 - DT_DOTA_Ability_Rubick_TelekinesisLand, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_SandKing_Epicenter = 174 - DT_DOTA_Ability_SandKing_Epicenter, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_SatyrTrickster_Purge = 175 - DT_DOTA_Ability_SatyrTrickster_Purge, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Shadow_Demon_Disruption = 176 - DT_DOTA_Ability_Shadow_Demon_Disruption, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Shadow_Demon_Soul_Catcher = 177 - DT_DOTA_Ability_Shadow_Demon_Soul_Catcher, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Shredder_Chakram = 178 - DT_DOTA_Ability_Shredder_Chakram, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Shredder_TimberChain = 179 - DT_DOTA_Ability_Shredder_TimberChain, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Silencer_CurseOfTheSilent = 180 - DT_DOTA_Ability_Silencer_CurseOfTheSilent, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Silencer_GlaivesOfWisdom = 181 - DT_DOTA_Ability_Silencer_GlaivesOfWisdom, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Skywrath_Mage_Mystic_Flare = 182 - DT_DOTA_Ability_Skywrath_Mage_Mystic_Flare, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Slardar_Slithereen_Crush = 183 - DT_DOTA_Ability_Slardar_Slithereen_Crush, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Slark_EssenceShift = 184 - DT_DOTA_Ability_Slark_EssenceShift, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Sniper_Shrapnel = 185 - DT_DOTA_Ability_Sniper_Shrapnel, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_SpiritBreaker_NetherStrike = 186 - DT_DOTA_Ability_SpiritBreaker_NetherStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_StormSpirit_BallLightning = 187 - DT_DOTA_Ability_StormSpirit_BallLightning, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Sven_StormBolt = 188 - DT_DOTA_Ability_Sven_StormBolt, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Throw_Coal = 189 - DT_DOTA_Ability_Throw_Coal, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Throw_Snowball = 190 - DT_DOTA_Ability_Throw_Snowball, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Tidehunter_AnchorSmash = 191 - DT_DOTA_Ability_Tidehunter_AnchorSmash, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Tidehunter_Ravage = 192 - DT_DOTA_Ability_Tidehunter_Ravage, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Tiny_Avalanche = 193 - DT_DOTA_Ability_Tiny_Avalanche, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Tiny_CraggyExterior = 194 - DT_DOTA_Ability_Tiny_CraggyExterior, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Tiny_Toss = 195 - DT_DOTA_Ability_Tiny_Toss, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Treant_Overgrowth = 196 - DT_DOTA_Ability_Treant_Overgrowth, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_TrollWarlord_BerserkersRage = 197 - DT_DOTA_Ability_TrollWarlord_BerserkersRage, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Tusk_FrozenSigil = 198 - DT_DOTA_Ability_Tusk_FrozenSigil, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Undying_Decay = 199 - DT_DOTA_Ability_Undying_Decay, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Undying_SoulRip = 200 - DT_DOTA_Ability_Undying_SoulRip, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_VengefulSpirit_Nether_Swap = 201 - DT_DOTA_Ability_VengefulSpirit_Nether_Swap, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Venomancer_PoisonNova = 202 - DT_DOTA_Ability_Venomancer_PoisonNova, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Viper_ViperStrike = 203 - DT_DOTA_Ability_Viper_ViperStrike, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Visage_SummonFamiliars = 204 - DT_DOTA_Ability_Visage_SummonFamiliars, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Visage_SummonFamiliars_StoneForm = 205 - DT_DOTA_Ability_Visage_SummonFamiliars_StoneForm, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Warlock_RainOfChaos = 206 - DT_DOTA_Ability_Warlock_RainOfChaos, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Warlock_Shadow_Word = 207 - DT_DOTA_Ability_Warlock_Shadow_Word, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Warlock_Upheaval = 208 - DT_DOTA_Ability_Warlock_Upheaval, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Windrunner_FocusFire = 209 - DT_DOTA_Ability_Windrunner_FocusFire, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Wisp_Overcharge = 210 - DT_DOTA_Ability_Wisp_Overcharge, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Wisp_Relocate = 211 - DT_DOTA_Ability_Wisp_Relocate, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Wisp_Spirits = 212 - DT_DOTA_Ability_Wisp_Spirits, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_Wisp_Tether = 213 - DT_DOTA_Ability_Wisp_Tether, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_WitchDoctor_Maledict = 214 - DT_DOTA_Ability_WitchDoctor_Maledict, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_WitchDoctor_ParalyzingCask = 215 - DT_DOTA_Ability_WitchDoctor_ParalyzingCask, count 1
+	baseclass: +00000000
+
+CDOTA_Ability_WitchDoctor_VoodooRestoration = 216 - DT_DOTA_Ability_WitchDoctor_VoodooRestoration, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC = 217 - DT_DOTA_BaseNPC, count 41
+	baseclass: +00000000
+	m_NetworkActivity: +00002FF8
+	m_NetworkSequenceIndex: +00003000
+	m_iCurrentLevel: +00000FEC
+	m_iIsControllableByPlayer: +00001000
+	m_bIsPhantom: +00000FE4
+	m_bIsAncient: +00000FF1
+	m_bStolenScepter: +00000FF2
+	m_bIsNeutralUnitType: +00000FF3
+	m_bIsSummoned: +00000FF6
+	m_iHealth: +000000FC
+	m_iMaxHealth: +00000FFC
+	m_iAttackCapabilities: +00002DF8
+	m_flHealthThinkRegen: +00000FF8
+	m_iDayTimeVisionRange: +000011BC
+	m_iNightTimeVisionRange: +000011C0
+	m_flMana: +00001024
+	m_flMaxMana: +00001028
+	m_flManaThinkRegen: +0000102C
+	m_hAbilities: +00001038
+	m_iDamageMin: +000011C4
+	m_iDamageMax: +000011C8
+	m_iDamageBonus: +000011CC
+	m_lifeState: +0000025B
+	m_ModifierManager: +000011D4
+	m_Inventory: +000028F0
+	m_nUnitState: +00002D70
+	m_iTaggedAsVisibleByTeam: +000011D0
+	m_iUnitNameIndex: +0000101C
+	m_vecOrigin: +00000134
+	m_vecOrigin[2]: +0000013C
+	m_cellX: +00000078
+	m_cellY: +0000007C
+	m_cellZ: +00000080
+	m_angRotation[0]: +00000128
+	m_angRotation[1]: +0000012C
+	m_iCurShop: +000011B8
+	m_anglediff: +00002E14
+	m_fFlags: +00000100
+	m_iBotDebugData: +00001030
+	m_hMyWearables: +00000000
+
+CDOTA_BaseNPC_Additive = 218 - DT_DOTA_BaseNPC_Additive, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Barracks = 219 - DT_DOTA_BaseNPC_Barracks, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Building = 220 - DT_DOTA_BaseNPC_Building, count 5
+	baseclass: +00000000
+	m_nFXIndex: +00003024
+	m_angInitialAngles[0]: +00000128
+	m_angInitialAngles[1]: +0000012C
+	m_nFXIndexDestruction: +00003028
+
+CDOTA_BaseNPC_Creep = 221 - DT_DOTA_BaseNPC_Creep, count 2
+	baseclass: +00000000
+	m_bIsWaitingToSpawn: +00002F94
+
+CDOTA_BaseNPC_Creep_Diretide = 222 - DT_DOTA_BaseNPC_Creep_Diretide, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Creep_Lane = 223 - DT_DOTA_BaseNPC_Creep_Lane, count 2
+	baseclass: +00000000
+	m_iHealthPercentage: +00003020
+
+CDOTA_BaseNPC_Creep_LootGreevil = 224 - DT_DOTA_BaseNPC_Creep_LootGreevil, count 2
+	baseclass: +00000000
+	m_bIsRareLootGreevil: +00003020
+
+CDOTA_BaseNPC_Creep_Neutral = 225 - DT_DOTA_BaseNPC_Creep_Neutral, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Creep_Siege = 226 - DT_DOTA_BaseNPC_Creep_Siege, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Creep_Talking = 227 - DT_DOTA_BaseNPC_Creep_Talking, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Fort = 228 - DT_DOTA_BaseNPC_Fort, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_HallofFame = 229 - DT_DOTA_BaseNPC_HallofFame, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Hero = 230 - DT_DOTA_BaseNPC_Hero, count 18
+	baseclass: +00000000
+	m_iCurrentXP: +00003024
+	m_flRespawnTime: +0000302C
+	m_iAbilityPoints: +00003028
+	m_flStrength: +00003030
+	m_flAgility: +00003034
+	m_flIntellect: +00003038
+	m_flStrengthTotal: +0000303C
+	m_flAgilityTotal: +00003040
+	m_flIntellectTotal: +00003044
+	m_iRecentDamage: +00003048
+	m_iPlayerID: +0000306C
+	m_bReincarnating: +00003074
+	m_flSpawnedAt: +00003078
+	m_hReplicatingOtherHeroModel: +00003070
+	m_vecEquippedEconItems: +000031B0
+	m_iGreevilIndex: +000031F0
+	m_hEconConsumableAbility: +000031F4
+
+CDOTA_BaseNPC_Invoker_Forged_Spirit = 231 - DT_DOTA_BaseNPC_Invoker_Forged_Spirit, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_ShadowShaman_SerpentWard = 232 - DT_DOTA_BaseNPC_ShadowShaman_SerpentWard, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Shop = 233 - DT_DOTA_BaseNPC_Shop, count 2
+	baseclass: +00000000
+	m_ShopType: +00003038
+
+CDOTA_BaseNPC_Tower = 234 - DT_DOTA_BaseNPC_Tower, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Venomancer_PlagueWard = 235 - DT_DOTA_BaseNPC_Venomancer_PlagueWard, count 1
+	baseclass: +00000000
+
+CDOTA_BaseNPC_Warlock_Golem = 236 - DT_DOTA_BaseNPC_Warlock_Golem, count 1
+	baseclass: +00000000
+
+CDOTA_Beastmaster_Axe = 237 - DT_DOTA_Beastmaster_Axe, count 3
+	baseclass: +00000000
+	m_vecOrigin: +00000134
+	m_vecOrigin[2]: +0000013C
+
+CDOTA_DeathProphet_Exorcism_Spirit = 238 - DT_DOTA_DeathProphet_Exorcism_Spirit, count 5
+	baseclass: +00000000
+	m_vecOrigin: +00000134
+	m_vecOrigin[2]: +0000013C
+	m_angRotation[0]: +00000128
+	m_angRotation[1]: +0000012C
+
+CDOTA_DisplacementVisibility = 239 - DT_DOTA_DisplacementVisibility, count 2
+	baseclass: +00000000
+	m_HiddenDisplacement: +00000730
+
+CDOTA_Halloween_CandyBucket = 240 - DT_DOTA_Halloween_CandyBucket, count 1
+	baseclass: +00000000
+
+CDOTA_Halloween_CandyBucketDire = 241 - DT_DOTA_Halloween_CandyBucketDire, count 1
+	baseclass: +00000000
+
+CDOTA_Halloween_CandyBucketRadiant = 242 - DT_DOTA_Halloween_CandyBucketRadiant, count 1
+	baseclass: +00000000
+
+CDOTA_Hero_Recorder = 243 - DT_DOTA_Hero_Recorder, count 4
+	baseclass: +00000000
+	m_bStartRecording: +00000730
+	m_hHero: +00000734
+	m_hPlayer: +00000738
+
+CDOTA_Item = 244 - DT_DOTA_Item, count 18
+	baseclass: +00000000
+	m_bCombinable: +00000780
+	m_bPermanent: +00000781
+	m_bStackable: +00000782
+	m_bRecipe: +00000783
+	m_iSharability: +00000784
+	m_bDroppable: +00000788
+	m_bPurchasable: +00000789
+	m_bSellable: +0000078A
+	m_bRequiresCharges: +0000078B
+	m_bKillable: +0000078E
+	m_bDisassemblable: +0000078F
+	m_bAlertable: +00000790
+	m_iCurrentCharges: +0000079C
+	m_flPurchaseTime: +000007A0
+	m_iInitialCharges: +00000794
+	m_hPurchaser: +000007B0
+	m_bCastOnPickup: +00000798
+
+CDOTA_Item_Ancient_Janggo = 245 - DT_DOTA_Item_Ancient_Janggo, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Armlet = 246 - DT_DOTA_Item_Armlet, count 1
+	baseclass: +00000000
+
+CDOTA_Item_BlinkDagger = 247 - DT_DOTA_Item_BlinkDagger, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Bloodstone = 248 - DT_DOTA_Item_Bloodstone, count 1
+	baseclass: +00000000
+
+CDOTA_Item_BootsOfTravel = 249 - DT_DOTA_Item_BootsOfTravel, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Cyclone = 250 - DT_DOTA_Item_Cyclone, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Diffusal_Blade = 251 - DT_DOTA_Item_Diffusal_Blade, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Diffusal_Blade_Level2 = 252 - DT_DOTA_Item_Diffusal_Blade_Level2, count 1
+	baseclass: +00000000
+
+CDOTA_Item_EmptyBottle = 253 - DT_DOTA_Item_EmptyBottle, count 2
+	baseclass: +00000000
+	m_iStoredRuneType: +000007B8
+
+CDOTA_Item_Ethereal_Blade = 254 - DT_DOTA_Item_Ethereal_Blade, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Greevil_Blink = 255 - DT_DOTA_Item_Greevil_Blink, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Greevil_Whistle = 256 - DT_DOTA_Item_Greevil_Whistle, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Greevil_WhistleToggle = 257 - DT_DOTA_Item_Greevil_WhistleToggle, count 2
+	baseclass: +00000000
+	m_hGreevil: +000007B8
+
+CDOTA_Item_MantaStyle = 258 - DT_DOTA_Item_MantaStyle, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Mystery_Toss = 259 - DT_DOTA_Item_Mystery_Toss, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Mystery_Vacuum = 260 - DT_DOTA_Item_Mystery_Vacuum, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Necronomicon = 261 - DT_DOTA_Item_Necronomicon, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Necronomicon_Level2 = 262 - DT_DOTA_Item_Necronomicon_Level2, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Necronomicon_Level3 = 263 - DT_DOTA_Item_Necronomicon_Level3, count 1
+	baseclass: +00000000
+
+CDOTA_Item_ObserverWard = 264 - DT_DOTA_Item_ObserverWard, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Physical = 265 - DT_DOTA_Item_Physical, count 2
+	baseclass: +00000000
+	m_hItem: +00000A60
+
+CDOTA_Item_PowerTreads = 266 - DT_DOTA_Item_PowerTreads, count 2
+	baseclass: +00000000
+	m_iStat: +000007B8
+
+CDOTA_Item_Radiance = 267 - DT_DOTA_Item_Radiance, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Recipe_Veil_Of_Discord = 268 - DT_DOTA_Item_Recipe_Veil_Of_Discord, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Ring_Of_Basilius = 269 - DT_DOTA_Item_Ring_Of_Basilius, count 1
+	baseclass: +00000000
+
+CDOTA_Item_RingOfAquila = 270 - DT_DOTA_Item_RingOfAquila, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Rune = 271 - DT_DOTA_Item_Rune, count 2
+	baseclass: +00000000
+	m_iRuneType: +00000A60
+
+CDOTA_Item_SentryWard = 272 - DT_DOTA_Item_SentryWard, count 1
+	baseclass: +00000000
+
+CDOTA_Item_TeleportScroll = 273 - DT_DOTA_Item_TeleportScroll, count 1
+	baseclass: +00000000
+
+CDOTA_Item_TranquilBoots = 274 - DT_DOTA_Item_TranquilBoots, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Urn_Of_Shadows = 275 - DT_DOTA_Item_Urn_Of_Shadows, count 1
+	baseclass: +00000000
+
+CDOTA_Item_Veil_Of_Discord = 276 - DT_DOTA_Item_Veil_Of_Discord, count 1
+	baseclass: +00000000
+
+CDOTA_NeutralSpawner = 277 - DT_DOTA_NeutralSpawner, count 2
+	baseclass: +00000000
+	m_Type: +00000730
+
+CDOTA_NPC_Observer_Ward = 278 - DT_DOTA_NPC_Observer_Ward, count 2
+	baseclass: +00000000
+	m_nEconItemIndex: +00003024
+
+CDOTA_NPC_WitchDoctor_Ward = 279 - DT_DOTA_NPC_WitchDoctor_Ward, count 1
+	baseclass: +00000000
+
+CDOTA_PlayerResource = 280 - DT_DOTA_PlayerResource, count 48
+	m_iszPlayerNames: +00000738
+	m_iszSelectedHero: +00001F98
+	m_nSelectedHeroID: +000037F8
+	m_iPlayerTeams: +00003858
+	m_iKills: +000038B8
+	m_iAssists: +00003918
+	m_iDeaths: +00003978
+	m_iStreak: +000039D8
+	m_iRespawnSeconds: +00003A38
+	m_iLastBuybackTime: +00003A98
+	m_iReliableGold: +00003AF8
+	m_iUnreliableGold: +00003B58
+	m_iLevel: +00003BB8
+	m_iDenyCount: +00003C18
+	m_iLastHitCount: +00003C78
+	m_iClaimedDenyCount: +00003CD8
+	m_iClaimedMissCount: +00003D38
+	m_iMissCount: +00003D98
+	m_hSelectedHero: +00003DF8
+	m_bFullyJoinedServer: +00003E58
+	m_bFakeClient: +00003E70
+	m_iPlayerSteamIDs: +00003E88
+	m_bIsBroadcaster: +00003F48
+	m_iBroadcasterLanguage: +00003F60
+	m_iBroadcasterChannel: +00003FC0
+	m_iBroadcasterChannelSlot: +00004020
+	m_iConnectionState: +00004080
+	m_bAFK: +000040E0
+	m_bVoiceChatBanned: +000040F8
+	m_iTimedRewardDrops: +000042F0
+	m_iTimedRewardCrates: +00004350
+	m_nPossibleHeroSelection: +00004110
+	m_nSuggestedHeroes: +00004170
+	m_iMetaLevel: +000043B0
+	m_iMetaExperience: +000043E0
+	m_iMetaExperienceAwarded: +00004410
+	m_iMetaExperienceBonusRate: +00004440
+	m_bHasRepicked: +00004470
+	m_bHasRandomed: +00004488
+	m_UnitShareMasks: +000044A0
+	m_bBattleBonusActive: +00004500
+	m_iBattleBonusRate: +00004518
+	m_flBuybackCooldownTime: +00004548
+	m_nEquippedAnnouncers: +000045A8
+	m_nEquippedMegaKills: +00004608
+	m_nEquippedHudSkins: +00004668
+	m_nEquippedFanItems: +000046C8
+	EndScoreAndSpectatorStats: +00000000
+
+CDOTA_RoshanSpawner = 281 - DT_DOTA_RoshanSpawner, count 1
+	baseclass: +00000000
+
+CDOTA_TempTree = 282 - DT_DOTA_TempTree, count 1
+	baseclass: +00000000
+
+CDOTA_Tiny_ScepterTree = 283 - DT_DOTA_Tiny_ScepterTree, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Announcer = 284 - DT_DOTA_Unit_Announcer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Announcer_Killing_Spree = 285 - DT_DOTA_Unit_Announcer_Killing_Spree, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Brewmaster_PrimalEarth = 286 - DT_DOTA_Unit_Brewmaster_PrimalEarth, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Brewmaster_PrimalFire = 287 - DT_DOTA_Unit_Brewmaster_PrimalFire, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Brewmaster_PrimalStorm = 288 - DT_DOTA_Unit_Brewmaster_PrimalStorm, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Broodmother_Spiderling = 289 - DT_DOTA_Unit_Broodmother_Spiderling, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Broodmother_Web = 290 - DT_DOTA_Unit_Broodmother_Web, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Courier = 291 - DT_DOTA_Unit_Courier, count 8
+	baseclass: +00000000
+	m_flRespawnTime: +00003024
+	m_nCourierState: +00003028
+	m_hCourierStateEntity: +0000302C
+	m_bFlyingCourier: +00003022
+	m_iUnusualColor: +00003034
+	m_iUnusualParticleSystem: +00003030
+	m_nEconItemIndex: +0000306C
+
+CDOTA_Unit_Fountain = 292 - DT_DOTA_Unit_Fountain, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Greevil = 293 - DT_DOTA_Unit_Greevil, count 2
+	baseclass: +00000000
+	m_flRespawnTime: +00003034
+
+CDOTA_Unit_Hero_Alchemist = 294 - DT_DOTA_Unit_Hero_Alchemist, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_AncientApparition = 295 - DT_DOTA_Unit_Hero_AncientApparition, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_AntiMage = 296 - DT_DOTA_Unit_Hero_AntiMage, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Axe = 297 - DT_DOTA_Unit_Hero_Axe, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Bane = 298 - DT_DOTA_Unit_Hero_Bane, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Batrider = 299 - DT_DOTA_Unit_Hero_Batrider, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Beastmaster = 300 - DT_DOTA_Unit_Hero_Beastmaster, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Beastmaster_Beasts = 301 - DT_DOTA_Unit_Hero_Beastmaster_Beasts, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Beastmaster_Boar = 302 - DT_DOTA_Unit_Hero_Beastmaster_Boar, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Beastmaster_Hawk = 303 - DT_DOTA_Unit_Hero_Beastmaster_Hawk, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Bloodseeker = 304 - DT_DOTA_Unit_Hero_Bloodseeker, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_BountyHunter = 305 - DT_DOTA_Unit_Hero_BountyHunter, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Brewmaster = 306 - DT_DOTA_Unit_Hero_Brewmaster, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Bristleback = 307 - DT_DOTA_Unit_Hero_Bristleback, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Broodmother = 308 - DT_DOTA_Unit_Hero_Broodmother, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Centaur = 309 - DT_DOTA_Unit_Hero_Centaur, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_ChaosKnight = 310 - DT_DOTA_Unit_Hero_ChaosKnight, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Chen = 311 - DT_DOTA_Unit_Hero_Chen, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Clinkz = 312 - DT_DOTA_Unit_Hero_Clinkz, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_CrystalMaiden = 313 - DT_DOTA_Unit_Hero_CrystalMaiden, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_DarkSeer = 314 - DT_DOTA_Unit_Hero_DarkSeer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Dazzle = 315 - DT_DOTA_Unit_Hero_Dazzle, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_DeathProphet = 316 - DT_DOTA_Unit_Hero_DeathProphet, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Disruptor = 317 - DT_DOTA_Unit_Hero_Disruptor, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_DoomBringer = 318 - DT_DOTA_Unit_Hero_DoomBringer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_DragonKnight = 319 - DT_DOTA_Unit_Hero_DragonKnight, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_DrowRanger = 320 - DT_DOTA_Unit_Hero_DrowRanger, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Earthshaker = 321 - DT_DOTA_Unit_Hero_Earthshaker, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Enchantress = 322 - DT_DOTA_Unit_Hero_Enchantress, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Enigma = 323 - DT_DOTA_Unit_Hero_Enigma, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_FacelessVoid = 324 - DT_DOTA_Unit_Hero_FacelessVoid, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Furion = 325 - DT_DOTA_Unit_Hero_Furion, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Gyrocopter = 326 - DT_DOTA_Unit_Hero_Gyrocopter, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Huskar = 327 - DT_DOTA_Unit_Hero_Huskar, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Invoker = 328 - DT_DOTA_Unit_Hero_Invoker, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Jakiro = 329 - DT_DOTA_Unit_Hero_Jakiro, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Juggernaut = 330 - DT_DOTA_Unit_Hero_Juggernaut, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_KeeperOfTheLight = 331 - DT_DOTA_Unit_Hero_KeeperOfTheLight, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Kunkka = 332 - DT_DOTA_Unit_Hero_Kunkka, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Leshrac = 333 - DT_DOTA_Unit_Hero_Leshrac, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Lich = 334 - DT_DOTA_Unit_Hero_Lich, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Life_Stealer = 335 - DT_DOTA_Unit_Hero_Life_Stealer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Lina = 336 - DT_DOTA_Unit_Hero_Lina, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Lion = 337 - DT_DOTA_Unit_Hero_Lion, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_LoneDruid = 338 - DT_DOTA_Unit_Hero_LoneDruid, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Luna = 339 - DT_DOTA_Unit_Hero_Luna, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Lycan = 340 - DT_DOTA_Unit_Hero_Lycan, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Magnataur = 341 - DT_DOTA_Unit_Hero_Magnataur, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Medusa = 342 - DT_DOTA_Unit_Hero_Medusa, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Meepo = 343 - DT_DOTA_Unit_Hero_Meepo, count 3
+	baseclass: +00000000
+	m_nWhichMeepo: +000031F8
+	m_bIsIllusion: +00001034
+
+CDOTA_Unit_Hero_Mirana = 344 - DT_DOTA_Unit_Hero_Mirana, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Morphling = 345 - DT_DOTA_Unit_Hero_Morphling, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Naga_Siren = 346 - DT_DOTA_Unit_Hero_Naga_Siren, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Necrolyte = 347 - DT_DOTA_Unit_Hero_Necrolyte, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Nevermore = 348 - DT_DOTA_Unit_Hero_Nevermore, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_NightStalker = 349 - DT_DOTA_Unit_Hero_NightStalker, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Nyx_Assassin = 350 - DT_DOTA_Unit_Hero_Nyx_Assassin, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Obsidian_Destroyer = 351 - DT_DOTA_Unit_Hero_Obsidian_Destroyer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Ogre_Magi = 352 - DT_DOTA_Unit_Hero_Ogre_Magi, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Omniknight = 353 - DT_DOTA_Unit_Hero_Omniknight, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_PhantomAssassin = 354 - DT_DOTA_Unit_Hero_PhantomAssassin, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_PhantomLancer = 355 - DT_DOTA_Unit_Hero_PhantomLancer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Puck = 356 - DT_DOTA_Unit_Hero_Puck, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Pudge = 357 - DT_DOTA_Unit_Hero_Pudge, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Pugna = 358 - DT_DOTA_Unit_Hero_Pugna, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_QueenOfPain = 359 - DT_DOTA_Unit_Hero_QueenOfPain, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Rattletrap = 360 - DT_DOTA_Unit_Hero_Rattletrap, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Razor = 361 - DT_DOTA_Unit_Hero_Razor, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Riki = 362 - DT_DOTA_Unit_Hero_Riki, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Rubick = 363 - DT_DOTA_Unit_Hero_Rubick, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_SandKing = 364 - DT_DOTA_Unit_Hero_SandKing, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Shadow_Demon = 365 - DT_DOTA_Unit_Hero_Shadow_Demon, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_ShadowShaman = 366 - DT_DOTA_Unit_Hero_ShadowShaman, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Shredder = 367 - DT_DOTA_Unit_Hero_Shredder, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Silencer = 368 - DT_DOTA_Unit_Hero_Silencer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_SkeletonKing = 369 - DT_DOTA_Unit_Hero_SkeletonKing, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Skywrath_Mage = 370 - DT_DOTA_Unit_Hero_Skywrath_Mage, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Slardar = 371 - DT_DOTA_Unit_Hero_Slardar, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Slark = 372 - DT_DOTA_Unit_Hero_Slark, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Sniper = 373 - DT_DOTA_Unit_Hero_Sniper, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Spectre = 374 - DT_DOTA_Unit_Hero_Spectre, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_SpiritBreaker = 375 - DT_DOTA_Unit_Hero_SpiritBreaker, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_StormSpirit = 376 - DT_DOTA_Unit_Hero_StormSpirit, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Sven = 377 - DT_DOTA_Unit_Hero_Sven, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_TemplarAssassin = 378 - DT_DOTA_Unit_Hero_TemplarAssassin, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Tidehunter = 379 - DT_DOTA_Unit_Hero_Tidehunter, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Tinker = 380 - DT_DOTA_Unit_Hero_Tinker, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Tiny = 381 - DT_DOTA_Unit_Hero_Tiny, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Treant = 382 - DT_DOTA_Unit_Hero_Treant, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_TrollWarlord = 383 - DT_DOTA_Unit_Hero_TrollWarlord, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Tusk = 384 - DT_DOTA_Unit_Hero_Tusk, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Undying = 385 - DT_DOTA_Unit_Hero_Undying, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Ursa = 386 - DT_DOTA_Unit_Hero_Ursa, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_VengefulSpirit = 387 - DT_DOTA_Unit_Hero_VengefulSpirit, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Venomancer = 388 - DT_DOTA_Unit_Hero_Venomancer, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Viper = 389 - DT_DOTA_Unit_Hero_Viper, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Visage = 390 - DT_DOTA_Unit_Hero_Visage, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Warlock = 391 - DT_DOTA_Unit_Hero_Warlock, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Weaver = 392 - DT_DOTA_Unit_Hero_Weaver, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Windrunner = 393 - DT_DOTA_Unit_Hero_Windrunner, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Wisp = 394 - DT_DOTA_Unit_Hero_Wisp, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_WitchDoctor = 395 - DT_DOTA_Unit_Hero_WitchDoctor, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Hero_Zuus = 396 - DT_DOTA_Unit_Hero_Zuus, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Roquelaire = 397 - DT_DOTA_Unit_Roquelaire, count 2
+	baseclass: +00000000
+	m_flFlyHeight: +00003020
+
+CDOTA_Unit_Roshan = 398 - DT_DOTA_Unit_Roshan, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Roshan_Halloween = 399 - DT_DOTA_Unit_Roshan_Halloween, count 4
+	baseclass: +00000000
+	m_hChosenTarget: +00003044
+	m_iHealth: +000000FC
+	m_iMaxHealth: +00000FFC
+
+CDOTA_Unit_SpiritBear = 400 - DT_DOTA_Unit_SpiritBear, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Undying_Tombstone = 401 - DT_DOTA_Unit_Undying_Tombstone, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_Undying_Zombie = 402 - DT_DOTA_Unit_Undying_Zombie, count 1
+	baseclass: +00000000
+
+CDOTA_Unit_VisageFamiliar = 403 - DT_DOTA_Unit_VisageFamiliar, count 1
+	baseclass: +00000000
+
+CDOTA_Wisp_Spirit = 404 - DT_DOTA_Wisp_Spirit, count 3
+	baseclass: +00000000
+	m_vecOrigin: +00000134
+	m_vecOrigin[2]: +0000013C
+
+CDOTABaseAbility = 405 - DT_DOTABaseAbility, count 15
+	baseclass: +00000000
+	m_bHidden: +00000744
+	m_bActivated: +00000746
+	m_iDirtyButtons: +0000074C
+	m_bToggleState: +00000759
+	m_bInAbilityPhase: +0000075A
+	m_fCooldown: +0000075C
+	m_iCastRange: +00000760
+	m_iCooldownLength: +00000764
+	m_flCooldownLength: +00000768
+	m_iManaCost: +0000076C
+	m_bAutoCastState: +00000770
+	m_flChannelStartTime: +00000774
+	m_flOverrideCastPoint: +00000778
+	m_iLevel: +00000754
+
+CDOTACameraBounds = 406 - DT_DOTACameraBounds, count 3
+	baseclass: +00000000
+	m_vecBoundsMin: +00000730
+	m_vecBoundsMax: +0000073C
+
+CDOTAFogOfWarTempViewers = 407 - DT_DOTAFogOfWarTempViewers, count 2
+	baseclass: +00000000
+	m_bTempViewers: +00000734
+
+CDOTAFogOfWarWasVisible = 408 - DT_DOTAFogOfWarWasVisible, count 2
+	baseclass: +00000000
+	m_bWasVisible: +00000730
+
+CDOTAGameManagerProxy = 409 - DT_DOTAGameManagerProxy, count 2
+	baseclass: +00000000
+	dota_gamemanager_data: +00000000
+
+CDOTAGamerulesProxy = 410 - DT_DOTAGamerulesProxy, count 2
+	baseclass: +00000000
+	dota_gamerules_data: +00000000
+
+CDOTAPlayer = 411 - DT_DOTAPlayer, count 10
+	baseclass: +00000000
+	m_nTickBase: +000013B0
+	m_iPlayerID: +0000188C
+	m_iMusicStatus: +00001A8C
+	m_vecStartingPosition: +00001810
+	m_hAssignedHero: +0000181C
+	m_hKillCamUnit: +00001820
+	dota_commentator_table: +00000000
+	m_flMusicOperatorVals: +00001A98
+	m_iMusicOperatorVals: +00001AA4
+
+CDOTAPropCustomTexture = 412 - DT_DOTAPropCustomTexture, count 1
+	baseclass: +00000000
+
+CDOTASpecGraphPlayerData = 413 - DT_DotaSpecGraphPlayerData, count 4
+	baseclass: +00000000
+	m_rgGoldPerMinute: +00000730
+	m_rgXPPerMinute: +00000830
+	m_nCreatedByPlayerID: +00000930
+
+CDOTASpectatorGraphManagerProxy = 414 - DT_DOTASpectatorGraphManagerProxy, count 2
+	baseclass: +00000000
+	dota_spectator_graph_manager_data: +00000000
+
+CDOTATeam = 415 - DT_DOTATeam, count 10
+	baseclass: +00000000
+	m_iHeroKills: +000007E0
+	m_iTowerKills: +000007E4
+	m_iBarracksKills: +000007E8
+	m_unTournamentTeamID: +000007EC
+	m_ulTeamLogo: +000007F0
+	m_ulTeamBaseLogo: +000007F8
+	m_ulTeamBannerLogo: +00000800
+	m_szTag: +00000809
+	m_bTeamComplete: +00000808
+
+CDotaTutorialNetworker = 416 - DT_DotaTutorialNetworker, count 15
+	m_nTutorialState: +00000730
+	m_nTaskProgress: +00000734
+	m_nTaskSteps: +00000738
+	m_nUIState: +0000073C
+	m_TargetLocation: +00000740
+	m_TargetEntity: +0000074C
+	m_SpeechBubbles[0]: +00000750
+	m_SpeechBubbles[1]: +0000085C
+	m_SpeechBubbles[2]: +00000968
+	m_SpeechBubbles[3]: +00000A74
+	m_Quests[0]: +00000B80
+	m_Quests[1]: +00000D88
+	m_Quests[2]: +00000F90
+	m_Quests[3]: +00001198
+	m_Quests[4]: +000013A0
+
+CDOTAWearableItem = 417 - DT_DOTAWearableItem, count 2
+	baseclass: +00000000
+	m_bOwnerModelChanged: +00000F6C
+
+CDynamicLight = 418 - DT_DynamicLight, count 8
+	baseclass: +00000000
+	m_Flags: +00000730
+	m_LightStyle: +00000731
+	m_Radius: +00000734
+	m_Exponent: +00000738
+	m_InnerAngle: +0000073C
+	m_OuterAngle: +00000740
+	m_SpotRadius: +00000744
+
+CDynamicProp = 419 - DT_DynamicProp, count 2
+	baseclass: +00000000
+	m_bUseHitboxesForRenderBox: +00000A68
+
+CEconEntity = 420 - DT_EconEntity, count 2
+	baseclass: +00000000
+	m_AttributeManager: +00000E58
+
+CEconWearable = 421 - DT_WearableItem, count 1
+	baseclass: +00000000
+
+CEntityDissolve = 422 - DT_EntityDissolve, count 11
+	baseclass: +00000000
+	m_flStartTime: +00000734
+	m_flFadeOutStart: +00000738
+	m_flFadeOutLength: +0000073C
+	m_flFadeOutModelStart: +00000740
+	m_flFadeOutModelLength: +00000744
+	m_flFadeInStart: +00000748
+	m_flFadeInLength: +0000074C
+	m_nDissolveType: +00000750
+	m_vDissolverOrigin: +00000758
+	m_nMagnitude: +00000764
+
+CEntityFlame = 423 - DT_EntityFlame, count 3
+	baseclass: +00000000
+	m_hEntAttached: +00000730
+	m_bCheapEffect: +00000744
+
+CEntityFreezing = 424 - DT_EntityFreezing, count 5
+	baseclass: +00000000
+	m_vFreezingOrigin: +00000730
+	m_flFrozenPerHitbox: +0000073C
+	m_flFrozen: +00000804
+	m_bFinishFreezing: +00000808
+
+CEntityParticleTrail = 425 - DT_EntityParticleTrail, count 4
+	baseclass: +00000000
+	m_iMaterialName: +00000818
+	m_Info: +0000081C
+	m_hConstraintEntity: +00000830
+
+CEnvAmbientLight = 426 - DT_EnvAmbientLight, count 2
+	baseclass: +00000000
+	m_vecColor: +00000858
+
+CEnvDeferredLight = 427 - DT_EnvDeferredLight, count 10
+	baseclass: +00000000
+	m_LightColor: +00000733
+	m_flIntensity: +00000738
+	m_flLightSize: +0000073C
+	m_flSpotFoV: +00000740
+	m_vLightDirection: +00000744
+	m_flStartFalloff: +00000750
+	m_flDistanceFalloff: +00000754
+	m_nFlags: +00000768
+	m_ProjectedTextureName: +0000076C
+
+CEnvDetailController = 428 - DT_DetailController, count 2
+	m_flFadeStartDist: +00000730
+	m_flFadeEndDist: +00000734
+
+CEnvDOFController = 429 - DT_EnvDOFController, count 8
+	baseclass: +00000000
+	m_bDOFEnabled: +00000730
+	m_flNearBlurDepth: +00000734
+	m_flNearFocusDepth: +00000738
+	m_flFarFocusDepth: +0000073C
+	m_flFarBlurDepth: +00000740
+	m_flNearBlurRadius: +00000744
+	m_flFarBlurRadius: +00000748
+
+CEnvParticleScript = 430 - DT_EnvParticleScript, count 2
+	baseclass: +00000000
+	m_flSequenceScale: +00000B44
+
+CEnvProjectedTexture = 431 - DT_EnvProjectedTexture, count 21
+	baseclass: +00000000
+	m_hTargetEntity: +00000734
+	m_bState: +00000738
+	m_bAlwaysUpdate: +00000739
+	m_flLightFOV: +0000073C
+	m_bEnableShadows: +00000740
+	m_bSimpleProjection: +00000741
+	m_bLightOnlyTarget: +00000742
+	m_bLightWorld: +00000743
+	m_bCameraSpace: +00000744
+	m_flBrightnessScale: +00000748
+	m_LightColor: +0000074C
+	m_flColorTransitionTime: +00000764
+	m_flAmbient: +00000768
+	m_SpotlightTextureName: +00000790
+	m_nSpotlightTextureFrame: +0000089C
+	m_flNearZ: +0000076C
+	m_flFarZ: +00000770
+	m_nShadowQuality: +000008A0
+	m_flProjectionSize: +000008A8
+	m_flRotation: +000008AC
+
+CEnvQuadraticBeam = 432 - DT_QuadraticBeam, count 5
+	baseclass: +00000000
+	m_targetPosition: +00000730
+	m_controlPosition: +0000073C
+	m_scrollRate: +00000748
+	m_flWidth: +0000074C
+
+CEnvScreenEffect = 433 - DT_EnvScreenEffect, count 3
+	baseclass: +00000000
+	m_flDuration: +00000730
+	m_nType: +00000734
+
+CEnvScreenOverlay = 434 - DT_EnvScreenOverlay, count 8
+	baseclass: +00000000
+	m_iszOverlayNames[0]: +00000730
+	m_iszOverlayNames: +00000000
+	m_flOverlayTimes[0]: +00001128
+	m_flOverlayTimes: +00000000
+	m_flStartTime: +00001150
+	m_iDesiredOverlay: +00001154
+	m_bIsActive: +00001158
+
+CEnvTonemapController = 435 - DT_EnvTonemapController, count 10
+	baseclass: +00000000
+	m_bUseCustomAutoExposureMin: +00000730
+	m_bUseCustomAutoExposureMax: +00000731
+	m_bUseCustomBloomScale: +00000732
+	m_flCustomAutoExposureMin: +00000734
+	m_flCustomAutoExposureMax: +00000738
+	m_flCustomBloomScale: +0000073C
+	m_flCustomBloomScaleMinimum: +00000740
+	m_flBloomExponent: +00000744
+	m_flBloomSaturation: +00000748
+
+CEnvWind = 436 - DT_EnvWind, count 2
+	baseclass: +00000000
+	m_EnvWindShared: +00000730
+
+CFireSmoke = 437 - DT_FireSmoke, count 7
+	baseclass: +00000000
+	m_flStartScale: +00000730
+	m_flScale: +00000734
+	m_flScaleTime: +00000738
+	m_nFlags: +0000073C
+	m_nFlameModelIndex: +00000740
+	m_nFlameFromAboveModelIndex: +00000744
+
+CFireTrail = 438 - DT_FireTrail, count 3
+	baseclass: +00000000
+	m_nAttachment: +0000081C
+	m_flLifetime: +00000820
+
+CFish = 439 - DT_CFish, count 8
+	m_poolOrigin: +00000AC4
+	m_x: +00000AAC
+	m_y: +00000AB0
+	m_z: +00000AB4
+	m_angle: +00000ABC
+	m_nModelIndex: +00000254
+	m_lifeState: +0000025B
+	m_waterLevel: +00000AD0
+
+CFogController = 440 - DT_FogController, count 18
+	m_fog.enable: +00000774
+	m_fog.blend: +00000775
+	m_fog.dirPrimary: +00000734
+	m_fog.colorPrimary: +00000740
+	m_fog.colorSecondary: +00000744
+	m_fog.start: +00000750
+	m_fog.end: +00000754
+	m_fog.farz: +00000758
+	m_fog.maxdensity: +0000075C
+	m_fog.colorPrimaryLerpTo: +00000748
+	m_fog.colorSecondaryLerpTo: +0000074C
+	m_fog.startLerpTo: +00000760
+	m_fog.endLerpTo: +00000764
+	m_fog.maxdensityLerpTo: +00000768
+	m_fog.lerptime: +0000076C
+	m_fog.duration: +00000770
+	m_fog.HDRColorScale: +00000778
+	m_fog.m_bNoReflectionFog: +0000077C
+
+CFunc_Dust = 441 - DT_Func_Dust, count 12
+	m_Color: +00000730
+	m_SpawnRate: +00000734
+	m_flSizeMin: +00000738
+	m_flSizeMax: +0000073C
+	m_LifetimeMin: +00000744
+	m_LifetimeMax: +00000748
+	m_DustFlags: +00000754
+	m_SpeedMax: +00000740
+	m_DistMax: +0000074C
+	m_nModelIndex: +00000254
+	m_FallSpeed: +00000750
+	m_Collision: +00000328
+
+CFunc_LOD = 442 - DT_Func_LOD, count 3
+	baseclass: +00000000
+	m_nDisappearMinDist: +00000730
+	m_nDisappearMaxDist: +00000734
+
+CFuncAreaPortalWindow = 443 - DT_FuncAreaPortalWindow, count 5
+	baseclass: +00000000
+	m_flFadeStartDist: +00000730
+	m_flFadeDist: +00000734
+	m_flTranslucencyLimit: +00000738
+	m_iBackgroundModelIndex: +0000073C
+
+CFuncBrush = 444 - DT_FuncBrush, count 1
+	baseclass: +00000000
+
+CFuncConveyor = 445 - DT_FuncConveyor, count 2
+	baseclass: +00000000
+	m_flConveyorSpeed: +00000730
+
+CFuncLadder = 446 - DT_FuncLadder, count 5
+	baseclass: +00000000
+	m_vecPlayerMountPositionTop: +00000750
+	m_vecPlayerMountPositionBottom: +0000075C
+	m_vecLadderDir: +00000730
+	m_bFakeLadder: +00000769
+
+CFuncMoveLinear = 447 - DT_FuncMoveLinear, count 3
+	baseclass: +00000000
+	m_vecVelocity: +00000110
+	m_fFlags: +00000100
+
+CFuncOccluder = 448 - DT_FuncOccluder, count 3
+	baseclass: +00000000
+	m_bActive: +00000734
+	m_nOccluderIndex: +00000730
+
+CFuncReflectiveGlass = 449 - DT_FuncReflectiveGlass, count 1
+	baseclass: +00000000
+
+CFuncRotating = 450 - DT_FuncRotating, count 6
+	baseclass: +00000000
+	m_vecOrigin: +00000134
+	m_angRotation[0]: +00000128
+	m_angRotation[1]: +0000012C
+	m_angRotation[2]: +00000130
+	m_flSimulationTime: +00000264
+
+CFuncSmokeVolume = 451 - DT_FuncSmokeVolume, count 13
+	baseclass: +00000000
+	m_Color1: +0000081C
+	m_Color2: +00000820
+	m_MaterialName: +00000824
+	m_ParticleDrawWidth: +00000924
+	m_ParticleSpacingDistance: +00000928
+	m_DensityRampSpeed: +0000092C
+	m_RotationSpeed: +00000930
+	m_MovementSpeed: +00000934
+	m_Density: +00000938
+	m_maxDrawDistance: +0000093C
+	m_spawnflags: +00000940
+	m_Collision: +00000328
+
+CFuncTrackTrain = 452 - DT_FuncTrackTrain, count 1
+	baseclass: +00000000
+
+CGameRulesProxy = 453 - DT_GameRulesProxy, count 0
+
+CHandleTest = 454 - DT_HandleTest, count 3
+	baseclass: +00000000
+	m_Handle: +00000730
+	m_bSendHandle: +00000734
+
+CInfoLadderDismount = 455 - DT_InfoLadderDismount, count 1
+	baseclass: +00000000
+
+CInfoOverlayAccessor = 456 - DT_InfoOverlayAccessor, count 2
+	m_iTextureFrameIndex: +000006CC
+	m_iOverlayID: +00000730
+
+CLightGlow = 457 - DT_LightGlow, count 12
+	m_clrRender: +0000006C
+	m_nHorizontalSize: +00000730
+	m_nVerticalSize: +00000734
+	m_nMinDist: +00000738
+	m_nMaxDist: +0000073C
+	m_nOuterMaxDist: +00000740
+	m_spawnflags: +00000744
+	m_vecOrigin: +00000134
+	m_angRotation: +00000128
+	moveparent: +00000144
+	m_flGlowProxySize: +00000814
+	HDRColorScale: +00000000
+
+CMaterialModifyControl = 458 - DT_MaterialModifyControl, count 14
+	baseclass: +00000000
+	m_szMaterialName: +00000730
+	m_szMaterialVar: +0000082F
+	m_szMaterialVarValue: +0000092E
+	m_iFrameStart: +00000A38
+	m_iFrameEnd: +00000A3C
+	m_bWrap: +00000A40
+	m_flFramerate: +00000A44
+	m_bNewAnimCommandsSemaphore: +00000A48
+	m_flFloatLerpStartValue: +00000A4C
+	m_flFloatLerpEndValue: +00000A50
+	m_flFloatLerpTransitionTime: +00000A54
+	m_bFloatLerpWrap: +00000A58
+	m_nModifyMode: +00000A60
+
+CMovieDisplay = 459 - DT_MovieDisplay, count 5
+	baseclass: +00000000
+	m_bEnabled: +00000730
+	m_bLooping: +00000731
+	m_szMovieFilename: +00000732
+	m_szGroupName: +000007B2
+
+CParticleFire = 460 - DT_ParticleFire, count 2
+	m_vOrigin: +00000824
+	m_vDirection: +00000830
+
+CParticlePerformanceMonitor = 461 - DT_ParticlePerformanceMonitor, count 3
+	baseclass: +00000000
+	m_bMeasurePerf: +00000731
+	m_bDisplayPerf: +00000730
+
+CParticleSystem = 462 - DT_ParticleSystem, count 14
+	m_vecOrigin: +00000134
+	m_flStartTime: +0000073C
+	m_iEffectIndex: +00000730
+	m_bActive: +00000738
+	m_hOwnerEntity: +00000148
+	moveparent: +00000144
+	m_iParentAttachment: +00000304
+	m_angRotation: +00000128
+	m_nStopType: +00000734
+	m_szSnapshotFileName: +00000740
+	m_vServerControlPoints: +00000844
+	m_iServerControlPointAssignments: +00000874
+	m_hControlPointEnts: +00000890
+	m_iControlPointParents: +0000098C
+
+CPhysBox = 463 - DT_PhysBox, count 2
+	baseclass: +00000000
+	m_mass: +00000730
+
+CPhysBoxMultiplayer = 464 - DT_PhysBoxMultiplayer, count 3
+	baseclass: +00000000
+	m_iPhysicsMode: +0000073C
+	m_fMass: +00000740
+
+CPhysicsProp = 465 - DT_PhysicsProp, count 3
+	baseclass: +00000000
+	m_bAwake: +00000A68
+	m_spawnflags: +000002E0
+
+CPhysicsPropMultiplayer = 466 - DT_PhysicsPropMultiplayer, count 5
+	baseclass: +00000000
+	m_iPhysicsMode: +00000A74
+	m_fMass: +00000A78
+	m_collisionMins: +00000A7C
+	m_collisionMaxs: +00000A88
+
+CPhysMagnet = 467 - DT_PhysMagnet, count 1
+	baseclass: +00000000
+
+CPlasma = 468 - DT_Plasma, count 8
+	baseclass: +00000000
+	m_flStartScale: +00000730
+	m_flScale: +00000734
+	m_flScaleTime: +00000738
+	m_nFlags: +0000073C
+	m_nPlasmaModelIndex: +00000740
+	m_nPlasmaModelIndex2: +00000744
+	m_nGlowModelIndex: +00000748
+
+CPointCamera = 469 - DT_PointCamera, count 12
+	baseclass: +00000000
+	m_FOV: +00000730
+	m_Resolution: +00000734
+	m_bFogEnable: +00000738
+	m_FogColor: +00000739
+	m_flFogStart: +00000740
+	m_flFogEnd: +00000744
+	m_flFogMaxDensity: +00000748
+	m_bActive: +0000074C
+	m_bUseScreenAspectRatio: +0000074D
+	m_bNoSky: +0000074E
+	m_fBrightness: +00000750
+
+CPointCommentaryNode = 470 - DT_PointCommentaryNode, count 9
+	baseclass: +00000000
+	m_bActive: +00000A60
+	m_flStartTime: +00000A64
+	m_iszCommentaryFile: +00000A68
+	m_iszCommentaryFileNoHDR: +00000B6C
+	m_iszSpeakers: +00000C70
+	m_iNodeNumber: +00000D70
+	m_iNodeNumberMax: +00000D74
+	m_hViewPosition: +00000D7C
+
+CPoseController = 471 - DT_PoseController, count 12
+	baseclass: +00000000
+	m_hProps: +00000730
+	m_chPoseIndex: +00000740
+	m_bPoseValueParity: +00000744
+	m_fPoseValue: +00000748
+	m_fInterpolationTime: +0000074C
+	m_bInterpolationWrap: +00000750
+	m_fCycleFrequency: +00000754
+	m_nFModType: +00000758
+	m_fFModTimeOffset: +0000075C
+	m_fFModRate: +00000760
+	m_fFModAmplitude: +00000764
+
+CPostProcessController = 472 - DT_PostProcessController, count 3
+	baseclass: +00000000
+	m_flPostProcessParameters: +00000730
+	m_bMaster: +0000075C
+
+CPrecipitation = 473 - DT_Precipitation, count 2
+	baseclass: +00000000
+	m_nPrecipType: +00000740
+
+CPrecipitationBlocker = 474 - DT_PrecipitationBlocker, count 1
+	baseclass: +00000000
+
+CProp_Hallucination = 475 - DT_Prop_Hallucination, count 4
+	baseclass: +00000000
+	m_bEnabled: +00000A79
+	m_fVisibleTime: +00000A7C
+	m_fRechargeTime: +00000A80
+
+CPropDoorRotating = 476 - DT_PropDoorRotating, count 1
+	baseclass: +00000000
+
+CPropVehicleDriveable = 477 - DT_PropVehicleDriveable, count 15
+	baseclass: +00000000
+	m_hPlayer: +00000A64
+	m_nSpeed: +00000A68
+	m_nRPM: +00000A6C
+	m_flThrottle: +00000A70
+	m_nBoostTimeLeft: +00000A74
+	m_nHasBoost: +00000A78
+	m_nScannerDisabledWeapons: +00000A7C
+	m_nScannerDisabledVehicle: +00000A80
+	m_bEnterAnimOn: +00000AA0
+	m_bExitAnimOn: +00000AA1
+	m_bUnableToFire: +00000AED
+	m_vecEyeExitEndpoint: +00000AE0
+	m_bHasGun: +00000AEC
+	m_vecGunCrosshair: +00000AA8
+
+CRagdollManager = 478 - DT_RagdollManager, count 1
+	m_iCurrentMaxRagdollCount: +00000730
+
+CRagdollProp = 479 - DT_Ragdoll, count 8
+	baseclass: +00000000
+	m_ragAngles[0]: +00000BE0
+	m_ragAngles: +00000000
+	m_ragPos[0]: +00000A60
+	m_ragPos: +00000000
+	m_hUnragdoll: +00000E3C
+	m_flBlendWeight: +00000E40
+	m_nOverlaySequence: +00000E48
+
+CRagdollPropAttached = 480 - DT_Ragdoll_Attached, count 5
+	baseclass: +00000000
+	m_boneIndexAttached: +00000E78
+	m_ragdollAttachedObjectIndex: +00000E74
+	m_attachmentPointBoneSpace: +00000E50
+	m_attachmentPointRagdollSpace: +00000E68
+
+CRopeKeyframe = 481 - DT_RopeKeyframe, count 23
+	m_nChangeCount: +00000A1C
+	m_iRopeMaterialModelIndex: +0000076C
+	m_hStartPoint: +000009FC
+	m_hEndPoint: +00000A00
+	m_iStartAttachment: +00000A04
+	m_iEndAttachment: +00000A06
+	m_fLockedPoints: +00000A18
+	m_Slack: +00000A10
+	m_RopeLength: +00000A0C
+	m_RopeFlags: +00000768
+	m_TextureScale: +00000A14
+	m_nSegments: +000009F8
+	m_bConstrainBetweenEndpoints: +00000AA0
+	m_Subdiv: +00000A08
+	m_Width: +00000A20
+	m_flScrollSpeed: +00000764
+	m_vecOrigin: +00000134
+	moveparent: +00000144
+	m_iParentAttachment: +00000304
+	m_nMinCPULevel: +000006C8
+	m_nMaxCPULevel: +000006C9
+	m_nMinGPULevel: +000006CA
+	m_nMaxGPULevel: +000006CB
+
+CSceneEntity = 482 - DT_SceneEntity, count 7
+	baseclass: +00000000
+	m_nSceneStringIndex: +0000073C
+	m_bIsPlayingBack: +00000734
+	m_bPaused: +00000735
+	m_bMultiplayer: +00000736
+	m_flForceClientTime: +00000738
+	m_hActorList: +00000000
+
+CShadowControl = 483 - DT_ShadowControl, count 6
+	baseclass: +00000000
+	m_shadowDirection: +00000730
+	m_shadowColor: +0000073C
+	m_flShadowMaxDist: +00000740
+	m_bDisableShadows: +00000744
+	m_bEnableLocalLightShadows: +00000745
+
+CSlideshowDisplay = 484 - DT_SlideshowDisplay, count 9
+	baseclass: +00000000
+	m_bEnabled: +00000730
+	m_szDisplayText: +00000731
+	m_szSlideshowDirectory: +000007B1
+	m_chCurrentSlideLists: +00000848
+	m_fMinSlideTime: +00000860
+	m_fMaxSlideTime: +00000864
+	m_iCycleType: +0000086C
+	m_bNoListRepeats: +00000870
+
+CSmokeStack = 485 - DT_SmokeStack, count 19
+	baseclass: +00000000
+	m_SpreadSpeed: +0000086C
+	m_Speed: +00000870
+	m_StartSize: +00000874
+	m_EndSize: +00000878
+	m_Rate: +0000087C
+	m_JetLength: +00000880
+	m_bEmit: +00000884
+	m_flBaseSpread: +00000888
+	m_flTwist: +000008DC
+	m_flRollSpeed: +00000918
+	m_iMaterialModel: +000008E0
+	m_AmbientLight.m_vPos: +0000088C
+	m_AmbientLight.m_vColor: +00000898
+	m_AmbientLight.m_flIntensity: +000008A4
+	m_DirLight.m_vPos: +000008A8
+	m_DirLight.m_vColor: +000008B4
+	m_DirLight.m_flIntensity: +000008C0
+	m_vWind: +000008D0
+
+CSpatialEntity = 486 - DT_SpatialEntity, count 6
+	baseclass: +00000000
+	m_vecOrigin: +00000730
+	m_minFalloff: +0000073C
+	m_maxFalloff: +00000740
+	m_flCurWeight: +00000744
+	m_bEnabled: +0000084C
+
+CSpotlightEnd = 487 - DT_SpotlightEnd, count 3
+	baseclass: +00000000
+	m_flLightScale: +00000730
+	m_Radius: +00000734
+
+CSprite = 488 - DT_Sprite, count 12
+	baseclass: +00000000
+	m_hAttachedToEntity: +00000740
+	m_nAttachment: +00000744
+	m_flScaleTime: +00000760
+	m_flSpriteScale: +0000075C
+	m_flSpriteFramerate: +00000748
+	m_flGlowProxySize: +00000768
+	m_flHDRColorScale: +0000076C
+	m_flFrame: +0000074C
+	m_flBrightnessTime: +00000758
+	m_nBrightness: +00000754
+	m_bWorldSpaceScale: +00000764
+
+CSpriteOriented = 489 - DT_SpriteOriented, count 1
+	baseclass: +00000000
+
+CSpriteTrail = 490 - DT_SpriteTrail, count 9
+	baseclass: +00000000
+	m_flLifeTime: +00000DC4
+	m_flStartWidth: +00000DC8
+	m_flEndWidth: +00000DCC
+	m_flStartWidthVariance: +00000DD0
+	m_flTextureRes: +00000DD4
+	m_flMinFadeLength: +00000DD8
+	m_vecSkyboxOrigin: +00000DDC
+	m_flSkyboxScale: +00000DE8
+
+CStatueProp = 491 - DT_StatueProp, count 6
+	baseclass: +00000000
+	m_hInitBaseAnimating: +00000A70
+	m_bShatter: +00000A74
+	m_nShatterFlags: +00000A78
+	m_vShatterPosition: +00000A7C
+	m_vShatterForce: +00000A88
+
+CSteamJet = 492 - DT_SteamJet, count 12
+	baseclass: +00000000
+	m_SpreadSpeed: +0000081C
+	m_Speed: +00000820
+	m_StartSize: +00000824
+	m_EndSize: +00000828
+	m_Rate: +0000082C
+	m_JetLength: +00000830
+	m_bEmit: +00000834
+	m_bFaceLeft: +0000083C
+	m_nType: +00000838
+	m_spawnflags: +00000840
+	m_flRollSpeed: +00000844
+
+CSun = 493 - DT_Sun, count 9
+	m_clrRender: +0000006C
+	m_clrOverlay: +00000880
+	m_vDirection: +0000088C
+	m_bOn: +00000898
+	m_nSize: +00000884
+	m_nOverlaySize: +00000888
+	m_nMaterial: +0000089C
+	m_nOverlayMaterial: +000008A0
+	HDRColorScale: +00000000
+
+CSunlightShadowControl = 494 - DT_SunlightShadowControl, count 11
+	baseclass: +00000000
+	m_shadowDirection: +00000730
+	m_bEnabled: +0000073C
+	m_TextureName: +0000073D
+	m_LightColor: +00000848
+	m_flColorTransitionTime: +0000085C
+	m_flSunDistance: +00000860
+	m_flFOV: +00000864
+	m_flNearZ: +00000868
+	m_flNorthOffset: +0000086C
+	m_bEnableShadows: +00000870
+
+CTeam = 495 - DT_Team, count 6
+	m_iTeamNum: +000007DC
+	m_iScore: +000007C8
+	m_iRoundsWon: +000007CC
+	m_szTeamname: +00000744
+	player_array_element: +00000000
+	"player_array": +00000000
+
+CTEArmorRicochet = 496 - DT_TEArmorRicochet, count 1
+	baseclass: +00000000
+
+CTEBaseBeam = 497 - DT_BaseBeam, count 15
+	m_nModelIndex: +00000010
+	m_nHaloIndex: +00000014
+	m_nStartFrame: +00000018
+	m_nFrameRate: +0000001C
+	m_fLife: +00000020
+	m_fWidth: +00000024
+	m_fEndWidth: +00000028
+	m_nFadeLength: +0000002C
+	m_fAmplitude: +00000030
+	m_nSpeed: +00000044
+	r: +00000034
+	g: +00000038
+	b: +0000003C
+	a: +00000040
+	m_nFlags: +00000048
+
+CTEBeamEntPoint = 498 - DT_TEBeamEntPoint, count 5
+	baseclass: +00000000
+	m_nStartEntity: +0000004C
+	m_nEndEntity: +00000050
+	m_vecStartPoint: +00000054
+	m_vecEndPoint: +00000060
+
+CTEBeamEnts = 499 - DT_TEBeamEnts, count 3
+	baseclass: +00000000
+	m_nStartEntity: +0000004C
+	m_nEndEntity: +00000050
+
+CTEBeamFollow = 500 - DT_TEBeamFollow, count 2
+	baseclass: +00000000
+	m_iEntIndex: +0000004C
+
+CTEBeamLaser = 501 - DT_TEBeamLaser, count 3
+	baseclass: +00000000
+	m_nStartEntity: +0000004C
+	m_nEndEntity: +00000050
+
+CTEBeamPoints = 502 - DT_TEBeamPoints, count 3
+	baseclass: +00000000
+	m_vecStartPoint: +0000004C
+	m_vecEndPoint: +00000058
+
+CTEBeamRing = 503 - DT_TEBeamRing, count 3
+	baseclass: +00000000
+	m_nStartEntity: +0000004C
+	m_nEndEntity: +00000050
+
+CTEBeamRingPoint = 504 - DT_TEBeamRingPoint, count 4
+	baseclass: +00000000
+	m_vecCenter: +0000004C
+	m_flStartRadius: +00000058
+	m_flEndRadius: +0000005C
+
+CTEBeamSpline = 505 - DT_TEBeamSpline, count 3
+	m_nPoints: +000000D0
+	m_vecPoints[0]: +00000010
+	m_vecPoints: +00000000
+
+CTEBloodSprite = 506 - DT_TEBloodSprite, count 9
+	m_vecOrigin: +00000010
+	m_vecDirection: +0000001C
+	r: +00000028
+	g: +0000002C
+	b: +00000030
+	a: +00000034
+	m_nSprayModel: +0000003C
+	m_nDropModel: +00000038
+	m_nSize: +00000040
+
+CTEBloodStream = 507 - DT_TEBloodStream, count 7
+	baseclass: +00000000
+	m_vecDirection: +0000001C
+	r: +00000028
+	g: +0000002C
+	b: +00000030
+	a: +00000034
+	m_nAmount: +00000038
+
+CTEBreakModel = 508 - DT_TEBreakModel, count 12
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_angRotation[0]: +0000001C
+	m_angRotation[1]: +00000020
+	m_angRotation[2]: +00000024
+	m_vecSize: +00000028
+	m_vecVelocity: +00000034
+	m_nModelIndex: +00000044
+	m_nRandomization: +00000040
+	m_nCount: +00000048
+	m_fTime: +0000004C
+	m_nFlags: +00000050
+
+CTEBSPDecal = 509 - DT_TEBSPDecal, count 4
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_nEntity: +0000001C
+	m_nIndex: +00000020
+
+CTEBubbles = 510 - DT_TEBubbles, count 7
+	baseclass: +00000000
+	m_vecMins: +00000010
+	m_vecMaxs: +0000001C
+	m_nModelIndex: +0000002C
+	m_fHeight: +00000028
+	m_nCount: +00000030
+	m_fSpeed: +00000034
+
+CTEBubbleTrail = 511 - DT_TEBubbleTrail, count 7
+	baseclass: +00000000
+	m_vecMins: +00000010
+	m_vecMaxs: +0000001C
+	m_nModelIndex: +0000002C
+	m_flWaterZ: +00000028
+	m_nCount: +00000030
+	m_fSpeed: +00000034
+
+CTEClientProjectile = 512 - DT_TEClientProjectile, count 6
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecVelocity: +0000001C
+	m_nModelIndex: +00000028
+	m_nLifeTime: +0000002C
+	m_hOwner: +00000030
+
+CTEDecal = 513 - DT_TEDecal, count 6
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecStart: +0000001C
+	m_nEntity: +00000028
+	m_nHitbox: +0000002C
+	m_nIndex: +00000030
+
+CTEDotaBloodImpact = 514 - DT_TEDotaBloodImpact, count 5
+	baseclass: +00000000
+	m_hEntity: +00000010
+	m_flScale: +00000014
+	m_flXNormal: +00000018
+	m_flYNormal: +0000001C
+
+CTEDOTAProjectile = 515 - DT_TEDOTAProjectile, count 8
+	baseclass: +00000000
+	m_iMoveSpeed: +00000018
+	m_hSource: +00000010
+	m_hTarget: +00000014
+	m_iSourceAttachment: +0000001C
+	m_iParticleSystem: +00000020
+	m_bDodgeable: +00000024
+	m_bIsAttack: +00000025
+
+CTEDOTAProjectileLoc = 516 - DT_TEDOTAProjectileLoc, count 7
+	baseclass: +00000000
+	m_iMoveSpeed: +00000020
+	m_vSourceLoc: +00000010
+	m_hTarget: +0000001C
+	m_iParticleSystem: +00000024
+	m_bDodgeable: +00000028
+	m_bIsAttack: +00000029
+
+CTEDust = 517 - DT_TEDust, count 4
+	baseclass: +00000000
+	m_flSize: +0000001C
+	m_flSpeed: +00000020
+	m_vecDirection: +00000024
+
+CTEDynamicLight = 518 - DT_TEDynamicLight, count 9
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	r: +00000020
+	g: +00000024
+	b: +00000028
+	exponent: +0000002C
+	m_fRadius: +0000001C
+	m_fTime: +00000030
+	m_fDecay: +00000034
+
+CTEEffectDispatch = 519 - DT_TEEffectDispatch, count 2
+	baseclass: +00000000
+	m_EffectData: +00000010
+
+CTEEnergySplash = 520 - DT_TEEnergySplash, count 3
+	m_vecPos: +00000010
+	m_vecDir: +0000001C
+	m_bExplosive: +00000028
+
+CTEExplosion = 521 - DT_TEExplosion, count 9
+	baseclass: +00000000
+	m_nModelIndex: +0000001C
+	m_fScale: +00000020
+	m_nFrameRate: +00000024
+	m_nFlags: +00000028
+	m_vecNormal: +0000002C
+	m_chMaterialType: +00000038
+	m_nRadius: +0000003C
+	m_nMagnitude: +00000040
+
+CTEFizz = 522 - DT_TEFizz, count 5
+	baseclass: +00000000
+	m_nEntity: +00000010
+	m_nModelIndex: +00000014
+	m_nDensity: +00000018
+	m_nCurrent: +0000001C
+
+CTEFootprintDecal = 523 - DT_TEFootprintDecal, count 6
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecDirection: +0000001C
+	m_nEntity: +00000034
+	m_nIndex: +00000038
+	m_chMaterialType: +0000003C
+
+CTEFoundryHelpers = 524 - DT_TEFoundryHelpers, count 2
+	baseclass: +00000000
+	m_iEntity: +00000010
+
+CTEGaussExplosion = 525 - DT_TEGaussExplosion, count 3
+	baseclass: +00000000
+	m_nType: +0000001C
+	m_vecDirection: +00000020
+
+CTEGlowSprite = 526 - DT_TEGlowSprite, count 6
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_nModelIndex: +0000001C
+	m_fScale: +00000020
+	m_fLife: +00000024
+	m_nBrightness: +00000028
+
+CTEImpact = 527 - DT_TEImpact, count 5
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecNormal: +0000001C
+	m_iType: +00000028
+	m_ucFlags: +0000002C
+
+CTEKillPlayerAttachments = 528 - DT_TEKillPlayerAttachments, count 2
+	baseclass: +00000000
+	m_nPlayer: +00000010
+
+CTELargeFunnel = 529 - DT_TELargeFunnel, count 3
+	baseclass: +00000000
+	m_nModelIndex: +0000001C
+	m_nReversed: +00000020
+
+CTEMetalSparks = 530 - DT_TEMetalSparks, count 2
+	m_vecPos: +00000010
+	m_vecDir: +0000001C
+
+CTEMuzzleFlash = 531 - DT_TEMuzzleFlash, count 5
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecAngles: +0000001C
+	m_flScale: +00000028
+	m_nType: +0000002C
+
+CTEParticleSystem = 532 - DT_TEParticleSystem, count 4
+	baseclass: +00000000
+	m_vecOrigin[0]: +00000010
+	m_vecOrigin[1]: +00000014
+	m_vecOrigin[2]: +00000018
+
+CTEPhysicsProp = 533 - DT_TEPhysicsProp, count 10
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_angRotation[0]: +0000001C
+	m_angRotation[1]: +00000020
+	m_angRotation[2]: +00000024
+	m_vecVelocity: +00000028
+	m_nModelIndex: +00000034
+	m_nFlags: +0000003C
+	m_nSkin: +00000038
+	m_nEffects: +00000040
+
+CTEPlayerDecal = 534 - DT_TEPlayerDecal, count 4
+	baseclass: +00000000
+	m_vecOrigin: +00000014
+	m_nEntity: +00000020
+	m_nPlayer: +00000010
+
+CTEProjectedDecal = 535 - DT_TEProjectedDecal, count 5
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_angRotation: +0000001C
+	m_flDistance: +00000028
+	m_nIndex: +0000002C
+
+CTEShatterSurface = 536 - DT_TEShatterSurface, count 15
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecAngles: +0000001C
+	m_vecForce: +00000028
+	m_vecForcePos: +00000034
+	m_flWidth: +00000040
+	m_flHeight: +00000044
+	m_flShardSize: +00000048
+	m_nSurfaceType: +00000050
+	m_uchFrontColor[0]: +00000054
+	m_uchFrontColor[1]: +00000055
+	m_uchFrontColor[2]: +00000056
+	m_uchBackColor[0]: +00000057
+	m_uchBackColor[1]: +00000058
+	m_uchBackColor[2]: +00000059
+
+CTEShowLine = 537 - DT_TEShowLine, count 2
+	baseclass: +00000000
+	m_vecEnd: +0000001C
+
+CTesla = 538 - DT_Tesla, count 3
+	baseclass: +00000000
+	m_SoundName: +00000758
+	m_iszSpriteName: +00000798
+
+CTESmoke = 539 - DT_TESmoke, count 5
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_nModelIndex: +0000001C
+	m_fScale: +00000020
+	m_nFrameRate: +00000024
+
+CTESparks = 540 - DT_TESparks, count 4
+	baseclass: +00000000
+	m_nMagnitude: +0000001C
+	m_nTrailLength: +00000020
+	m_vecDir: +00000024
+
+CTESprite = 541 - DT_TESprite, count 5
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_nModelIndex: +0000001C
+	m_fScale: +00000020
+	m_nBrightness: +00000024
+
+CTESpriteSpray = 542 - DT_TESpriteSpray, count 7
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_vecDirection: +0000001C
+	m_nModelIndex: +00000028
+	m_fNoise: +00000030
+	m_nCount: +00000034
+	m_nSpeed: +0000002C
+
+CTest_ProxyToggle_Networkable = 543 - DT_ProxyToggle, count 2
+	baseclass: +00000000
+	blah: +00000000
+
+CTestTraceline = 544 - DT_TestTraceline, count 6
+	m_clrRender: +0000006C
+	m_vecOrigin: +00000134
+	m_angRotation[0]: +00000128
+	m_angRotation[1]: +0000012C
+	m_angRotation[2]: +00000130
+	moveparent: +00000144
+
+CTEUnitAnimation = 545 - DT_TEUnitAnimation, count 7
+	baseclass: +00000000
+	m_flCastPoint: +0000001C
+	m_hEntity: +00000014
+	m_flPlaybackRate: +00000018
+	m_iSequenceIndex: +00000010
+	m_iType: +00000020
+	m_Activity: +00000024
+
+CTEUnitAnimationEnd = 546 - DT_TEUnitAnimationEnd, count 3
+	baseclass: +00000000
+	m_hEntity: +00000010
+	m_bSnap: +00000014
+
+CTEWorldDecal = 547 - DT_TEWorldDecal, count 3
+	baseclass: +00000000
+	m_vecOrigin: +00000010
+	m_nIndex: +0000001C
+
+CTFWearableItem = 548 - DT_TFWearableItem, count 1
+	baseclass: +00000000
+
+CTriggerCamera = 549 - DT_TriggerCamera, count 7
+	baseclass: +00000000
+	m_vecOrigin[0]: +00000134
+	m_vecOrigin[1]: +00000138
+	m_vecOrigin[2]: +0000013C
+	m_angRotation[0]: +00000128
+	m_angRotation[1]: +0000012C
+	m_angRotation[2]: +00000130
+
+CTriggerPlayerMovement = 550 - DT_TriggerPlayerMovement, count 1
+	baseclass: +00000000
+
+CVGuiScreen = 551 - DT_VGuiScreen, count 8
+	baseclass: +00000000
+	m_flWidth: +00000738
+	m_flHeight: +0000073C
+	m_fScreenFlags: +00000764
+	m_nPanelName: +00000740
+	m_nAttachmentIndex: +0000075C
+	m_nOverlayMaterial: +00000760
+	m_hPlayerOwner: +000007C0
+
+CWaterBullet = 552 - DT_WaterBullet, count 1
+	baseclass: +00000000
+
+CWaterLODControl = 553 - DT_WaterLODControl, count 3
+	baseclass: +00000000
+	m_flCheapWaterStartDistance: +00000730
+	m_flCheapWaterEndDistance: +00000734
+
+CWorld = 554 - DT_World, count 12
+	baseclass: +00000000
+	m_flWaveHeight: +00000730
+	m_WorldMins: +00000734
+	m_WorldMaxs: +00000740
+	m_bStartDark: +0000074C
+	m_flMaxOccludeeArea: +00000750
+	m_flMinOccluderArea: +00000754
+	m_flMaxPropScreenSpaceWidth: +0000075C
+	m_flMinPropScreenSpaceWidth: +00000758
+	m_iszDetailSpriteMaterial: +00000768
+	m_bColdWorld: +00000760
+	m_iTimeOfDay: +00000764
+
+DustTrail = 555 - DT_DustTrail, count 14
+	baseclass: +00000000
+	m_SpawnRate: +0000081C
+	m_Color: +00000820
+	m_ParticleLifetime: +00000830
+	m_StopEmitTime: +00000838
+	m_MinSpeed: +0000083C
+	m_MaxSpeed: +00000840
+	m_MinDirectedSpeed: +00000844
+	m_MaxDirectedSpeed: +00000848
+	m_StartSize: +0000084C
+	m_EndSize: +00000850
+	m_SpawnRadius: +00000854
+	m_bEmit: +00000864
+	m_Opacity: +0000082C
+
+MovieExplosion = 556 - DT_MovieExplosion, count 1
+	baseclass: +00000000
+
+NextBotCombatCharacter = 557 - DT_NextBot, count 1
+	baseclass: +00000000
+
+ParticleSmokeGrenade = 558 - DT_ParticleSmokeGrenade, count 5
+	baseclass: +00000000
+	m_flSpawnTime: +0000082C
+	m_FadeStartTime: +00000830
+	m_FadeEndTime: +00000834
+	m_CurrentStage: +0000081C
+
+RocketTrail = 559 - DT_RocketTrail, count 16
+	baseclass: +00000000
+	m_SpawnRate: +0000081C
+	m_StartColor: +00000820
+	m_EndColor: +0000082C
+	m_ParticleLifetime: +0000083C
+	m_StopEmitTime: +00000840
+	m_MinSpeed: +00000844
+	m_MaxSpeed: +00000848
+	m_StartSize: +0000084C
+	m_EndSize: +00000850
+	m_SpawnRadius: +00000854
+	m_bEmit: +00000864
+	m_nAttachment: +00000868
+	m_Opacity: +00000838
+	m_bDamaged: +00000865
+	m_flFlareScale: +00000878
+
+SmokeTrail = 560 - DT_SmokeTrail, count 16
+	baseclass: +00000000
+	m_SpawnRate: +0000081C
+	m_StartColor: +00000820
+	m_EndColor: +0000082C
+	m_ParticleLifetime: +0000083C
+	m_StopEmitTime: +00000840
+	m_MinSpeed: +00000844
+	m_MaxSpeed: +00000848
+	m_MinDirectedSpeed: +0000084C
+	m_MaxDirectedSpeed: +00000850
+	m_StartSize: +00000854
+	m_EndSize: +00000858
+	m_SpawnRadius: +0000085C
+	m_bEmit: +0000086C
+	m_nAttachment: +00000870
+	m_Opacity: +00000838
+
+SporeExplosion = 561 - DT_SporeExplosion, count 8
+	baseclass: +00000000
+	m_flSpawnRate: +0000081C
+	m_flParticleLifetime: +00000820
+	m_flStartSize: +00000824
+	m_flEndSize: +00000828
+	m_flSpawnRadius: +0000082C
+	m_bEmit: +00000834
+	m_bDontRemove: +00000835
+
+SporeTrail = 562 - DT_SporeTrail, count 8
+	baseclass: +00000000
+	m_flSpawnRate: +00000824
+	m_vecEndColor: +00000818
+	m_flParticleLifetime: +00000828
+	m_flStartSize: +0000082C
+	m_flEndSize: +00000830
+	m_flSpawnRadius: +00000834
+	m_bEmit: +00000844
