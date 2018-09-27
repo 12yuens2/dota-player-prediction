@@ -1,9 +1,16 @@
+#IntelliJ metadata
+.idea/
+*.iml
+
 
 # Eclipse metadata
 .metadata/
 .recommenders/
 *.project
 *.classpath
+
+# Java binaries
+*.class
 
 # Latex
 report/bin/
