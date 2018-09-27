@@ -27,3 +27,13 @@ DOER:
 
 Parser:
 
+
+** TODO next week
+ - [] Auto replay download with OpenDOTA API
+ - [] Get player entity given steamID
+ - [] Parse player mouse movement data in ML friendly format
+ - [] Process mouse movement data for ML based on identification paper
+ - [] Run ML on dataset of mouse movement data
+
+** Other notes
+- Might need to get ethics approval
