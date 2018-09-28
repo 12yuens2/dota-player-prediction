@@ -1,10 +1,14 @@
 \documentclass{sty/SizheArticle}
-\title{DOER}
+
+\title{Description, Objectives, Ethics, Resources}
 \author{Sizhe Yuen}
+\usepackage{sty/sizhetitle}
+
 
 \newcommand{\dota}{Dota 2}
 
 \begin{document}
+\maketitlepage{CS5199 - Individual Masters Project}{John Thomson}
 
 \section{Description}
 When playing online video games, the identity of the player behind the keyboard is often unknown, even if their account name in game remains the same. This can lead to issues such as account selling and MMR (Matchmaking rating) boosting, where an account's MMR is raised for a price or the account is sold to other players. Furthermore, players who were previously banned  for antisocial behaviour can easily make new accounts which takes a long time to detect and ban again. This project looks specifically at the problem of player prediction in the game \dota{}, a popular, free multiplayer online video game by Valve Corporation. Replays of all \dota{} games are available publicly through Valve's Steam API, which allows full replay \texttt{.dem} files to be downloaded. Community tools have also been built around these replays to allow for data gathering. 
@@ -36,10 +40,8 @@ Every player in \dota{} has different playstyles and strategies specific to them
 \subsubsection{Prediction of player actions}\label{player-actions}
 If the player is accurately identified, it would be interesting to see if their next actions in game can also be predicted based on what is known about the player and the context of the current game. For example from processing the first ten minutes of a game and successfully identifying the player, can the player's build strategy or next objective be predicted.
 
-
 \section{Ethics}
-There are no ethical considerations for this project as all \dota{} replays are publicly available and account names are only shown if the players consent to allowing external third parties to access their match history.
-(https://store.steampowered.com/news/9816/)
+This project uses publicly available replays of \dota{} games to generate data. The data from the replays contain identifiable account names on an opt-in basis. Players who do not consent to allowing external third parties to access their match history appear as anonymous in the data. Furthermore, there is no link between account names in the game and real world ids. The purpose of using this data is to detect people using accounts illegitimately by detecting the change in their in-game behaviour. 
 
 \section{Resources}
 This project can be completed using equipment already provided by the school and therefore does not require any special resources.
