@@ -1,9 +1,16 @@
 package parser;
 
+import skadistats.clarity.model.Entity;
+
 public class PlayerData {
 
-    private final int id, heroID;
-    private final long steamID;
+    private int id, heroID;
+    private long steamID;
+
+
+    public PlayerData(int id) {
+        this.id = id;
+    }
 
     public PlayerData(int id, int heroID, long steamID) {
         this.id = id;
@@ -11,17 +18,28 @@ public class PlayerData {
         this.steamID = steamID;
     }
 
-    public int getID() {
+    public int getPlayerID() {
         return id;
     }
+
 
     public int getHeroID() {
         return heroID;
     }
 
+    public void setHeroID(int heroID) {
+        this.heroID = heroID;
+    }
+
+
     public long getSteamID() {
         return steamID;
     }
+
+    public void setSteamID(long steamID) {
+        this.steamID = steamID;
+    }
+
 
 
 }

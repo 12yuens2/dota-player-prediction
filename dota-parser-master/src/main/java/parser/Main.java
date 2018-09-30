@@ -44,7 +44,8 @@ import skadistats.clarity.wire.common.proto.Demo.CDemoFileInfo;
 public class Main {
 	
     public static void main(String[] args) throws Exception {
-        new Parser("replay.dem.bz2");
+        new Parser("replay.dem.bz2", 76561198042528392L);
+//        new Parser(args[1], Integer.parseInt(args[2]));
     }
 
 }
