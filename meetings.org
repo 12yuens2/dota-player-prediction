@@ -29,7 +29,7 @@ Parser:
 
 
 ** TODO next week
- - [] Auto replay download with OpenDOTA API
+ - [x] Auto replay download with OpenDOTA API
  - [x] Get player entity given steamID
  - [x] Parse player mouse movement data in ML friendly format
  - [] Process mouse movement data for ML based on identification paper
@@ -38,3 +38,9 @@ Parser:
 ** Other notes
 - Might need to get ethics approval
 - steam API key = FFF909F2C1F90CFD66D568D188DBF371
+
+* 04/10/18
+
+** TODO week
+- [] Process mouse movement data for ML with categorised features
+- [] Setup ML pipeline
