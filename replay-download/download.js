@@ -2,12 +2,12 @@ const rp = require("request-promise-native");
 const request = require("request");
 const fs = require('fs');
 const util = require('util');
-//const wfp = util.promisify(fs.writeFile);
 
-//const account_id = process.argv[2];
+const account_id = process.argv[2];
+const hero_id = process.argv[3];
 
-const account_id = 255077828; //https://www.opendota.com/players/255077828
-const hero_id = 74; //invoker
+//const account_id = 255077828; //https://www.opendota.com/players/255077828
+//const hero_id = 74; //invoker
 
 const requestMatches = (account_id, limit=50, game_mode=3, hero_id) => {
     const options = {
