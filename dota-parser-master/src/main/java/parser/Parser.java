@@ -11,4 +11,8 @@ public abstract class Parser {
         this.gameTick = 0;
     }
 
+    public void tick() {
+        gameTick++;
+    }
+
 }

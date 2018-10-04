@@ -10,9 +10,15 @@ public class MousePosition {
 		this.tick = tick;
 	}
 
+	@Override
+	public boolean equals(Object other) {
+	    MousePosition mp = (MousePosition) other;
+	    return (mp.x == x && mp.y == y);
+    }
+
+    @Override
     public String toString() {
         return "[" + this.x + ", " + this.y + ", " + this.tick + "],";
     }
-	
 
 }

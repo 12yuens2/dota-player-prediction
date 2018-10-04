@@ -59,8 +59,6 @@ public class MainParser extends Parser{
 
     private HashMap<Long, PlayerData> steamIDMap;
     private HashMap<Integer, Entity> idMap;
-    private HashMap<String, Float> abilityCache;
-
 
 
     public MainParser(String replayFile) {
@@ -71,7 +69,6 @@ public class MainParser extends Parser{
 
         this.steamIDMap = new HashMap<>();
         this.idMap = new HashMap<>();
-        this.abilityCache = new HashMap<>();
 
         initParsers();
     }
@@ -129,7 +126,7 @@ public class MainParser extends Parser{
         gameTick = 0;
         running = true;
         try {
-            mouseParser.initWriter("output.csv");
+            mouseParser.initWriter("mouseSequence.csv");
 
             SimpleRunner sRunner = new SimpleRunner(new DotaReplayStream(replayFile, true)).runWith(this);
 
@@ -138,6 +135,12 @@ public class MainParser extends Parser{
         } finally {
             mouseParser.closeWriter();
         }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        mouseParser.tick();
     }
 
     @OnTickStart
@@ -152,7 +155,7 @@ public class MainParser extends Parser{
                 PlayerData pd = steamIDMap.get(filterSteamID);
                 mouseParser.writeMouseMovements(pd, idMap.get(pd.getPlayerID()));
             }
-            gameTick++;
+            tick();
         }
 
     }
@@ -167,14 +170,7 @@ public class MainParser extends Parser{
 
     @OnEntityUpdated
     public void onEntityUpdated(Entity e, FieldPath[] updatedPaths, int updateCount) {
-        try {
-            if (ClarityUtil.getEntityName(e).contains("Ability")) {
-                checkAbility(e);
-            }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
     }
 
 
@@ -308,33 +304,11 @@ public class MainParser extends Parser{
     }
 
 
-    private void checkAbility(Entity e) {
-        int ownerID = ClarityUtil.getEntityProperty(e, "m_hOwnerEntity");
-        String ability = ClarityUtil.getEntityName(e);
-
-        if (ownerID == steamIDMap.get(filterSteamID).getSelectedHero()) {
-            float cooldown = ClarityUtil.getEntityProperty(e, "m_fCooldown");
-            if (cooldown == 0.0) {
-                abilityCache.remove(ability);
-            }
-            else if (!abilityCache.containsKey(ability)) {
-                //used ability
-                abilityCache.put(ability, cooldown);
-            }
-            else {
-                //update cache (not needed)
-            }
-        }
-    }
-
-
     public boolean isFilterPlayer(Entity e) {
         int playerID = steamIDMap.get(filterSteamID).getPlayerID();
         int entityID = ClarityUtil.getEntityProperty(e, "m_iPlayerID");
 
         return (ClarityUtil.isPlayer(e) && entityID == playerID);
     }
-
-
 
 }

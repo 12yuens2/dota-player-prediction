@@ -23,26 +23,29 @@ public class MouseMoveSequence implements MouseActivity {
 		positions.add(firstPosition);
 	}
 	
-	public boolean add(MousePosition m) {
-		m.tick = m.tick - tickOffset;
+	public void add(MousePosition m) {
+//		m.tick = m.tick - tickOffset;
+
+        positions.add(m);
+
 		// not small enough to have a direction yet, just add it and leave
-		if (positions.size() < 2) {
-			return positions.add(m);
-		}
-
-		// we have enough positions we need to check if the direction works
-		MousePosition lastLastPosition = positions.get(positions.size() - 2);
-		MousePosition lastPosition = positions.get(positions.size() - 1);
-
-		double lastDirection = direction(lastLastPosition.x, lastLastPosition.y, lastPosition.x, lastPosition.y);
-		double newDirection = direction(lastPosition.x, lastPosition.y, m.x, m.y);
-
-		if (directionDifference(lastDirection, newDirection) > MEMBER_ANGLE_THRESHOLD) {
-			return positions.add(m);
-		}
-		else {
-			return false;
-		}
+//		if (positions.size() < 2) {
+//			return positions.add(m);
+//		}
+//
+//		// we have enough positions we need to check if the direction works
+//		MousePosition lastLastPosition = positions.get(positions.size() - 2);
+//		MousePosition lastPosition = positions.get(positions.size() - 1);
+//
+//		double lastDirection = direction(lastLastPosition.x, lastLastPosition.y, lastPosition.x, lastPosition.y);
+//		double newDirection = direction(lastPosition.x, lastPosition.y, m.x, m.y);
+//
+//		if (directionDifference(lastDirection, newDirection) > MEMBER_ANGLE_THRESHOLD) {
+//			return positions.add(m);
+//		}
+//		else {
+//			return false;
+//		}
 	}
 
 	public int size() {
@@ -129,5 +132,33 @@ public class MouseMoveSequence implements MouseActivity {
 		sb.append("]");
 		return sb.toString();
 	}
-    
+
+	public int getIndexAtTick(int tick) {
+        return positions.indexOf(getAtTick(tick));
+    }
+
+    public MousePosition get(int index) {
+	    return positions.get(index);
+    }
+
+	public MousePosition getAtTick(int tick) {
+	    for (MousePosition mp : positions) {
+	        if (mp.tick == tick) {
+	            return mp;
+            }
+        }
+        return null;
+    }
+
+    public MousePosition getSecondLast() {
+	    int index = positions.size() - 2;
+	    if (index < 0) {
+	        return null;
+        }
+	    return positions.get(index);
+    }
+
+    public MousePosition getLast() {
+	    return positions.get(positions.size() - 1);
+    }
 }
