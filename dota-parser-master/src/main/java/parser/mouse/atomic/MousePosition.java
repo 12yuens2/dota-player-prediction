@@ -1,4 +1,4 @@
-package parser;
+package parser.mouse.atomic;
 
 public class MousePosition {
 	

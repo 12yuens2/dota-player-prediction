@@ -1,19 +1,24 @@
-package parser;
+package parser.mouse.level1;
+import parser.mouse.MouseActivity;
+import parser.mouse.atomic.MousePosition;
+
 import java.util.ArrayList;
 import java.lang.Math;
 import java.text.DecimalFormat;
 
-public class MouseMovement {
+public class MouseMoveSequence implements MouseActivity {
 
 	public static final double MEMBER_THRESHOLD = 10.0;
 	public static final double MEMBER_ANGLE_THRESHOLD = 20.0;
-	ArrayList<MousePosition> positions;
+
+	private ArrayList<MousePosition> positions;
 	private int tickOffset = 0;
 	private DecimalFormat df = new DecimalFormat("#0.0000");
 
-	public MouseMovement(MousePosition firstPosition) {
-		positions = new ArrayList<MousePosition>();
-		tickOffset = firstPosition.tick;
+	public MouseMoveSequence(MousePosition firstPosition) {
+		this.positions = new ArrayList<>();
+		this.tickOffset = firstPosition.tick;
+
 		firstPosition.tick = 0;
 		positions.add(firstPosition);
 	}
