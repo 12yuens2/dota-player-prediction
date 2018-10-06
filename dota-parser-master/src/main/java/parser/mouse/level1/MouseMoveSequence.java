@@ -1,6 +1,7 @@
 package parser.mouse.level1;
 import parser.mouse.MouseActivity;
 import parser.mouse.atomic.MousePosition;
+import util.Geometry;
 
 import java.util.ArrayList;
 import java.lang.Math;
@@ -12,21 +13,57 @@ public class MouseMoveSequence implements MouseActivity {
 	public static final double MEMBER_ANGLE_THRESHOLD = 20.0;
 
 	private ArrayList<MousePosition> positions;
+
+	private ArrayList<Double> angles, curvatures, deltaCurvatures, horizontalVelocity, verticalVelocity, velocity, acceleration, jerk, angularVelocity;
+
 	private int tickOffset = 0;
 	private DecimalFormat df = new DecimalFormat("#0.0000");
 
 	public MouseMoveSequence(MousePosition firstPosition) {
 		this.positions = new ArrayList<>();
+		this.angles = new ArrayList<>();
+		this.curvatures = new ArrayList<>();
+		this.deltaCurvatures = new ArrayList<>();
+		this.horizontalVelocity = new ArrayList<>();
+		this.verticalVelocity = new ArrayList<>();
+		this.velocity = new ArrayList<>();
+		this.acceleration = new ArrayList<>();
+		this.jerk = new ArrayList<>();
+		this.angularVelocity = new ArrayList<>();
+
 		this.tickOffset = firstPosition.tick;
 
 		firstPosition.tick = 0;
 		positions.add(firstPosition);
 	}
 	
-	public void add(MousePosition m) {
+	public void add(MousePosition newPosition) {
 //		m.tick = m.tick - tickOffset;
+	    MousePosition previousPosition = positions.get(positions.size() - 1);
 
-        positions.add(m);
+        double deltaDistance = Geometry.euclideanDistance(newPosition, previousPosition);
+	    int deltaTime = newPosition.tick - previousPosition.tick;
+
+        if (canCalculateDelta(positions)) {
+             double Vx = (newPosition.x - previousPosition.x) / deltaTime;
+             double Vy = (newPosition.y - previousPosition.y) / deltaTime;
+
+             double v = Math.sqrt(Math.pow(Vx, 2.0) + Math.pow(Vy, 2.0));
+
+             horizontalVelocity.add(Vx);
+             verticalVelocity.add(Vy);
+             velocity.add(v);
+        }
+
+        positions.add(newPosition);
+	    angles.add(calculateAngle(newPosition, previousPosition));
+
+	    calculateDeltas(angles, curvatures, deltaDistance);
+	    calculateDeltas(curvatures, deltaCurvatures, deltaDistance);
+        calculateDeltas(velocity, acceleration, deltaTime);
+        calculateDeltas(acceleration, jerk, deltaTime);
+        calculateDeltas(angles, angularVelocity, deltaTime);
+
 
 		// not small enough to have a direction yet, just add it and leave
 //		if (positions.size() < 2) {
@@ -48,10 +85,46 @@ public class MouseMoveSequence implements MouseActivity {
 //		}
 	}
 
-	public int size() {
-		return positions.size();
-	}
-	
+	public void printStats() {
+        System.out.println("angles: " + angles);
+        System.out.println("curvatures: " + curvatures);
+        System.out.println("delta curves: " + deltaCurvatures);
+        System.out.println("hvel: " + horizontalVelocity);
+        System.out.println("vvel: " + verticalVelocity);
+        System.out.println("velocity: " + velocity);
+        System.out.println("acceleration: " + acceleration);
+        System.out.println("jerk: " + jerk);
+        System.out.println("angular velocity: " + angularVelocity);
+    }
+
+	private static boolean canCalculateDelta(ArrayList<?> list) {
+	    return list.size() >= 2;
+    }
+
+	private double calculateAngle(MousePosition newPosition, MousePosition previousPosition) {
+	    return Math.atan2(newPosition.y - previousPosition.y, newPosition.x - previousPosition.x);
+    }
+
+    private double calculateCurvature(MousePosition newPosition, MousePosition previousPosition, double deltaDistance) {
+        double angleBefore = angles.get(angles.size() - 2);
+        double angleNow = angles.get(angles.size() - 1);
+
+        double deltaAngle = angleNow - angleBefore;
+
+        return deltaAngle / deltaDistance;
+    }
+
+
+    private void calculateDeltas(ArrayList<Double> xs, ArrayList<Double> deltas, double quotient) {
+	    if (canCalculateDelta(xs)) {
+	        double previous = xs.get(xs.size() - 2);
+	        double current = xs.get(xs.size() - 1);
+
+	        deltas.add((current - previous) / quotient);
+        }
+    }
+
+
 	private double euclidDist(int x1, int y1, int x2, int y2) {
 		return Math.sqrt(Math.pow((y2 - y1), 2.0) + Math.pow((x2 - x1), 2.0));
 	}

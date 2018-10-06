@@ -56,6 +56,8 @@ public class MouseParser extends Parser {
                 }
                 else {
                     movements.add(currentSequence);
+                    currentSequence.printStats();
+                    System.out.println("");
                     currentSequence = new MouseMoveSequence(newPosition);
                 }
                 lastTick = gameTick;
@@ -69,13 +71,41 @@ public class MouseParser extends Parser {
 
 
     public void parseUnitOrder(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
-        if (msg.getOrderType() == 3 | msg.getOrderType() == 4) {
-            MousePosition attackPosition = new MousePosition(lastPosition.x, lastPosition.y, gameTick);
-            MouseMoveAttack attack = new MouseMoveAttack(currentSequence, attackPosition);
-            System.out.println(attack);
+        switch (msg.getOrderType()) {
+            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE_VALUE:
+            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET_VALUE:
+                parseAttackOrder(msg);
+                break;
+
+            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION_VALUE:
+            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET_VALUE:
+                parseMoveOrder(msg);
+                break;
+
+            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION_VALUE:
+                parseCastOrder(msg);
+                break;
+
+//            default:
 
         }
     }
+
+    private void parseAttackOrder(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
+        MousePosition attackPosition = new MousePosition(lastPosition.x, lastPosition.y, gameTick);
+        MouseMoveAttack attack = new MouseMoveAttack(currentSequence, attackPosition);
+
+//        System.out.println(attack);
+    }
+
+    private void parseMoveOrder(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
+
+    }
+
+    private void parseCastOrder(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
+
+    }
+
 
     private static String getOrderDescription(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
         int orderType = msg.getOrderType();
