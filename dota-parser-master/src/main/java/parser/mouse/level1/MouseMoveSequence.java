@@ -2,19 +2,21 @@ package parser.mouse.level1;
 import parser.mouse.MouseActivity;
 import parser.mouse.atomic.MousePosition;
 import util.Geometry;
+import util.VectorFeatures;
 
 import java.util.ArrayList;
 import java.lang.Math;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 public class MouseMoveSequence implements MouseActivity {
 
 	public static final double MEMBER_THRESHOLD = 10.0;
 	public static final double MEMBER_ANGLE_THRESHOLD = 20.0;
 
-	private ArrayList<MousePosition> positions;
+	public ArrayList<MousePosition> positions;
 
-	private ArrayList<Double> angles, curvatures, deltaCurvatures, horizontalVelocity, verticalVelocity, velocity, acceleration, jerk, angularVelocity;
+	public ArrayList<Double> angles, curvatures, deltaCurvatures, horizontalVelocity, verticalVelocity, velocity, acceleration, jerk, angularVelocity;
 
 	private int tickOffset = 0;
 	private DecimalFormat df = new DecimalFormat("#0.0000");
@@ -95,6 +97,21 @@ public class MouseMoveSequence implements MouseActivity {
         System.out.println("acceleration: " + acceleration);
         System.out.println("jerk: " + jerk);
         System.out.println("angular velocity: " + angularVelocity);
+    }
+
+    public ArrayList<VectorFeatures> getStats() {
+	    ArrayList<VectorFeatures> stats = new ArrayList<>();
+	    stats.add(new VectorFeatures("Angles", angles));
+	    stats.add(new VectorFeatures("Curves", curvatures));
+	    stats.add(new VectorFeatures("deltaCurves", deltaCurvatures));
+	    stats.add(new VectorFeatures("hVelocity", horizontalVelocity));
+	    stats.add(new VectorFeatures("vVeclocity", verticalVelocity));
+	    stats.add(new VectorFeatures("Velocity", velocity));
+	    stats.add(new VectorFeatures("Acceleration", acceleration));
+	    stats.add(new VectorFeatures("Jerk", jerk));
+	    stats.add(new VectorFeatures("Angular velocity", angularVelocity));
+
+	    return stats;
     }
 
 	private static boolean canCalculateDelta(ArrayList<?> list) {

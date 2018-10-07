@@ -15,6 +15,7 @@ public class MouseMoveAttack extends Level3MouseAction {
         super(sequence, attackPosition);
     }
 
+
     @Override
     public String toString() {
         return "[ATTACK] " + super.toString();
