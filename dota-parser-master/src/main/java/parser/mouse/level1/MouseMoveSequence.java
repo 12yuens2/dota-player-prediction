@@ -114,6 +114,30 @@ public class MouseMoveSequence implements MouseActivity {
 	    return stats;
     }
 
+    @Override
+    public String outputStats() {
+	    ArrayList<VectorFeatures> stats = getStats();
+
+        StringBuilder sb = new StringBuilder();
+        for (VectorFeatures features : stats) {
+            sb.append(features.getStats() + ",");
+        }
+
+        return sb.toString();
+    }
+
+    @Override
+    public String headers() {
+	    ArrayList<VectorFeatures> stats = getStats();
+
+	    StringBuilder sb = new StringBuilder();
+	    for (VectorFeatures features : stats) {
+	        sb.append(features.getHeaders() + ",");
+        }
+
+        return sb.toString();
+    }
+
 	private static boolean canCalculateDelta(ArrayList<?> list) {
 	    return list.size() >= 2;
     }

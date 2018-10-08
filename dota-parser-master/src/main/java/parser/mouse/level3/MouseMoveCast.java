@@ -17,4 +17,9 @@ public class MouseMoveCast extends Level3MouseAction{
     public String toString() {
         return "[CAST] " + super.toString();
     }
+
+    @Override
+    public String outputStats() {
+        return "CAST," + super.outputStats();
+    }
 }

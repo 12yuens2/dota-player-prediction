@@ -17,4 +17,9 @@ public class MouseMoveMove extends Level3MouseAction {
     public String toString() {
         return "[MOVE] " + super.toString();
     }
+
+    @Override
+    public String outputStats() {
+        return "MOVE," + super.outputStats();
+    }
 }

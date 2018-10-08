@@ -26,5 +26,21 @@ public abstract class Level3MouseAction implements MouseActivity {
         return ticksToAction + " -- " + distanceToAction;
     }
 
+    @Override
+    public String outputStats() {
+        String sequenceStats = sequence.outputStats();
+
+        return String.format("%s%d,%f", sequenceStats, ticksToAction, distanceToAction);
+    }
+
+    @Override
+    public String headers() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("actionType,");
+        sb.append(sequence.headers());
+        sb.append("ticksToAction,distanceToAction");
+
+        return sb.toString();
+    }
 
 }

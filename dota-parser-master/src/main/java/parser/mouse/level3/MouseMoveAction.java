@@ -7,4 +7,13 @@ import parser.mouse.MouseActivity;
  */
 public class MouseMoveAction implements MouseActivity {
 
+    @Override
+    public String outputStats() {
+        return null;
+    }
+
+    @Override
+    public String headers() {
+        return null;
+    }
 }
