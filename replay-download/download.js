@@ -3,8 +3,8 @@ const request = require("request");
 const fs = require('fs');
 const util = require('util');
 
-const account_id = process.argv[2];
-const hero_id = process.argv[3];
+const account_id = process.argv[3];
+const hero_id = process.argv[2];
 
 //const account_id = 104070670; //https://www.opendota.com/players/255077828
 //const hero_id = 67; //spectre
