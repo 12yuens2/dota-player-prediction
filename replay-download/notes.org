@@ -1,0 +1,10 @@
+* Binary classification
+Steps:
+1. Get players on a certain hero: https://api.opendota.com/api/heroes/{hero_id}/players
+2. Download replays by that player on that hero with script
+3. Get steam id using opendota id
+4. Run java parser with replays/steam id to get stats
+5. Run merge script if needed to merge csv data
+6. ML done in python notebook
+
+

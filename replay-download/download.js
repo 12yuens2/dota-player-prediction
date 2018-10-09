@@ -6,15 +6,16 @@ const util = require('util');
 const account_id = process.argv[2];
 const hero_id = process.argv[3];
 
-//const account_id = 255077828; //https://www.opendota.com/players/255077828
-//const hero_id = 74; //invoker
+//const account_id = 104070670; //https://www.opendota.com/players/255077828
+//const hero_id = 67; //spectre
 
 const requestMatches = (account_id, limit=50, game_mode=3, hero_id) => {
     const options = {
         uri: `https://api.opendota.com/api/players/${account_id}/matches`,
         qs: {
             "limit": limit,
-            "game_mode": game_mode
+            "hero_id": hero_id
+            //"game_mode": game_mode
         },
         json: true
     };
@@ -51,7 +52,7 @@ const downloadReplay = (details) => {
     return request(options);
 }
 
-requestMatches(account_id, 30, 3, hero_id)
+requestMatches(account_id, 10, 3, hero_id)
     .then(matches => {
         const matchIds = matches.map(({ match_id }) => match_id);
         const fetchReplays = matchIds.map(matchId => requestReplay(matchId));
