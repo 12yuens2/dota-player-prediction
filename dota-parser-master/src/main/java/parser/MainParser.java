@@ -23,6 +23,8 @@ import skadistats.clarity.wire.common.proto.DotaUserMessages;
 import util.ClarityUtil;
 import util.DotaReplayStream;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,6 +55,7 @@ public class MainParser extends Parser{
 
     private boolean running;
 
+    private File replayDir;
     private MouseParser mouseParser;
 
     private HashMap<Long, PlayerData> steamPDMap;
@@ -81,9 +84,34 @@ public class MainParser extends Parser{
         initParsers();
     }
 
+    public MainParser(String filepath, long filterSteamID, boolean isDir) {
+        this("", filterSteamID);
+        this.replayDir = new File(filepath);
+    }
+
     public void start() {
-        initProcessing();
-        run();
+        try {
+            mouseParser.initWriter(filterSteamID + "-mousesequence.csv",filterSteamID + "-mouseaction.csv");
+
+            if (replayDir != null) {
+                for (File replayFile : replayDir.listFiles()) {
+                    this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
+                    initProcessing();
+                    run();
+                }
+            }
+            else {
+                initProcessing();
+                run();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            mouseParser.closeWriter();
+        }
+
+        System.out.println("Finish " + filterSteamID);
     }
 
     private void initParsers() {
@@ -122,20 +150,19 @@ public class MainParser extends Parser{
                 cRunner.halt();
             }
         }
+        System.out.println(filterSteamID + " - " + replayFile);
     }
 
     public void run() {
         gameTick = 0;
         running = true;
         try {
-            mouseParser.initWriter("mouseSequence.csv", "mouseAction.csv");
+//            mouseParser.initWriter("mouseSequence.csv", "mouseAction.csv");
 
             SimpleRunner sRunner = new SimpleRunner(new DotaReplayStream(replayFile, true)).runWith(this);
 
         } catch (IOException | CompressorException e) {
             e.printStackTrace();
-        } finally {
-            mouseParser.closeWriter();
         }
     }
 
@@ -143,7 +170,6 @@ public class MainParser extends Parser{
     public void tick() {
         super.tick();
         mouseParser.tick();
-        System.out.println(gameTick);
     }
 
     @OnTickStart
@@ -165,9 +191,11 @@ public class MainParser extends Parser{
 
     @OnEntityCreated
     public void OnEntityCreated(Entity e) {
-        if (ClarityUtil.isGamePlayer(e)) {
-            int id = ClarityUtil.getEntityProperty(e, "m_iPlayerID");
-            idMap.put(id, e);
+        if (running) {
+            if (ClarityUtil.isGamePlayer(e)) {
+                int id = ClarityUtil.getEntityProperty(e, "m_iPlayerID");
+                idMap.put(id, e);
+            }
         }
     }
 
@@ -179,10 +207,12 @@ public class MainParser extends Parser{
 
     @OnMessage(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders.class)
     public void onSpectatorPlayerUnitOrders(Context ctx, DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
-        Entity e = ctx.getProcessor(Entities.class).getByIndex(msg.getEntindex());
-        if ((filterSteamID != NO_FILTER && isFilterPlayer(e)) || (filterSteamID == NO_FILTER && ClarityUtil.isGamePlayer(e))) {
-            long steamid = idSteamMap.get(ClarityUtil.getEntityProperty(e, "m_iPlayerID"));
-            mouseParser.parseUnitOrder(steamid, msg);
+        if (running) {
+            Entity e = ctx.getProcessor(Entities.class).getByIndex(msg.getEntindex());
+            if ((filterSteamID != NO_FILTER && isFilterPlayer(e)) || (filterSteamID == NO_FILTER && ClarityUtil.isGamePlayer(e))) {
+                long steamid = idSteamMap.get(ClarityUtil.getEntityProperty(e, "m_iPlayerID"));
+                mouseParser.parseUnitOrder(steamid, msg);
+            }
         }
     }
 

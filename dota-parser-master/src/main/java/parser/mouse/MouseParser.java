@@ -127,6 +127,8 @@ public class MouseParser extends Parser {
     }
 
     public void closeWriter() {
+        gameTick = 0;
+
         if (mouseMovementWriter != null) {
             mouseMovementWriter.flush();
             mouseMovementWriter.close();
