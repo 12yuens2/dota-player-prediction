@@ -83,28 +83,30 @@ public class MouseParser extends Parser {
         MouseMoveSequence currentSequence = currentSequences.get(steamid);
         MousePosition lastPosition = lastPositions.get(steamid);
 
-        MousePosition actionPosition = new MousePosition(lastPosition.x, lastPosition.y, gameTick);
-        Level3MouseAction level3Action = null;
-        switch (msg.getOrderType()) {
-            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE_VALUE:
-            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET_VALUE:
-                level3Action = new MouseMoveAttack(currentSequence, actionPosition);
-                break;
+        if (currentSequence != null && lastPosition != null) {
+            MousePosition actionPosition = new MousePosition(lastPosition.x, lastPosition.y, gameTick);
+            Level3MouseAction level3Action = null;
+            switch (msg.getOrderType()) {
+                case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE_VALUE:
+                case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET_VALUE:
+                    level3Action = new MouseMoveAttack(currentSequence, actionPosition);
+                    break;
 
-            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION_VALUE:
-            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET_VALUE:
-                level3Action = new MouseMoveMove(currentSequence, actionPosition);
-                break;
+                case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION_VALUE:
+                case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET_VALUE:
+                    level3Action = new MouseMoveMove(currentSequence, actionPosition);
+                    break;
 
-            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION_VALUE:
-            case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET_VALUE:
-                level3Action = new MouseMoveCast(currentSequence, actionPosition);
-                break;
+                case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION_VALUE:
+                case DotaCommonMessages.dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET_VALUE:
+                    level3Action = new MouseMoveCast(currentSequence, actionPosition);
+                    break;
+            }
+            if (level3Action != null) {
+                writeStats(steamid, level3Action, mouseActionWriter);
+            }
         }
 
-        if (level3Action != null) {
-            writeStats(steamid, level3Action, mouseActionWriter);
-        }
     }
 
 
