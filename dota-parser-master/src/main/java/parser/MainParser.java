@@ -1,9 +1,6 @@
 package parser;
 
-import main.Main;
 import org.apache.commons.compress.compressors.CompressorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import parser.mouse.MouseParser;
 import skadistats.clarity.event.Insert;
 import skadistats.clarity.model.Entity;
@@ -42,8 +39,6 @@ public class MainParser extends Parser{
 
 	public static final int TICK_RATE = 30;
 	
-    private final Logger log = LoggerFactory.getLogger(Main.class.getPackage().getClass());
-
     @Insert
     private Context ctx;
 
@@ -90,25 +85,25 @@ public class MainParser extends Parser{
     }
 
     public void start() {
-        try {
-            mouseParser.initWriter(filterSteamID + "-mousesequence.csv",filterSteamID + "-mouseaction.csv");
-
-            if (replayDir != null) {
+        if (replayDir != null) {
+            try {
                 for (File replayFile : replayDir.listFiles()) {
                     this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
+
+                    String outputName = filterSteamID + "-" + replayFile.getName();
+                    mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
                     initProcessing();
                     run();
                 }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                mouseParser.closeWriter();
             }
-            else {
-                initProcessing();
-                run();
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            mouseParser.closeWriter();
+        }
+        else {
+            initProcessing();
+            run();
         }
 
         System.out.println("Finish " + filterSteamID);
