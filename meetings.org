@@ -37,3 +37,12 @@ Parser:
 
 ** Other notes
 - Might need to get ethics approval
+
+This project aims to predict players in the video game Dota 2 by analysing replays of players and running the data through a machine learning model. The purpose is to detect players using accounts for illegitimate reasons such as account selling. Publicly available data from Dota 2 players will be collected from the internet and processed. The research will be done in St Andrews and no interaction between the researcher and the players will take place.
+
+- not interested in personal name, just interested in matching the account ids together
+- not possible to obtain consent
+- getting data from valve not opendota
+- potential for identifiable names, but not interested, so will not store account names only ids
+- say more about why, detect whether its the same person behind the account
+- how long to keep the data, not going to store user id, analysed data kept indefinitely, anonimysed by removal of handle names
