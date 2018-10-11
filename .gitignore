@@ -12,6 +12,10 @@
 # Java binaries
 *.class
 
+# Python notebook
+env/
+*.ipynb_checkpoints
+
 # Latex
 report/bin/
 *.aux

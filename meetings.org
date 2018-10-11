@@ -29,9 +29,9 @@ Parser:
 
 
 ** TODO next week
- - [] Auto replay download with OpenDOTA API
- - [] Get player entity given steamID
- - [] Parse player mouse movement data in ML friendly format
+ - [x] Auto replay download with OpenDOTA API
+ - [x] Get player entity given steamID
+ - [x] Parse player mouse movement data in ML friendly format
  - [] Process mouse movement data for ML based on identification paper
  - [] Run ML on dataset of mouse movement data
 
@@ -46,3 +46,11 @@ This project aims to predict players in the video game Dota 2 by analysing repla
 - potential for identifiable names, but not interested, so will not store account names only ids
 - say more about why, detect whether its the same person behind the account
 - how long to keep the data, not going to store user id, analysed data kept indefinitely, anonimysed by removal of handle names
+
+- steam API key = FFF909F2C1F90CFD66D568D188DBF371
+
+* 04/10/18
+
+** TODO week
+- [] Process mouse movement data for ML with categorised features
+- [] Setup ML pipeline

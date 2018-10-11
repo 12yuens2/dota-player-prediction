@@ -4,7 +4,7 @@ import skadistats.clarity.model.Entity;
 
 public class PlayerData {
 
-    private int id, heroID;
+    private int id, heroID, selectedHero;
     private long steamID;
 
 
@@ -12,9 +12,10 @@ public class PlayerData {
         this.id = id;
     }
 
-    public PlayerData(int id, int heroID, long steamID) {
+    public PlayerData(int id, int heroID, int selectedHero, long steamID) {
         this.id = id;
         this.heroID = heroID;
+        this.selectedHero = selectedHero;
         this.steamID = steamID;
     }
 
@@ -32,9 +33,12 @@ public class PlayerData {
     }
 
 
-    public long getSteamID() {
-        return steamID;
-    }
+    public int getSelectedHero() { return selectedHero; }
+
+    public void setSelectedHero(int selectedHero) { this.selectedHero = selectedHero; }
+
+
+    public long getSteamID() { return steamID; }
 
     public void setSteamID(long steamID) {
         this.steamID = steamID;
