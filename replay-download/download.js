@@ -1,3 +1,4 @@
+const Bottleneck = require('bottleneck');
 const rp = require("request-promise-native");
 const request = require("request");
 const fs = require('fs');
@@ -12,7 +13,7 @@ const num_games = process.argv[4];
 //const hero_id = 67; //spectre
 
 
-const requestPlayers = (hero_id) => {
+const requestPlayersUnlimited = (hero_id) => {
     const options = {
         uri: `https://api.opendota.com/api/heroes/${hero_id}/players`,
         json: true
@@ -21,7 +22,7 @@ const requestPlayers = (hero_id) => {
     return rp(options);
 }
 
-const requestPlayer = (account_id) => {
+const requestPlayerUnlimited = (account_id) => {
     const options = {
         uri: `https://api.opendota.com/api/players/${account_id}`,
         json: true
@@ -30,7 +31,7 @@ const requestPlayer = (account_id) => {
     return rp(options);
 }
 
-const requestMatches = (account_id, limit=50, game_mode=3, hero_id) => {
+const requestMatchesUnlimited = (account_id, limit=50, game_mode=3, hero_id) => {
     const options = {
         uri: `https://api.opendota.com/api/players/${account_id}/matches`,
         qs: {
@@ -48,7 +49,7 @@ const requestMatches = (account_id, limit=50, game_mode=3, hero_id) => {
     return rp(options);
 }
 
-const requestReplay = (match_id) => {
+const requestReplayUnlimited = (match_id) => {
     const options = {
         uri: `https://api.opendota.com/api/replays`,
         qs: {
@@ -75,6 +76,16 @@ const downloadReplay = (details) => {
 
 
 const SCRATCH = `/cs/scratch/sy35/dota-data/${hero_id}/replays/`;
+
+
+const limiter = new Bottleneck({
+    minTime: 1200
+});
+
+const requestPlayers = limiter.wrap(requestPlayersUnlimited);
+const requestPlayer = limiter.wrap(requestPlayerUnlimited);
+const requestMatches = limiter.wrap(requestMatchesUnlimited);
+const requestReplay = limiter.wrap(requestReplayUnlimited);
 
 requestPlayers(hero_id)
     .then(playerInfos => {
