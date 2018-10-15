@@ -68,15 +68,11 @@ public class MainParser extends Parser{
         this.steamPDMap = new HashMap<>();
         this.idSteamMap = new HashMap<>();
         this.idMap = new HashMap<>();
-
-        initParsers();
     }
 
     public MainParser(String replayFile, long filterSteamID) {
         this(replayFile);
         this.filterSteamID = filterSteamID;
-
-        initParsers();
     }
 
     public MainParser(String filepath, long filterSteamID, boolean isDir) {
@@ -86,19 +82,25 @@ public class MainParser extends Parser{
 
     public void start() {
         if (replayDir != null) {
-            try {
-                for (File replayFile : replayDir.listFiles()) {
-                    this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
+            for (File replayFile : replayDir.listFiles()) {
+                try {
+                    initParsers();
 
-                    String outputName = filterSteamID + "-" + replayFile.getName();
+                    this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
+                    this.filterSteamID = Long.parseLong(replayFile.getName().substring(0, 17));
+
+                    String outputName = replayDir.getAbsolutePath() + "/../data/" + replayFile.getName();
                     mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
+
                     initProcessing();
                     run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (mouseParser != null) {
+                        mouseParser.closeWriter();
+                    }
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                mouseParser.closeWriter();
             }
         }
         else {
@@ -119,8 +121,12 @@ public class MainParser extends Parser{
     private void initProcessing() {
         ControllableRunner cRunner = null;
         try {
+            steamPDMap = new HashMap<>();
+            idSteamMap = new HashMap<>();
+            idMap = new HashMap<>();
+
             cRunner = new ControllableRunner(new DotaReplayStream(replayFile, true)).runWith(this);
-            for (int i = 0; i < 20000; i++) {
+            for (int i = 0 ; i < 30000; i++) {
                 cRunner.tick();
             }
 
@@ -152,12 +158,12 @@ public class MainParser extends Parser{
         gameTick = 0;
         running = true;
         try {
-//            mouseParser.initWriter("mouseSequence.csv", "mouseAction.csv");
-
             SimpleRunner sRunner = new SimpleRunner(new DotaReplayStream(replayFile, true)).runWith(this);
 
         } catch (IOException | CompressorException e) {
             e.printStackTrace();
+        } finally {
+            running = false;
         }
     }
 
@@ -169,7 +175,7 @@ public class MainParser extends Parser{
 
     @OnTickStart
     public void onTickStart(Context ctx, boolean synthetic) {
-        if (running) {
+        if (running && idMap != null) {
             if (filterSteamID == NO_FILTER) {
                 for (Map.Entry<Long, PlayerData> entry : steamPDMap.entrySet()) {
                     PlayerData pd = entry.getValue();
