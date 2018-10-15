@@ -3,11 +3,32 @@ const request = require("request");
 const fs = require('fs');
 const util = require('util');
 
-const account_id = process.argv[3];
+//const account_id = process.argv[3];
 const hero_id = process.argv[2];
+const num_players = process.argv[3];
+const num_games = process.argv[4];
 
 //const account_id = 104070670; //https://www.opendota.com/players/255077828
 //const hero_id = 67; //spectre
+
+
+const requestPlayers = (hero_id) => {
+    const options = {
+        uri: `https://api.opendota.com/api/heroes/${hero_id}/players`,
+        json: true
+    };
+
+    return rp(options);
+}
+
+const requestPlayer = (account_id) => {
+    const options = {
+        uri: `https://api.opendota.com/api/players/${account_id}`,
+        json: true
+    };
+
+    return rp(options);
+}
 
 const requestMatches = (account_id, limit=50, game_mode=3, hero_id) => {
     const options = {
@@ -52,20 +73,52 @@ const downloadReplay = (details) => {
     return request(options);
 }
 
-requestMatches(account_id, 10, 3, hero_id)
-    .then(matches => {
-        const matchIds = matches.map(({ match_id }) => match_id);
-        const fetchReplays = matchIds.map(matchId => requestReplay(matchId));
 
-        return Promise.all(fetchReplays)
+const SCRATCH = `/cs/scratch/sy35/dota-data/${hero_id}/replays/`;
+
+requestPlayers(hero_id)
+    .then(playerInfos => {
+        const players = playerInfos.slice(0, num_players);
+        const accountIds = players.map(({ account_id }) => account_id);
+        const fetchPlayers = accountIds.map(accountId => requestPlayer(accountId));
+
+        return Promise.all(fetchPlayers)
     })
-    .then(replayDetails => replayDetails
-          .map((details) => downloadReplay(details[0])))
+    .then(playerDetails => {
+        const ids = playerDetails.map((playerDetail) => [playerDetail["profile"]["account_id"], playerDetail["profile"]["steamid"]])
 
-    .then(replays => replays
-          .map((replay, i) => {
-              var fn = replay.uri.pathname.slice(5);
-              replay.pipe(fs.createWriteStream(fn));
-          }))
+        ids.map(([account_id, steam_id]) => requestMatches(account_id, num_games, 3, hero_id)
+                .then(matches => {
+                    const matchIds = matches.map(({ match_id }) => match_id);
+                    const fetchReplays = matchIds.map(matchId => requestReplay(matchId));
 
-    .then(() => console.log('complete'));
+                    return Promise.all(fetchReplays)
+                 })
+                 .then(replayDetails => replayDetails.map((details) => downloadReplay(details[0])))
+                 .then(replays => replays
+                       .map((replay) => {
+                           var filename = SCRATCH + steam_id + "-" + replay.uri.pathname.slice(5);
+                           replay.pipe(fs.createWriteStream(filename));
+
+                           return filename;
+                       }))
+                 .then((filenames) => console.log(filenames)))
+    });
+
+//requestMatches(account_id, 10, 3, hero_id)
+//    .then(matches => {
+//        const matchIds = matches.map(({ match_id }) => match_id);
+//        const fetchReplays = matchIds.map(matchId => requestReplay(matchId));
+//
+//        return Promise.all(fetchReplays)
+//    })
+//    .then(replayDetails => replayDetails
+//          .map((details) => downloadReplay(details[0])))
+//
+//    .then(replays => replays
+//          .map((replay, i) => {
+//              var fn = replay.uri.pathname.slice(5);
+//              replay.pipe(fs.createWriteStream(fn));
+//          }))
+//
+//    .then(() => console.log('complete'));
