@@ -1,4 +1,4 @@
-* 18/09/18
+* Week 1 - 18/09/18
 First meeting to discuss project. Main idea of the project is to predict who the player is in a game of DOTA based on replay data. 
 
 ** Initial plan (technical)
@@ -20,7 +20,7 @@ Other ideas:
 - use case of 'stolen' accounts, where player behaviour suddenly changes to be very different
 - 'identity theft' in online amateur tournaments
 
-* 27/09/18
+* Week 2 - 27/09/18
 ** Before meeting notes
 DOER:
 - need to add objective about identifying features to extract from replays?
@@ -49,7 +49,7 @@ This project aims to predict players in the video game Dota 2 by analysing repla
 
 - steam API key = FFF909F2C1F90CFD66D568D188DBF371
 
-* 04/10/18
+* Week 3 - 04/10/18
 
 ** TODO week
 - [x] Process mouse movement data for ML with categorised features
@@ -59,9 +59,7 @@ This project aims to predict players in the video game Dota 2 by analysing repla
 - [] 
 
 
-* 11/10/18
-
-
+* Week 4 - 11/10/18
 ** TODO week
 - [x] Use all mouse events in game rather than as individual data points for ML 
 - [x] Use average/voting for mouse events - eg out of 100, how many are positive, if over 50 take as positive
@@ -74,3 +72,38 @@ This project aims to predict players in the video game Dota 2 by analysing repla
   - [x] Don't download replays if error from server
   - [] CTT threshold as parameter in java
   - [] Script python classifier to give accuracy/precision/recall results 
+- [] Investigate bagging/boosting/stacking as methods to combine classifiers (https://stats.stackexchange.com/questions/18891/bagging-boosting-and-stacking-in-machine-learning)
+- [] Investigate combining probabilities as a method to combine the movement classifiers
+- [] Investigate correlation of mouse movements features to output and look into reducing dimensionality (eg. PCA) REGULARISATION
+- [] Consider attack/move/cast as separate feature sets rather than a single "mouse movement" feature set
+
+Notes: 
+- the combination of classifiers will be important not only for the attack/move/cast mouse movements, but also when future features such as hero/item/skill selection is used
+- Must also consider adding weights to the different features and how to learn/set the weights to give best results (experimental? or following some paper?)
+
+** Links
+- On Combining Classifiers https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=667881
+- On Feature Combination for Multiclass Object Classification http://is.tuebingen.mpg.de/fileadmin/user_upload/files/publications/PID953627_5937[0].pdf
+
+- VotingClassifier https://stackoverflow.com/questions/45074579/votingclassifier-different-feature-sets
+
+** Paper on combining classifiers
+https://ac.els-cdn.com/S0925231298000198/1-s2.0-S0925231298000198-main.pdf?_tid=8a144b8f-de12-4d06-8b16-3c5ebd8a8979&acdnat=1539689896_665ebbff81591bae8789fb402acf0728
+
+
+*** Combine feature vectors into a single composite feature vector
+Cons:
+- Curse of dimensionality due to composition
+- Difficulty in composition
+- Redundancy (component feature vectors not independent of each other)
+
+*** Combining classifiers
+Reasons for combining classifiers
+- Allows multiple classifiers to work on different features sets
+- Allows the different features set to be used simultaneously
+
+Combining classifiers can be seen as combination of multiple probability distributions - two frameworks to do combination:
+1. aggregate classifier distributions into a single distribution to make the final decision
+2. linear opinion pools where decision is made from a linear combination of classifier opinions
+
+
