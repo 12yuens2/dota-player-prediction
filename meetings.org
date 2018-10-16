@@ -52,5 +52,25 @@ This project aims to predict players in the video game Dota 2 by analysing repla
 * 04/10/18
 
 ** TODO week
-- [] Process mouse movement data for ML with categorised features
-- [] Setup ML pipeline
+- [x] Process mouse movement data for ML with categorised features
+- [x] Setup ML pipeline
+- [] Tune hyper parameters (CTT) with for precision/recall curve
+- [x] Setup java jar and script for running full pipeline smoothly
+- [] 
+
+
+* 11/10/18
+
+
+** TODO week
+- [x] Use all mouse events in game rather than as individual data points for ML 
+- [x] Use average/voting for mouse events - eg out of 100, how many are positive, if over 50 take as positive
+- [x] Make sure to not use evaluation game in training
+- [] Find good way to average all the moves in game (average as input or output?)
+- [] Which percentage of mouse movements are more indicative (eg at beginning/end of match, during events/casts)
+- [] Scripts for allowing easy data gathering when tuning hyper parameters
+  - [x] Script getting steamid from opendota
+  - [x] Get list of players automatically and download their games given hero id
+  - [x] Don't download replays if error from server
+  - [] CTT threshold as parameter in java
+  - [] Script python classifier to give accuracy/precision/recall results 
