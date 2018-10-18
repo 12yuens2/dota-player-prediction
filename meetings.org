@@ -58,24 +58,23 @@ This project aims to predict players in the video game Dota 2 by analysing repla
 - [x] Setup java jar and script for running full pipeline smoothly
 - [] 
 
-
 * Week 4 - 11/10/18
 ** TODO week
 - [x] Use all mouse events in game rather than as individual data points for ML 
 - [x] Use average/voting for mouse events - eg out of 100, how many are positive, if over 50 take as positive
 - [x] Make sure to not use evaluation game in training
-- [] Find good way to average all the moves in game (average as input or output?)
 - [] Which percentage of mouse movements are more indicative (eg at beginning/end of match, during events/casts)
 - [] Scripts for allowing easy data gathering when tuning hyper parameters
   - [x] Script getting steamid from opendota
   - [x] Get list of players automatically and download their games given hero id
   - [x] Don't download replays if error from server
   - [] CTT threshold as parameter in java
-  - [] Script python classifier to give accuracy/precision/recall results 
-- [] Investigate bagging/boosting/stacking as methods to combine classifiers (https://stats.stackexchange.com/questions/18891/bagging-boosting-and-stacking-in-machine-learning)
-- [] Investigate combining probabilities as a method to combine the movement classifiers
-- [] Investigate correlation of mouse movements features to output and look into reducing dimensionality (eg. PCA) REGULARISATION
-- [] Consider attack/move/cast as separate feature sets rather than a single "mouse movement" feature set
+  - [] Script python classifier to give accuracy/precision/recall results
+- [] Find good way to average all the moves in game (average as input or output?)
+  - [] Investigate bagging/boosting/stacking as methods to combine classifiers (https://stats.stackexchange.com/questions/18891/bagging-boosting-and-stacking-in-machine-learning)
+  - [] Investigate combining probabilities as a method to combine the movement classifiers
+  - [] Investigate correlation of mouse movements features to output and look into reducing dimensionality (eg. PCA) REGULARISATION
+  - [] Consider attack/move/cast as separate feature sets rather than a single "mouse movement" feature set
 
 Notes: 
 - the combination of classifiers will be important not only for the attack/move/cast mouse movements, but also when future features such as hero/item/skill selection is used
@@ -86,6 +85,14 @@ Notes:
 - On Feature Combination for Multiclass Object Classification http://is.tuebingen.mpg.de/fileadmin/user_upload/files/publications/PID953627_5937[0].pdf
 
 - VotingClassifier https://stackoverflow.com/questions/45074579/votingclassifier-different-feature-sets
+
+- Dr K Sirlantzis “Diversity in Multiple Classifier Systems”, University of Kent;www.ee.kent.ac.uk;
+- F. Roli, Tutorial Fusion of Multiple Pattern Classifier”, University of Cagliari
+- Robert P.W.Duin, “The Combining Classifier: to Train or Not to Train?”, ICPR 2002, Pattern Recognition Group, Faculty of Applied Sciences;
+- L. Xu, A. Kryzak, C. V. Suen, “Methods of Combining Multiple Classifiers and Their Applications to Handwriting Recognition”, IEEE Transactions on Systems, Man Cybernet, 22(3), 1992, pp. 418-435. 
+- J. Kittle, M. Hatef, R. Duin and J. Matas, “On Combining Classifiers”, IEEE Transactions on Pattern Analysis and Machine Intelligence, 20(3), March 1998, pp. 226-239. 
+- D. Tax, M. Breukelen, R. Duin, J. Kittle, “Combining Multiple Classifiers by Averaging or by Multiplying?”, Patter Recognition, 33(2000), pp. 1475-1485. 
+- L. I. Kuncheva, “A Theoretical Study on Six Classifier Fusion Strategies”, IEEE Transactions on Pattern Analysis and Machine Intelligence, 24(2), 2002, pp. 281-286.
 
 ** Paper on combining classifiers
 https://ac.els-cdn.com/S0925231298000198/1-s2.0-S0925231298000198-main.pdf?_tid=8a144b8f-de12-4d06-8b16-3c5ebd8a8979&acdnat=1539689896_665ebbff81591bae8789fb402acf0728
@@ -107,3 +114,4 @@ Combining classifiers can be seen as combination of multiple probability distrib
 2. linear opinion pools where decision is made from a linear combination of classifier opinions
 
 
+* Week 5 - 18/10/18
