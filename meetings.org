@@ -1,3 +1,27 @@
+* Report notes
+
+** Parsing
+- Parsed mouse movement following mouse movement dynamics paper
+- As the paper used different 'level' of mouse movements with clicks, we take it as different actions taken by the player after a mouse movement (ATTACK, MOVE CHARACTER, CAST SPELL)
+- AFAIK the 'iCusor' positions is relative to the screen of the player and we don't know how screen resolution of different players may affect/skew the cursor positions
+
+** Machine learning
+- Bias in ML data due to large proportion of negative training examples (eg 20\% positive, 80\% negative)
+- This was 'solved' by using 'balanced' weight for the classifiers (inversely proportional to the number of training samples)
+- Also 'solved' by undersampling the negative samples
+
+
+1. Started with just mouse movements, looking at each row individually
+- Made sure mouse movements from the same game are not in both training and testing data to avoid data leaking
+- Classify the individual rows and get overall accuracy/precision/recall
+
+2. Looked at classifying entire games by combining the outputs of the mouse movement features together
+- First by averaging the probability of mouse movements to get one probability for each feature, then use simple voting to decide (This approach does not take into account any weights, if some features might be more useful than others)
+- Next use a neural network to combine the probabilities so the different features can be weighted accordingly (This requires additional training, to train the neural net alongside each feature classifier)
+- Maybe could try just combining all the features together and put all into neural network, rather than separate feature classifiers
+- Combination of features and training per game greatly increases the accuracy, but precision/recall are hard to gauge due to many less data points for training/testing
+
+
 * Week 1 - 18/09/18
 First meeting to discuss project. Main idea of the project is to predict who the player is in a game of DOTA based on replay data. 
 
@@ -78,7 +102,7 @@ This project aims to predict players in the video game Dota 2 by analysing repla
 
 Notes: 
 - the combination of classifiers will be important not only for the attack/move/cast mouse movements, but also when future features such as hero/item/skill selection is used
-- Must also consider adding weights to the different features and how to learn/set the weights to give best results (experimental? or following some paper?)
+- Must also consider adding weights to the different features and how to learn/set the weights to give best results (experimental? or following some paper? Easiest to use another model/network)
 
 ** Links
 - On Combining Classifiers https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=667881
@@ -113,5 +137,28 @@ Combining classifiers can be seen as combination of multiple probability distrib
 1. aggregate classifier distributions into a single distribution to make the final decision
 2. linear opinion pools where decision is made from a linear combination of classifier opinions
 
-
 * Week 5 - 18/10/18
+- Is that player the same person
+- deal with bias towards 0s in dataset
+- look at different features like boots/builds
+- do they buy regen/mangoes (game based features)
+- look if accuracy increases as we iteratively add more features
+- looks at more general feature selection at the end
+- at some point, use a network/model as the final classifier
+
+11.00 on tuesday ILW
+
+
+** TODO week
+- [] CTT threshold as parameter
+- [] Script python classifier to give accuracy/precision/recall for threshold tuning
+- [] List game specific features to add that could be useful, ie boots location or item choices 
+    - [] Parse the additional game specific features to get data and add into ML pipeline
+
+- [] Fix bias issue, either with undersampling or oversampling
+- [] Refactor to allow easy addition of more features
+- [x] Make sections/titles on report for flow/narrative
+- [] Investigate correlation of mouse movements features to output and look into reducing dimensionality (eg. PCA) REGULARISATION
+- [] Which percentage of mouse movements is more indicative
+
+
