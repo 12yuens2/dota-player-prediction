@@ -17,6 +17,7 @@ import skadistats.clarity.processor.runner.Context;
 import skadistats.clarity.processor.runner.ControllableRunner;
 import skadistats.clarity.processor.runner.SimpleRunner;
 import skadistats.clarity.wire.common.proto.DotaUserMessages;
+import skadistats.clarity.wire.s2.proto.S2DotaGcCommon;
 import util.ClarityUtil;
 import util.DotaReplayStream;
 
@@ -52,6 +53,7 @@ public class MainParser extends Parser{
 
     private File replayDir;
     private MouseParser mouseParser;
+    private StatParser statParser;
 
     private HashMap<Long, PlayerData> steamPDMap;
     private HashMap<Integer, Long> idSteamMap;
@@ -80,6 +82,12 @@ public class MainParser extends Parser{
         this.replayDir = new File(filepath);
     }
 
+    @OnMessage(S2DotaGcCommon.CMsgDOTAMatch.class)
+    public void matchMessage(S2DotaGcCommon.CMsgDOTAMatch message) {
+        System.out.println("Pre game: " + message.getPreGameDuration());
+        System.out.println("Duration: " + message.getDuration());
+    }
+
     public void start() {
         if (replayDir != null) {
             for (File replayFile : replayDir.listFiles()) {
@@ -91,9 +99,13 @@ public class MainParser extends Parser{
 
                     String outputName = replayDir.getAbsolutePath() + "/../data/" + replayFile.getName();
                     mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
+//                    mouseParser.initWriter("test.csv", "test.csv");
 
                     initProcessing();
                     run();
+
+//                    PlayerData pd = steamPDMap.get(filterSteamID);
+//                    statParser.printStats(ctx, pd.getPlayerID(), pd.getTeamName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -113,6 +125,7 @@ public class MainParser extends Parser{
 
     private void initParsers() {
         this.mouseParser = new MouseParser(filterSteamID);
+        this.statParser = new StatParser(filterSteamID);
     }
 
     /**
@@ -138,8 +151,9 @@ public class MainParser extends Parser{
                     int heroID = ClarityUtil.resolveValue(ctx, "CDOTA_PlayerResource", "m_vecPlayerTeamData.%i.m_nSelectedHeroID", playerID, 0, 0);
                     int selectedHero = ClarityUtil.resolveValue(ctx, "CDOTA_PlayerResource", "m_vecPlayerTeamData.%i.m_hSelectedHero", playerID, 0, 0);
                     long steamID =  ClarityUtil.resolveValue(ctx, "CDOTA_PlayerResource", "m_vecPlayerData.%i.m_iPlayerSteamID", playerID, 0, 0);
+                    int teamNum = ClarityUtil.getEntityProperty(playerEntity, "m_iTeamNum");
 
-                    PlayerData pd = new PlayerData(playerID, heroID, selectedHero, steamID);
+                    PlayerData pd = new PlayerData(playerID, heroID, selectedHero, teamNum, steamID);
                     steamPDMap.put(steamID, pd);
                     idSteamMap.put(playerID, steamID);
                 }
@@ -165,6 +179,7 @@ public class MainParser extends Parser{
         } finally {
             running = false;
         }
+        running = false;
     }
 
     @Override
@@ -198,11 +213,6 @@ public class MainParser extends Parser{
                 idMap.put(id, e);
             }
         }
-    }
-
-    @OnEntityUpdated
-    public void onEntityUpdated(Entity e, FieldPath[] updatedPaths, int updateCount) {
-
     }
 
 
