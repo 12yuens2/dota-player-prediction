@@ -42,13 +42,13 @@ class Game:
 
 class GameClassifier:
 
-    def __init__(self, filter_id, attack_model, move_model, cast_model):
+    def __init__(self, filter_id, attack_model, move_model, cast_model, network_size):
         self.filter_id = filter_id
         self.attack_model = attack_model
         self.move_model = move_model
         self.cast_model = cast_model
         
-        self.network = MLPClassifier(solver='lbfgs', hidden_layer_sizes=(5,2), random_state=42)
+        self.network = MLPClassifier(solver='lbfgs', hidden_layer_sizes=network_size, random_state=42)
 
 
     def cross_validate(self, games, ys, splits=3):
@@ -67,9 +67,9 @@ class GameClassifier:
                 
             predictions_voting = self.predict_voting(testing_games)
             predictions_network = self.predict_network(testing_games)
-            print("Predictions voting: {}".format(predictions_voting))
-            print("Predictions network: {}".format(predictions_network))
-            print("Actual:      {}".format(y_test))
+            #print("Predictions voting: {}".format(predictions_voting))
+            #print("Predictions network: {}".format(predictions_network))
+            #print("Actual:      {}".format(y_test))
             print("KFold accuracy voting: {}, precision: {}, recall: {}".format(accuracy_score(y_test, predictions_voting),
                                                                                 precision_score(y_test, predictions_voting),
                                                                                 recall_score(y_test, predictions_voting)))
