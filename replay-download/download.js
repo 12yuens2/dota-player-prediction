@@ -79,7 +79,8 @@ const SCRATCH = `/cs/scratch/sy35/dota-data/${hero_id}/replays/`;
 
 
 const limiter = new Bottleneck({
-    minTime: 1200
+    maxConcurrent: 2,
+    minTime: 2500
 });
 
 const requestPlayers = limiter.wrap(requestPlayersUnlimited);
@@ -116,20 +117,3 @@ requestPlayers(hero_id)
                  .then((filenames) => console.log(filenames)))
     });
 
-//requestMatches(account_id, 10, 3, hero_id)
-//    .then(matches => {
-//        const matchIds = matches.map(({ match_id }) => match_id);
-//        const fetchReplays = matchIds.map(matchId => requestReplay(matchId));
-//
-//        return Promise.all(fetchReplays)
-//    })
-//    .then(replayDetails => replayDetails
-//          .map((details) => downloadReplay(details[0])))
-//
-//    .then(replays => replays
-//          .map((replay, i) => {
-//              var fn = replay.uri.pathname.slice(5);
-//              replay.pipe(fs.createWriteStream(fn));
-//          }))
-//
-//    .then(() => console.log('complete'));

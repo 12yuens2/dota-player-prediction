@@ -1,28 +1,31 @@
 package parser;
 
 import skadistats.clarity.model.Entity;
+import util.ClarityUtil;
 
 public class PlayerData {
 
     private int id, heroID, selectedHero;
     private long steamID;
+    private String teamName;
 
 
     public PlayerData(int id) {
         this.id = id;
     }
 
-    public PlayerData(int id, int heroID, int selectedHero, long steamID) {
+    public PlayerData(int id, int heroID, int selectedHero, int teamNum, long steamID) {
         this.id = id;
         this.heroID = heroID;
         this.selectedHero = selectedHero;
         this.steamID = steamID;
+
+        this.teamName = ClarityUtil.getTeamName(teamNum);
     }
 
     public int getPlayerID() {
         return id;
     }
-
 
     public int getHeroID() {
         return heroID;
@@ -45,5 +48,8 @@ public class PlayerData {
     }
 
 
+    public String getTeamName() {
+        return teamName;
+    }
 
 }
