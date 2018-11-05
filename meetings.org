@@ -152,13 +152,59 @@ Combining classifiers can be seen as combination of multiple probability distrib
 ** TODO week
 - [] CTT threshold as parameter
 - [] Script python classifier to give accuracy/precision/recall for threshold tuning
-- [] List game specific features to add that could be useful, ie boots location or item choices 
-    - [] Parse the additional game specific features to get data and add into ML pipeline
+- [x] List game specific features to add that could be useful, ie boots location or item choices 
+- [] Parse the additional game specific features to get data and add into ML pipeline
 
-- [] Fix bias issue, either with undersampling or oversampling
+- [x] Fix bias issue, either with undersampling or oversampling
 - [] Refactor to allow easy addition of more features
 - [x] Make sections/titles on report for flow/narrative
 - [] Investigate correlation of mouse movements features to output and look into reducing dimensionality (eg. PCA) REGULARISATION
-- [] Which percentage of mouse movements is more indicative
+
+- [x] Sanity check with new data to make sure it still works
+- [x] Increasing number of players should decrease accuracies
+- [x] Create new ML by training pairs and take two games, and output if they are the same player or not
+- [x] Investigate split game into segments before averaging to reduce data loss and also see if different segments are more indicative
+
+Can I identify this player among a small group of players?
+Given a game and an account id, is that game by the account id
+- Does the game belong with in set of other games
+- Then given a group of games from a period before, are they the same?
+- Also which features are the most indicative
+Key thing is not having to retrain
 
 
+Fix model, given a game from a particular player, then given an account id, is the original game by the same player
+- train on pairs of games, then when given one game, then another, is it the same player?
+- No retraining, given a new game and account id, give probability two people are the same
+- 
+
+Possibly train on many many players, then given an game, is it a player we know
+
+** Other features
+- KDA
+- Gold/XP per minute 
+- Last hits/denies
+- (Hero played)
+- Action counts (Move position, move target, attack position, attack target, cast position, cast target, cast no target)
+
+- Last hits at 10 minutes (last hit at different minute counts 5, 10, 15, 20, 25, 30)
+- Denies at 10 minutes
+- Spell casts of Q,W,E,R (likely specific to a hero)
+
+
+Some features may only be adding noise to the system 
+
+Note many of these features should be recorded relative to the duration of the game, eg actions per minute or gold per minute because the duration of the game can affect the numbers greatly.
+
+* Week 7
+- Exclude a player completely and see if it works
+- See if increasing training examples makes it better
+- Check if beginning/early game which is more indicative
+- Look out for false negatives/positives which is better
+
+
+** TODO week
+- [] Keep evaluation/testing players separate from training to see if it still works
+- [] See if continually increasing training samples increases accuracy
+- [] Use split games to see which sections are better
+- [] Add more features
