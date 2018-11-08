@@ -220,3 +220,17 @@ Note many of these features should be recorded relative to the duration of the g
 - [] Draft report sections
 
 https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scrollTo=AjQFbe9PctSR
+
+
+* Week 8
+
+** TODO week
+- [] Using graphics card?
+- [] More features
+- [] At what stage adding more data isn't helpful
+- [] See if some heroes are better than ones for prediction
+- [] Use hero as a priori
+- [] Use 5 or 6 heroes (smurf specific heroes) broodmother, tinker, juggernaut
+
+
+
