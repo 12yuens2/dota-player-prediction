@@ -21,6 +21,15 @@
 - Maybe could try just combining all the features together and put all into neural network, rather than separate feature classifiers
 - Combination of features and training per game greatly increases the accuracy, but precision/recall are hard to gauge due to many less data points for training/testing
 
+3. Look at classifying pairs of games instead of a single game 
+- We still got quite good results because we are only looking at a fixed subset of players
+- Asking the question "Which player is it out of these 10,20,100?", relatively easy question to answer and not easily generalisable
+- A more difficult question is, "Given these two games, are they the same player?" 
+- Train on pairs of games that are either the same player or different players and then try to predict given two games
+
+4. Needed to average the averages for mouse movement, which means we lose more information
+- To lessen this, split the games into sections so less effect on average and we can also check if one section is better than another
+- We can plot graphs to see if different sections are better for accuracy or not
 
 * Week 1 - 18/09/18
 First meeting to discuss project. Main idea of the project is to predict who the player is in a game of DOTA based on replay data. 
@@ -196,7 +205,7 @@ Some features may only be adding noise to the system
 
 Note many of these features should be recorded relative to the duration of the game, eg actions per minute or gold per minute because the duration of the game can affect the numbers greatly.
 
-* Week 7
+* Week 7 - 02/11/18
 - Exclude a player completely and see if it works
 - See if increasing training examples makes it better
 - Check if beginning/early game which is more indicative
@@ -208,3 +217,6 @@ Note many of these features should be recorded relative to the duration of the g
 - [] See if continually increasing training samples increases accuracy
 - [] Use split games to see which sections are better
 - [] Add more features
+- [] Draft report sections
+
+https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scrollTo=AjQFbe9PctSR
