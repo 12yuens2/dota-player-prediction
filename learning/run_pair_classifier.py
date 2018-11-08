@@ -186,3 +186,148 @@ class PairClassifier:
 
         return accuracy, precision, recall
         
+
+# In[2]:
+
+
+import itertools
+import os
+import ntpath
+
+def get_pair_names(path):
+    files = ["{}/{}".format(path, file) for file in os.listdir(path)]
+    return list(itertools.permutations(files, 2))
+
+def get_pairs(pair_names, splits):
+    return [Pair(pair, splits) for pair in pair_names]
+
+def get_playerid(name):
+    return ntpath.basename(name)[:17]
+
+def is_same_player(id1, id2):
+    return 1 if id1 == id2 else 0
+
+def get_ys(pairs):
+    return [
+        is_same_player(get_playerid(file0), get_playerid(file1))
+        for file0,file1 in pairs
+    ]
+
+
+# In[3]:
+
+
+import random
+
+def sample_filter(sample, prob):
+    if sample[1] == 0:
+        if random.random() < prob:
+            return False
+        else:
+            return True
+    else:
+        return False
+
+def sample(X, y, ratio):
+    prob = float(y.count(1))/float(y.count(0))
+    combine = [(X[i], y[i]) for i in range(len(X))]
+    sample = [s for s in combine if not sample_filter(s, prob)]
+    
+    return map(list, zip(*sample))
+
+def count_sample(x):
+    negatives = x.count(0)
+    positives = x.count(1)
+    return "{} negative samples and {} positive samples".format(negatives, positives)
+
+
+# In[2]:
+
+
+from sklearn.model_selection import StratifiedKFold
+
+def ml(X, y, pc, cv, split_num):
+    skf = StratifiedKFold(cv)
+
+    for train_index, test_index in skf.split(X, y):
+        X_train = [X[i] for i in train_index]
+        X_test = [X[i] for i in test_index]
+        y_train = [y[i] for i in train_index]
+        y_test = [y[i] for i in test_index]
+
+        pc.train(X_train, y_train, split_num)
+        pc.test(X_test, y_test, split_num)
+        
+def ml_split(X, y, model, cv, splits):
+    for i in range(splits):
+        print("split {}".format(i))
+        ml(X, y, model, cv, i)
+        
+    print("all")
+    ml(X, y, model, cv, -1)
+
+
+import sys
+
+hero_id= sys.argv[1]
+path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
+pairs = get_pair_names(path)
+ys = get_ys(pairs)
+
+pair_names, y = sample(pairs, ys, 0.5)
+
+print(count_sample(y))
+
+pairs1 = get_pairs(pair_names, 1)
+
+import pickle
+
+pickle.dump(pairs1, open("pairs1.df", "wb"))
+
+#pairs2 = get_pairs(pair_names, 2)
+#pairs3 = get_pairs(pair_names, 3)
+#pairs5 = get_pairs(pair_names, 5)
+
+
+
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.ensemble import RandomForestClassifier
+#from sklearn.neural_network import MLPClassifier
+#
+#lr = PairClassifier(LogisticRegression(class_weight="balanced"), 
+#                    LogisticRegression(class_weight="balanced"), 
+#                    LogisticRegression(class_weight="balanced"), 
+#                    (3,))
+#
+#rf = PairClassifier(RandomForestClassifier(class_weight="balanced"), 
+#                    RandomForestClassifier(class_weight="balanced"), 
+#                    RandomForestClassifier(class_weight="balanced"), 
+#                    (3,))
+#
+#clf = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
+#                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
+#                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
+#                     (3,))
+#
+#clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+#                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+#                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+#                     (3,))
+#
+#def run_models(name, pairs, size):
+#    print("lr {}".format(name))
+#    ml_split(pairs, y, lr, 5, size)
+#
+#    print("rf {}".format(name))
+#    ml_split(pairs, y, rf, 5, size)
+#
+#    print("mlp {}".format(name))
+#    ml_split(pairs, y, clf, 5, size)
+#
+#    print("mlp small {}".format(name))
+#    ml_split(pairs, y, clfs, 5, size)
+#
+#run_models("pairs2", pairs2, 2)
+#run_models("pairs3", pairs3, 3)
+#run_models("pairs5", pairs5, 5)
+
