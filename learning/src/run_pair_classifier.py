@@ -2,7 +2,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import StratifiedKFold
@@ -32,25 +32,31 @@ def ml_split(X, y, model, cv, splits):
     ml(X, y, model, cv, -1)
 
 
+network_size = (4,)
+
 lr = PairClassifier(LogisticRegression(class_weight="balanced"), 
                     LogisticRegression(class_weight="balanced"), 
+                    LogisticRegression(class_weight="balanced"),
                     LogisticRegression(class_weight="balanced"), 
-                    (3,))
+                    network_size)
 
 rf = PairClassifier(RandomForestClassifier(class_weight="balanced"), 
                     RandomForestClassifier(class_weight="balanced"), 
+                    RandomForestClassifier(class_weight="balanced"),
                     RandomForestClassifier(class_weight="balanced"), 
-                    (3,))
+                    network_size)
 
 clf = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
-                     (3,))
+                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
+                     network_size)
 
 clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                     (3,))
+                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+                      network_size)
 
 def run_models(name, pairs, y, size):
     print("lr {}".format(name))
@@ -74,13 +80,18 @@ import pickle
 
 hero_id = sys.argv[1]
 path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
-pairs2 = pickle.load(open("{}/pairs2.df".format(path), "rb"))
-pairs3 = pickle.load(open("{}/pairs3.df".format(path), "rb"))
-pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
 
+#pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
+#run_models("pairs1", pairs1, get_ys(pairs1), 1)
+
+pairs2 = pickle.load(open("{}/pairs2.df".format(path), "rb"))
 run_models("pairs2", pairs2, get_ys(pairs2), 2)
+
+pairs3 = pickle.load(open("{}/pairs3.df".format(path), "rb"))
 run_models("pairs3", pairs3, get_ys(pairs3), 3)
-run_models("pairs5", pairs5, get_ys(pairs5), 5)
+#
+#pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
+#run_models("pairs5", pairs5, get_ys(pairs5), 5)
 
 #from sklearn.pipeline import Pipeline
 #from sklearn.decomposition import PCA
