@@ -6,6 +6,8 @@ import skadistats.clarity.wire.common.proto.DotaCommonMessages;
 import skadistats.clarity.wire.common.proto.DotaUserMessages;
 import util.ClarityUtil;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 
@@ -25,7 +27,7 @@ public class StatParser extends Parser {
     }
 
 
-    public void printStats(Context ctx, int id, String teamName) {
+    public String getStats(Context ctx, int id, String teamName) {
         if (teamName == "Dire") {
             // Offset id to get team data
             id -= 5;
@@ -39,20 +41,29 @@ public class StatParser extends Parser {
         int lastHits = getPlayerStat(ctx, id, teamData, "m_vecDataTeam.%i.m_iLastHitCount");
         int denies = getPlayerStat(ctx, id, teamData, "m_vecDataTeam.%i.m_iDenyCount");
 
-        System.out.println(String.format(
-                "Kills: %d, Assists: %d, Deaths: %d, Gold: %d, XP: %d, CS: %d, Denies: %d",
-                kills, assists, deaths, totalGold, totalXP, lastHits, denies));
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%d,%d,%d,%d,%d,%d,%d,", kills, assists, deaths, totalGold, totalXP, lastHits, denies));
+        sb.append(String.format("%f,%f,%f,", totalGold/duration, totalXP/duration, lastHits/duration));
+        sb.append(statsMap.get(filterSteamID).getStats(duration));
 
-        System.out.println(statsMap.get(filterSteamID).getStats(duration));
+        return sb.toString();
     }
 
+    public void writeStats(Context ctx, int playerID, String teamName, String outputFilename) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter((outputFilename));
+        writer.write("kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
+        writer.write(getStats(ctx, playerID, teamName));
+        writer.flush();
+
+        writer.close();
+    }
     public void parseUnitOrder(long steamid, DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
         if (statsMap.containsKey(steamid)) {
             PlayerStats stats = statsMap.get(steamid);
-            stats.update(gameTick, msg);
+            stats.update(msg);
         } else {
             PlayerStats stats = new PlayerStats();
-            stats.update(gameTick, msg);
+            stats.update(msg);
             statsMap.put(steamid, stats);
         }
     }

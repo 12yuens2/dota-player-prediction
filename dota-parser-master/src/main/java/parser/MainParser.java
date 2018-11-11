@@ -104,7 +104,7 @@ public class MainParser extends Parser{
                     run();
 
                     PlayerData pd = steamPDMap.get(filterSteamID);
-                    statParser.printStats(ctx, pd.getPlayerID(), pd.getTeamName());
+                    statParser.writeStats(ctx, pd.getPlayerID(), pd.getTeamName(), outputName + "-playerstats.csv");
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

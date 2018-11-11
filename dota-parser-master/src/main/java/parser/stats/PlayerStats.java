@@ -17,7 +17,7 @@ public class PlayerStats {
     }
 
     public String getStats(float duration) {
-        return String.format("%f,%d,%d, %d,%d, %d,%d,%d, %d\n",
+        return String.format("%f,%d,%d,%d,%d,%d,%d,%d,%d\n",
                 numActions/duration,
                 movePos, moveTarget,
                 attackPos, attackTarget,
@@ -25,7 +25,7 @@ public class PlayerStats {
                 holdPos);
     }
 
-    public void update(int gameTick, DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
+    public void update(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
         numActions++;
 
         switch(msg.getOrderType()) {
