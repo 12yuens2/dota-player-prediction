@@ -1,0 +1,31 @@
+\documentclass[Report.tex]{subfiles}
+
+\begin{document}
+
+\section{Software engineering process}
+The project made use of a variety of tools and technologies. Some tools were 
+
+\subsection{Existing software}
+
+\subsubsection{Clarity}
+\texttt{clarity} is a parser for Dota 2 replay files \cite{clarity}. It is open source and developed by Martin Schrodt to allow the parsing and extraction of in game data via  the replay files. Because of the overwhelming amount of data that a single Dota 2 game contains, \texttt{clarity} does not simply output the game data. Instead, it provides an interface for any programmer to extract the exact data or information needed. In some cases, the data is preprocessed and can be retrieved directly, such an entity data of players. In other cases, the data is unprocessed and provided as an original protobuf object from the replay, where further processing is required. 
+
+\texttt{clarity} is not the only parser available for Dota 2, there is also \texttt{smoke} (https://github.com/skadistats/smoke) for Python and \texttt{rapier} (https://github.com/odota/rapier) for Javascript. However, \texttt{clarity} is both faster and more complete (for example, \texttt{rapier} does not support in-game entities) than all the other options. It is also the only one that is still being actively developed, making it the best choice of parser for this project. 
+
+Because \texttt{clarity} is written in Java, the parser written in the project also had to be in Java. 
+
+% The parser also supports CSGO (Counter-Strike: Global Offensive) replays, so this project can be extended to include prediction for CSGO players given just the replay
+
+\subsubsection{OpenDOTA}
+The OpenDota Project \cite{opendota} is an open source data platform which provides real time data for Dota 2 matches. Players can create account on OpenDota, which synchronises with their in-game account to download and analyse replays of the player. This provides a player with diverse statistics useful for analysing performance over time. In addition to the performance statistics OpenDota provides players, the project also provides an API for developers to fetch data from the platform. This API is useful for this project, as it provides an easy method to fetch a list of games and players.
+
+For this project, the OpenDota API is used to gather a list of players and their recent games, then it is used fetch the salt which is needed to download the replays of that player's games. 
+
+
+\subsection{Engineering choices}
+
+\subsubsection{Parsing}
+
+\subsubsection{Machine learning}
+
+\end{document}
