@@ -15,7 +15,7 @@ The parsing of features . Furthermore, most of the steps are scripted to run aut
 Currently, there are two subsets of features used for machine learning: mouse movement and game-specific features. The mouse movement features looks only at the way the player moves their cursor, while the game-specific features look at statistics such as gold per minute and number of attack commands sent. 
 
 \subsection{Mouse movement}
-The mouse movement features were extracted following a paper \cite{mouse-dynamics} on user identification via mouse dynamics. The paper's methodology split the mouse movements into different types of actions, such as movement followed by left click, movement followed by drag etc. The concept of lower and higher level actions is also defined by the paper. Higher level actions are made up of low level actions. For example, a single click and a mouse movement sequence is defined as a low level action, whereas a sequence of mouse movements followed by a click is defined as a high level action. This approach was adapted but not completely followed due to the different data that is available from parsing replays.
+The mouse movement features were extracted following a paper \cite{mouse-dynamics} on user identification via mouse dynamics. The paper's methodology split the mouse movements into different types of actions, such as movement followed by left click, movement followed by drag etc. The concept of lower and higher level actions is also defined by the paper. Higher level actions are made up of low level actions. For example, a single click and a mouse movement sequence is defined as a low level action, whereas a sequence of mouse movements followed by a click is defined as a high level action. This approach was adapted to fit the data that is available from parsing replays.
 
 While multiple levels of actions are defined in the paper, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
 
@@ -26,7 +26,27 @@ Four \textbf{level 1 actions} are defined, they are:
 \item Move command (MC)
 \item Spell cast command (CC)
 \end{itemize}
-A mouse movement is defined as a sequence of positions of the cursor. Rather than using a fixed interval of time in which the sequence must fit, a threshold is used to end the sequence if no change in cursor position has occurred. This more naturally records a sequence of mouse movements and doesn't break up one sequence of movements to fit within a fixed time interval. 
+A mouse movement is defined as a sequence of positions of the cursor. Rather than using a fixed interval of time in which the sequence must fit, a threshold is used to end the sequence if no change in cursor position has occurred within the time of the threshold. This more naturally records a sequence of mouse movements that doesn't break up a sequence of movements to fit within a fixed time interval. Each MM action consists of three vectors:
+\begin{itemize}
+\item $\boldsymbol{t} = \{t_i\}^{n}_{i=1}$ - The game tick
+\item $\boldsymbol{x} = \{x_i\}^{n}_{i=1}$ - The x coordinate sampled on game tick $t_i$
+\item $\boldsymbol{y} = \{y_i\}^{n}_{i=1}$ - The y coordinate sampled on game tick $t_i$
+\end{itemize}
+The length $i$ is the same across the three vectors, but each MM action can have varying values of $i$. The vectors themselves are further processed to give the following list of basic movement features, based on the approach described by Gamboa et al \cite{mouse-features}:
+\begin{itemize}
+\item Angle of movement
+\item Curvature
+\item Rate of change of curvature
+\item Horizontal velocity
+\item Vertical velocity
+\item Velocity
+\item Acceleration
+\item Jerk
+\item Angular velocity
+\end{itemize}
+Next, the basic features are extracted into the statistics: minimum, maximum, mean and standard deviation. This was done because each of the basic features are vectors of varying length. For example, features such as velocity and curvature have $n + 1$ data points compared to their derivative features. Taking statistics of these vectors eliminates the problem with varied length features, but causes some data to be lost in the conversion.
+
+There is a significant lack of precise data in what can be retrieved using the parser on a replay, compared to direct recording of user mouse movements. For example, \cite{mouse-dynamics} can extract two features from a mouse click: click time (the time between mouse up and mouse down events) and distanced travelled during the click. From the parser, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to precise recording of mouse events by a user. 
 
 The combination of a MM action followed by a command action defines the \textbf{level 3 actions}:
 \begin{itemize}
@@ -34,7 +54,8 @@ The combination of a MM action followed by a command action defines the \textbf{
 \item Mouse movement sequence followed by a move command (MMMC)
 \item Mouse movement sequence followed by a spell cast command (MMSC)
 \end{itemize}
-To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands TODO. 
+To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands TODO. The processed features of the level 3 actions, are exactly the statistics of the basic movement features of the MM action leading to the command. 
+
 
 \subsection{Game-specific statistics}
 The other feature that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player. The statistics are:
@@ -60,16 +81,21 @@ The first machine learning problem was one of binary classification. The model w
 
 
 \subsection{Methodology}
-This problem was investigated with two different uses of the data.  Initially, each individual level 3 action was taken as a single data point for training, rather than all level 3 actions in a single game. This meant there was no concept of a game, as the model simply took lists of level 3 actions instead. The three level 3 actions were each used individually to see which would be more indicative for identifying the player. Each action was assigned as a positive sample if came from the particular player, and a negative sample otherwise. 
+This problem was investigated with two different uses of the data.  Initially, each individual level 3 action was taken as a single data point for training, rather than all level 3 actions in a single game. This meant there was no concept of a game, as the model simply took lists of level 3 actions instead. The three level 3 actions were each used individually to see which would be more indicative for identifying the player. Each action was assigned as a positive sample if came from the particular player, and a negative sample otherwise. This meant there was a large number of training and testing samples, as each game contained thousands of level 3 actions. Further, the mouse movement features and game-specific features were investigated independently in order to see how effective each type of feature. This first experiment was not done very rigorously as it was done to get preliminary results on whether the features were correlated to who the player is, and to give an indication to what direction should be taken next. 
 
-In the second iteration of this problem, the level 3 actions were combined together so that a model could be trained on individual games as data points rather than actions. In this approach, a separate model was used for each of the level 3 actions as before, but the results of the three models are combined by a simple voting mechanism and a simple MLP classifier. This gave a better representation of identifying a player from a game from training, rather than a large list of level 3 actions.
+In the second iteration of this problem, the level 3 actions were combined together so that a model could be trained on individual games as data points rather than actions. In this approach, a separate model was used for each of the level 3 actions as before, but the results of the models are combined by a simple voting mechanism and a simple MLP classifier. This gave a better representation of identifying a player from a game from training, rather than a large list of level 3 actions. This time, a more rigorous approach was used, making sure games from the training data did not appear in the testing data. Further, the same method was applied to different heroes and players. This showed the model being general enough to work for any hero or player as long as it was re-trained. 
 \subsection{Results}
 TODO graphs
 
 
 
 \section{Predicting the same player}
+There was a subtle issue with the way the first binary classification problem was framed, which led to very good accuracy and results for the machine learning model. The issue is that the first problem only worked and trained on a fixed set of players, and predicted out of that fixed set, whether it was one of the players or not. In the first stages, when testing on a small set of ~10 players, this gave very good results as the model only had to predict if a game belonged to one of the ten players. This meant that the model was not generalisable the set of every Dota 2 player, as it is not possible to train on all games by every player. Most importantly, the model is not able to predict games by players it has not trained on, always being fixed to the set of players used in training. To confirm this was an issue, the same model was trained and tested on a much larger set of players. It would be expected that the accuracy be reduced with an increased set of unique players, as the model must predict one player out of a larger pool.
 
+To solve this issue, the problem was framed in a different way. Rather than ask, ``given a game, which player does it belong to?'', the problem is framed as ``given two games, do they both belong to the same player?''. This question is subtly different, as the goal is after training on a large mix of players and games, to be able to predict whether two games belong to the same player, even if that player has never been seen before in training. Morever, this can be extended such that ``given a game and a player id, does the game belong to that player?'' by applying the pair problem for a list of games from the player id.
+
+\subsection{Methodology}
+The mouse movement features were altered in order to fit into this problem. Before, each game was evaluated separately, and so every level 3 action could be used. However, in this pair problem, two games must be used as inputs to the model. As games are of different lengths, the number of level 3 actions will be different for every game, which prevents the model taking every level 3 action as input. Instead, statistics such as the average, standard deviation and range are used for the list of level 3 actions over the entire game. 
 
 
 
