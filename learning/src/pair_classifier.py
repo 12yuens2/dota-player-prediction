@@ -4,7 +4,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
-
 from pair import Pair
 
 def print_scores(accuracy, precision, recall):
@@ -13,21 +12,24 @@ def print_scores(accuracy, precision, recall):
 
 class PairClassifier:
     
-    def __init__(self, attack_model, move_model, cast_model, network_size):
+    def __init__(self, attack_model, move_model, cast_model, stats_model, network_size):
         self.attack_model = attack_model
         self.move_model = move_model
         self.cast_model = cast_model
+        self.stats_model = stats_model
         
         self.network = MLPClassifier(solver="lbfgs", hidden_layer_sizes=network_size, random_state=42)
         
     def get_pairs_dfs(self, pairs, split_num=-1):
-        attacks, moves, casts = [], [], []
+        attacks, moves, casts, stats = [], [], [], []
         for pair in pairs:
             attacks.append(pair.get_attack_df(split_num))
             moves.append(pair.get_move_df(split_num))
             casts.append(pair.get_cast_df(split_num))
+            stats.append(pair.get_stats_df(split_num))
+
             
-        return (self.attack_model, pd.concat(attacks)), (self.move_model, pd.concat(moves)), (self.cast_model, pd.concat(casts))
+        return (self.attack_model, pd.concat(attacks)), (self.move_model, pd.concat(moves)), (self.cast_model, pd.concat(casts)), (self.stats_model, pd.concat(stats))
         
     def train(self, pairs, y, split_num=-1):
         for model, train_df in self.get_pairs_dfs(pairs, split_num):
@@ -45,8 +47,9 @@ class PairClassifier:
         attack_proba = self.get_proba(self.attack_model, pair.get_attack_df(split_num))
         move_proba = self.get_proba(self.move_model, pair.get_move_df(split_num))
         cast_proba = self.get_proba(self.cast_model, pair.get_cast_df(split_num))
+        stats_proba = self.get_proba(self.stats_model, pair.get_stats_df(split_num))
         
-        return [attack_proba[1], move_proba[1], cast_proba[1]]
+        return [attack_proba[1], move_proba[1], cast_proba[1], stats_proba[1]]
         
     def predict(self, pairs, split_num=-1):
         probabilities = [self.get_all_probas(pair, split_num) for pair in pairs]

@@ -18,8 +18,8 @@ def get_action_dfs(csvpath, dropna=True):
     return [attack_df, move_df, cast_df]
 
 def get_df(file0, file1, splits):
-    dfs0 = [get_stats(df, 0, splits) for df in get_action_dfs(file0)]
-    dfs1 = [get_stats(df, 1, splits) for df in get_action_dfs(file1)]
+    dfs0 = [get_properties(df, 0, splits) for df in get_action_dfs(file0)]
+    dfs1 = [get_properties(df, 1, splits) for df in get_action_dfs(file1)]
     
     dfs = []
     for i in range(len(dfs0)):
@@ -34,7 +34,7 @@ def get_df(file0, file1, splits):
     return dfs
     
     
-def get_stats(raw_df, fid, splits):
+def get_properties(raw_df, fid, splits):
     i = 0
     data = []
     headers = []
@@ -47,19 +47,6 @@ def get_stats(raw_df, fid, splits):
     df = pd.DataFrame(data=[data],columns=headers)
     
     return df
-
-def get_stats_split(raw_df, fid, splits):
-    i = 0
-    dfs = []
-    for df in split_df(raw_df, splits):
-        stats = df.describe().drop("count", 0).drop("steamid", 1).fillna(0)
-        headers = get_headers(stats, fid, i)
-        data = get_data(stats)
-        i += 1
-        
-        dfs.append(pd.DataFrame(data=[data], columns=headers))
-        
-    return dfs
 
 
 def split_df(df, splits):
@@ -90,7 +77,7 @@ def get_data(stats):
         for col in range(len(stats.columns.values))
     ]
 
-def get_pair_dfs(pair, splits, separate=False):
+def get_mouse_dfs(pair, splits, separate=False):
         attacks, moves, casts = [], [], []
         file0, file1 = pair
         
@@ -100,15 +87,35 @@ def get_pair_dfs(pair, splits, separate=False):
 
 def same_pair(pair):
     return int(pair[0] == pair[1])
-    
+
+
+
+
+def get_stats_df(pair):
+    file0, file1 = pair
+    df0 = stats_df_from_file(file0, 0)
+    df1 = stats_df_from_file(file1, 1)
+
+    return pd.merge(df0, df1, how="inner").drop("tmp", 1)
+
+def stats_df_from_file(filename, i):
+    filename = filename.replace("mouseaction", "playerstats")
+    df = pd.read_csv(filename)
+    df.columns = ["{}-{}".format(colname, i) for colname in df.columns]
+    df["tmp"] = 1
+
+    return df.fillna(0)
+
 class Pair:
     def __init__(self, pair, y, splits):
-        attack_df, move_df, cast_df = get_pair_dfs(pair, splits)
+        attack_df, move_df, cast_df = get_mouse_dfs(pair, splits)
+        stats_df = get_stats_df(pair)
         
         self.splits = splits
         self.attack_df = attack_df
         self.move_df = move_df
         self.cast_df = cast_df
+        self.stats_df = stats_df
 
         self.y = y
  
@@ -130,3 +137,7 @@ class Pair:
             return self.cast_df.filter(regex="-split{}".format(split_num - 1))
         else:
             return self.cast_df
+
+
+    def get_stats_df(self, split_num):
+        return self.stats_df

@@ -23,6 +23,7 @@ echo "Parsing replays"
 mkdir -p $DATA_PATH
 mkdir $DATA_PATH/mouseaction
 mkdir $DATA_PATH/mousesequence
+mkdir $DATA_PATH/playerstats
 
 java -jar dota-parser-master/target/dota-parser-1.0.jar $REPLAY_PATH
 find $DATA_PATH -name "*.csv" -size -10k -delete
@@ -30,4 +31,5 @@ find $DATA_PATH -name "*.csv" -size -10k -delete
 cd $DATA_PATH
 mv *mouseaction.csv mouseaction/
 mv *mousesequence.csv mousesequence/
+mv *playerstats.csv playerstats/
 

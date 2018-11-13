@@ -2,12 +2,11 @@ package parser;
 
 import org.apache.commons.compress.compressors.CompressorException;
 import parser.mouse.MouseParser;
+import parser.stats.StatParser;
 import skadistats.clarity.event.Insert;
 import skadistats.clarity.model.Entity;
-import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.processor.entities.Entities;
 import skadistats.clarity.processor.entities.OnEntityCreated;
-import skadistats.clarity.processor.entities.OnEntityUpdated;
 import skadistats.clarity.processor.entities.UsesEntities;
 import skadistats.clarity.processor.reader.OnMessage;
 import skadistats.clarity.processor.reader.OnTickStart;
@@ -22,7 +21,6 @@ import util.ClarityUtil;
 import util.DotaReplayStream;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -86,26 +84,27 @@ public class MainParser extends Parser{
     public void matchMessage(S2DotaGcCommon.CMsgDOTAMatch message) {
         System.out.println("Pre game: " + message.getPreGameDuration());
         System.out.println("Duration: " + message.getDuration());
+
+        statParser.duration = (float) Math.ceil(message.getDuration()/60.0);
     }
 
     public void start() {
         if (replayDir != null) {
             for (File replayFile : replayDir.listFiles()) {
                 try {
-                    initParsers();
-
                     this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
                     this.filterSteamID = Long.parseLong(replayFile.getName().substring(0, 17));
 
+                    initParsers();
+
                     String outputName = replayDir.getAbsolutePath() + "/../data/" + replayFile.getName();
                     mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
-//                    mouseParser.initWriter("test.csv", "test.csv");
 
                     initProcessing();
                     run();
 
-//                    PlayerData pd = steamPDMap.get(filterSteamID);
-//                    statParser.printStats(ctx, pd.getPlayerID(), pd.getTeamName());
+                    PlayerData pd = steamPDMap.get(filterSteamID);
+                    statParser.writeStats(ctx, pd.getPlayerID(), pd.getTeamName(), outputName + "-playerstats.csv");
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -185,7 +184,13 @@ public class MainParser extends Parser{
     @Override
     public void tick() {
         super.tick();
-        mouseParser.tick();
+        if (mouseParser != null) {
+            mouseParser.tick();
+        }
+
+        if (statParser != null) {
+            statParser.tick();
+        }
     }
 
     @OnTickStart
@@ -223,6 +228,7 @@ public class MainParser extends Parser{
             if ((filterSteamID != NO_FILTER && isFilterPlayer(e)) || (filterSteamID == NO_FILTER && ClarityUtil.isGamePlayer(e))) {
                 long steamid = idSteamMap.get(ClarityUtil.getEntityProperty(e, "m_iPlayerID"));
                 mouseParser.parseUnitOrder(steamid, msg);
+                statParser.parseUnitOrder(steamid, msg);
             }
         }
     }
