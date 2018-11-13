@@ -226,11 +226,14 @@ https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scroll
 
 ** TODO week
 - [] Using graphics card?
-- [] More features
+- [x] More features
 - [] At what stage adding more data isn't helpful
 - [] See if some heroes are better than ones for prediction
 - [] Use hero as a priori
+- [] Heroes as features
 - [] Use 5 or 6 heroes (smurf specific heroes) broodmother, tinker, juggernaut
+- [] Proper testing with players never seen before in training
+- [] Start plotting graphs
 
 
 
