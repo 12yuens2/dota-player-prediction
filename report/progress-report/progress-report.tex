@@ -15,38 +15,49 @@ The parsing of features . Furthermore, most of the steps are scripted to run aut
 Currently, there are two subsets of features used for machine learning: mouse movement and game-specific features. The mouse movement features looks only at the way the player moves their cursor, while the game-specific features look at statistics such as gold per minute and number of attack commands sent. 
 
 \subsection{Mouse movement}
-The mouse movement features were extracted following a paper \cite{mouse-dynamics} on user identification via mouse dynamics. The paper's methodology split the mouse movements into different types of actions, such as movement followed by left click, movement followed by drag etc. The concept of lower and higher level actions is also defined by the paper. Higher level actions are made up of low level actions. For example, a single click and a mouse movement sequence is defined as a low level action, whereas a sequence of mouse movements followed by a click is defined as a high level action. This approach was adapted to fit the data that is available from parsing replays.
+The mouse movement features were extracted following a paper by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions, such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
 
-While multiple levels of actions are defined in the paper, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
+There is a significant lack of precise data in what can be retrieved using the parser on a replay, compared to direct recording of user mouse movements. For example, \cite{mouse-dynamics} can extract two features from a mouse click: click time (the time between mouse up and mouse down events) and distanced travelled during the click. From the parser, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to precise recording of mouse events by a user. 
+
+While multiple levels of actions are defined by Feher et al \cite{mouse-dynamics}, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
 
 Four \textbf{level 1 actions} are defined, they are:
 \begin{itemize}
 \item Mouse movement sequence (MM)
 \item Attack command (AC)
 \item Move command (MC)
-\item Spell cast command (CC)
+\item Spell cast command (SC)
 \end{itemize}
-A mouse movement is defined as a sequence of positions of the cursor. Rather than using a fixed interval of time in which the sequence must fit, a threshold is used to end the sequence if no change in cursor position has occurred within the time of the threshold. This more naturally records a sequence of mouse movements that doesn't break up a sequence of movements to fit within a fixed time interval. Each MM action consists of three vectors:
+A mouse movement sequence is defined as a sequence of positions of the cursor. Rather than using a fixed interval of time in which the sequence must fit, a threshold $\tau$ is used to end the sequence if no change in cursor position has occurred within the time of the threshold. This more naturally records a sequence of mouse movements that doesn't break up a sequence of movements to fit within a fixed time interval. A larger threshold increases the average length of MM actions as more mouse positions are included into the sequence. 
+
+Each MM action consists of three vectors:
 \begin{itemize}
 \item $\boldsymbol{t} = \{t_i\}^{n}_{i=1}$ - The game tick
 \item $\boldsymbol{x} = \{x_i\}^{n}_{i=1}$ - The x coordinate sampled on game tick $t_i$
 \item $\boldsymbol{y} = \{y_i\}^{n}_{i=1}$ - The y coordinate sampled on game tick $t_i$
 \end{itemize}
 The length $i$ is the same across the three vectors, but each MM action can have varying values of $i$. The vectors themselves are further processed to give the following list of basic movement features, based on the approach described by Gamboa et al \cite{mouse-features}:
-\begin{itemize}
-\item Angle of movement
-\item Curvature
-\item Rate of change of curvature
-\item Horizontal velocity
-\item Vertical velocity
-\item Velocity
-\item Acceleration
-\item Jerk
-\item Angular velocity
-\end{itemize}
-Next, the basic features are extracted into the statistics: minimum, maximum, mean and standard deviation. This was done because each of the basic features are vectors of varying length. For example, features such as velocity and curvature have $n + 1$ data points compared to their derivative features. Taking statistics of these vectors eliminates the problem with varied length features, but causes some data to be lost in the conversion.
+\begin{table}[H]
+\renewcommand*{\arraystretch}{2.5}
+\centering
+\begin{tabular}{| c | c | c |}
+\hline
+& \textbf{Feature} & \textbf{Definition} \\ \hline
+1 & Angle of movement & $\theta_i = arctan(\dfrac{\delta y_1}{\delta x_1}) + \sum\limits_{j=1}^{i} \delta \theta_j$ \\ \hline
+2 & Curvature & $c = \dfrac{\delta\theta}{\delta s}$ \\ \hline
+3 & Rate of change of curvature & $\Delta c = \dfrac{\delta c}{\delta s}$ \\ \hline
+4 & Horizontal velocity & $V_x = \dfrac{\delta x}{\delta t}$ \\ \hline
+5 & Vertical velocity & $V_y = \dfrac{\delta y}{\delta t}$ \\ \hline
+6 & Velocity & $V = \sqrt{\delta V_{x}^{2} + \delta V_{y}^{2}}$ \\ \hline
+7 & Acceleration & $V' = \dfrac{\delta V}{\delta t}$ \\ \hline
+8 & Jerk & $V'' = \dfrac{\delta V'}{\delta t}$ \\ \hline
+9 & Angular velocity & $w = \dfrac{\delta \theta_t}{\delta t}$ \\ \hline
+\end{tabular}
+\caption{Basic mouse movement features used in \cite{mouse-features}}
+\label{mm-features}
+\end{table}
 
-There is a significant lack of precise data in what can be retrieved using the parser on a replay, compared to direct recording of user mouse movements. For example, \cite{mouse-dynamics} can extract two features from a mouse click: click time (the time between mouse up and mouse down events) and distanced travelled during the click. From the parser, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to precise recording of mouse events by a user. 
+Next, the basic features are extracted into the statistics: minimum, maximum, mean and standard deviation. This was done because each of the basic features are vectors of varying length. For example, features such as velocity and curvature have $n + 1$ data points compared to their derivative features. Taking statistics of these vectors eliminates the problem with varied length features, but causes some data to be lost in the conversion.
 
 The combination of a MM action followed by a command action defines the \textbf{level 3 actions}:
 \begin{itemize}
@@ -54,7 +65,13 @@ The combination of a MM action followed by a command action defines the \textbf{
 \item Mouse movement sequence followed by a move command (MMMC)
 \item Mouse movement sequence followed by a spell cast command (MMSC)
 \end{itemize}
-To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands TODO. The processed features of the level 3 actions, are exactly the statistics of the basic movement features of the MM action leading to the command. 
+To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands TODO. The features of the level 3 actions are statistics of the features in table \ref{mm-features} with two additional features:
+\begin{itemize}
+\item Game ticks to commands $t_n$ - the number of game ticks between the last two mouse positions
+\item Distance to command - The distance travelled between the last two mouse positions. 
+\end{itemize}
+
+This gives a total of TODO features for each type of level 3 action. 
 
 
 \subsection{Game-specific statistics}
