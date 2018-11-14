@@ -57,6 +57,7 @@ public class StatParser extends Parser {
 
         writer.close();
     }
+
     public void parseUnitOrder(long steamid, DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {
         if (statsMap.containsKey(steamid)) {
             PlayerStats stats = statsMap.get(steamid);

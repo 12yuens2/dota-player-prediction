@@ -86,6 +86,9 @@ public class MainParser extends Parser{
         System.out.println("Duration: " + message.getDuration());
 
         statParser.duration = (float) Math.ceil(message.getDuration()/60.0);
+
+        PlayerData pd = steamPDMap.get(filterSteamID);
+        statParser.writeStats(ctx, pd.getPlayerID(), pd.getTeamName(), outputName + "-playerstats.csv");
     }
 
     public void start() {
@@ -102,9 +105,6 @@ public class MainParser extends Parser{
 
                     initProcessing();
                     run();
-
-                    PlayerData pd = steamPDMap.get(filterSteamID);
-                    statParser.writeStats(ctx, pd.getPlayerID(), pd.getTeamName(), outputName + "-playerstats.csv");
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
