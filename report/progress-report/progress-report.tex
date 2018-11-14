@@ -15,11 +15,11 @@ The parsing of features . Furthermore, most of the steps are scripted to run aut
 Currently, there are two subsets of features used for machine learning: mouse movement and game-specific features. The mouse movement features looks only at the way the player moves their cursor, while the game-specific features look at statistics such as gold per minute and number of attack commands sent. 
 
 \subsection{Mouse movement}
-The mouse movement features were extracted following a paper by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions, such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
+The mouse movement features were extracted following a paper by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also used to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
 
-There is a significant lack of precise data in what can be retrieved using the parser on a replay, compared to direct recording of user mouse movements. For example, \cite{mouse-dynamics} can extract two features from a mouse click: click time (the time between mouse up and mouse down events) and distanced travelled during the click. From the parser, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to precise recording of mouse events by a user. 
+There is a significant lack of precision in the data retrieved using the parser on a replay, especially when compared to direct recording of user mouse movements. For example, with live recording of mouse movements, multiple events and features can be extracted from a single mouse click: left click up event, left click down event, click time (the time between click up and click down events) and distanced travelled during the click. From the replay, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to directly recording mouse events.
 
-While multiple levels of actions are defined by Feher et al \cite{mouse-dynamics}, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
+While multiple levels of mouse actions are defined by Feher et al \cite{mouse-dynamics}, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
 
 Four \textbf{level 1 actions} are defined, they are:
 \begin{itemize}
@@ -68,14 +68,40 @@ The combination of a MM action followed by a command action defines the \textbf{
 To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands TODO. The features of the level 3 actions are statistics of the features in table \ref{mm-features} with two additional features:
 \begin{itemize}
 \item Game ticks to commands $t_n$ - the number of game ticks between the last two mouse positions
-\item Distance to command - The distance travelled between the last two mouse positions. 
+\item Distance to command - the distance travelled between the last two mouse positions
+\begin{equation}
+d_i = \sqrt{\delta x_{i}^2 + \delta y_{i}^2}
+\end{equation} 
+where $\delta x_i = x_{i+1} - x_i$ and $\delta y_i = y_{i+1} - y_i$
 \end{itemize}
 
-This gives a total of TODO features for each type of level 3 action. 
+The total features of each level 3 action is shown in table \ref{tbl-level3features}, giving the total number of features as 38. 
+\newcommand{\fourfeatures}[1]{#1 & Minimum, maximum, mean, standard deviation & 4 \\ \hline}
+\begin{table}[H]
+\renewcommand*{\arraystretch}{1.5}
+\centering
+\begin{tabular}{| c | c | c |}
+\hline
+\textbf{Property} & \textbf{Features} & \textbf{Number of features} \\ \hline
+\fourfeatures{Angle of movement}
+\fourfeatures{Curvature}
+\fourfeatures{Rate of change of curvature}
+\fourfeatures{Horizontal velocity}
+\fourfeatures{Vertical velocity}
+\fourfeatures{Velocity}
+\fourfeatures{Acceleration}
+\fourfeatures{Jerk}
+\fourfeatures{Angular velocity}
+Game ticks to command & Single value & 1 \\ \hline
+Distance to command & Single value & 1 \\ \hline
+\end{tabular}
+\caption{Final processed features for each level 3 action}
+\label{tbl-level3features}
+\end{table}
 
 
 \subsection{Game-specific statistics}
-The other feature that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player. The statistics are:
+The other feature subset that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player, rather than purely their behaviour. The statistics are:
 \begin{itemize}
 \item Gold per minute
 \item XP per minute
@@ -91,7 +117,7 @@ The other feature that was added for the machine learning models are game-specif
 \item Number of spell cast commands with no target
 \item Number of hold position commands
 \end{itemize}
-Some of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. 
+Some of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies not taken as per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of them game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
 
 \section{Predicting the player}
 The first machine learning problem was one of binary classification. The model was trained on the question ``Given a game of Dota 2, is the player on a specific hero the player we are looking for?" The problem was fixed on a particular hero in order to remove any extra complexity that may rise from including different heroes, such as playstyle of the hero. 
