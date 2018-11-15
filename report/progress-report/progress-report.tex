@@ -5,6 +5,8 @@
 \usepackage{../sty/sizhetitle}
 \addbibresource{references.bib}
 
+\usetikzlibrary{arrows}
+
 \begin{document}
 \maketitle{CS5199 - Individual Masters Project}{John Thomson}
 
@@ -119,25 +121,109 @@ The other feature subset that was added for the machine learning models are game
 \end{itemize}
 Some of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies not taken as per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of them game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
 
-\section{Predicting the player}
-The first machine learning problem was one of binary classification. The model was trained on the question ``Given a game of Dota 2, is the player on a specific hero the player we are looking for?" The problem was fixed on a particular hero in order to remove any extra complexity that may rise from including different heroes, such as playstyle of the hero. 
+\section{Experiments and results}
+
+\subsection{Gathering data}
+The data is collected through a pipeline of three general steps before it is stored in a suitable format for machine learning. 
+\begin{enumerate}
+\item Data collection - downloading replay files
+\item Data processing - parsing the replays
+\item Feature extraction - collating the parsed data into features
+\end{enumerate}
+
+\subsubsection{Data collection}
+To download the replays, a combination of the OpenDota \cite{opendota} API and Valve's official API was used. The OpenDota API is used to fetch a list of players and their games given a number of conditions. This allows the replays downloaded to be controlled in a very specific way. For example, the game mode and hero id can be specified to ensure all games returned by the API are from the same player, in the same game mode and playing the same hero. This control is important to isolate additional variables that may affect player behaviour. 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=stealth']
+% Locations
+\def\ClientToServer{++(6,0)}
+\def\ServerToClient{++(-7,0)}
+\def\ValveToClient{++(-12,0)}
+\def\Lifeline{++(0,-10)}
+
+% Lifelines
+\path (0,0) node[draw] (Client) {Client}
+      (7,0) node[draw] (Server) {OpenDota API}
+      (12,0) node[draw] (Valve)  {Valve API};
+\draw (Client) -- \Lifeline (Server) -- \Lifeline (Valve) -- \Lifeline;
+
+% Blocks
+\path (Server)
+      ++(0,-1) node (BeginHeroes) {} node[below right] {\texttt{\ /heroes}}
+      ++(0,-1) node (EndHeroes)   {};
+\filldraw[fill=blue!30] (BeginHeroes.west) rectangle (EndHeroes.east);
+
+\path (Server)
+      ++(0,-3.25) node (BeginPlayer) {} node[below right] {\texttt{\ /players}}
+      ++(0,-1) node (EndPlayer) {};
+\filldraw[fill=red!30] (BeginPlayer.west) rectangle (EndPlayer.east);
+
+\path (Server)
+      ++(0,-5.5) node (BeginMatches) {} node[below right] {\texttt{\ /matches}}
+      ++(0,-1) node (EndMatches) {};
+\filldraw[fill=green!30] (BeginMatches.west) rectangle (EndMatches.east);
+
+\path (Valve)
+      ++(0,-7.75) node (BeginReplays) {} node[below right] {\ Replay cluster}
+      ++(0,-1) node (EndReplays) {};
+\filldraw[fill=black!30] (BeginReplays.west) rectangle (EndReplays.east);
 
 
-\subsection{Methodology}
+% Calls
+\draw[->] (BeginHeroes)\ServerToClient -- node[above] {\texttt{hero\_id}} (BeginHeroes);
+\draw[->] (EndHeroes) -- node[above] {List of player ids} \ServerToClient;
+
+\draw[->] (BeginPlayer)\ServerToClient -- node[above] {\texttt{player\_id, gamemode, hero\_id}} (BeginPlayer);
+\draw[->] (EndPlayer) -- node[above] {List of match ids} \ServerToClient;
+
+\draw[->] (BeginMatches)\ServerToClient -- node[above] {\texttt{match\_id}} (BeginMatches);
+\draw[->] (EndMatches) -- node[above] {Replay cluster and salt} \ServerToClient;
+
+\draw[->] (BeginReplays)\ValveToClient -- node[above] {\texttt{cluster\_id, salt}} (BeginReplays);
+\draw[->] (EndReplays) -- node[above] {\texttt{.dem} replay file} \ValveToClient;
+
+\end{tikzpicture}
+\caption{Sequence of API calls to download  replay files}
+\label{fig:api-calls}
+\end{figure}
+
+Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API is required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Occasionally, the replay files are not found as they may have been deleted, or the cluster unreachable. This is not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
+
+\subsubsection{Data processing}
+The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands for level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game. 
+
+
+\subsubsection{Feature extraction}
+With the csv data available after parsing, the data is collated into \texttt{pandas} Dataframes using Python. The dataframes provide many useful functions, such as dealing with NaNs and merging dataframes together. The dataframes are also match perfectly with the \texttt{scikit-learn} machine learning library in Python, which is able to take in any dataframe as input, treating each row of the dataframe as a data point for training. 
+
+The features extracted into the dataframes differ depending on the machine learning model and problem. For some models, the dataframes were unchanged from the raw csvs, but for others, further processing was done. For more complex models which require further processing of dataframes, the resulting dataframes are stored in order to reduce the time taken so the dataframes do not have to be re-calculated and created when new models or techniques are trained and tested. 
+
+\subsection{Predicting the player (Game classification)}
+The first machine learning problem was modelled as a binary classification problem. The model was trained on the question: \textit{Given a game of Dota 2, is the player on a specific hero the player we are looking for?} The problem used a fixed hero in order to remove any extra complexity that may rise from including different heroes, such as playstyle of the hero. 
+
+
+\subsubsection{Methodology}
 This problem was investigated with two different uses of the data.  Initially, each individual level 3 action was taken as a single data point for training, rather than all level 3 actions in a single game. This meant there was no concept of a game, as the model simply took lists of level 3 actions instead. The three level 3 actions were each used individually to see which would be more indicative for identifying the player. Each action was assigned as a positive sample if came from the particular player, and a negative sample otherwise. This meant there was a large number of training and testing samples, as each game contained thousands of level 3 actions. Further, the mouse movement features and game-specific features were investigated independently in order to see how effective each type of feature. This first experiment was not done very rigorously as it was done to get preliminary results on whether the features were correlated to who the player is, and to give an indication to what direction should be taken next. 
 
 In the second iteration of this problem, the level 3 actions were combined together so that a model could be trained on individual games as data points rather than actions. In this approach, a separate model was used for each of the level 3 actions as before, but the results of the models are combined by a simple voting mechanism and a simple MLP classifier. This gave a better representation of identifying a player from a game from training, rather than a large list of level 3 actions. This time, a more rigorous approach was used, making sure games from the training data did not appear in the testing data. Further, the same method was applied to different heroes and players. This showed the model being general enough to work for any hero or player as long as it was re-trained. 
-\subsection{Results}
+
+\begin{figure}[H]
+\caption{Difference between the first and second approach towards mouse movements in game classification.}
+\end{figure}
+
+\subsubsection{Results}
 TODO graphs
 
 
 
-\section{Predicting the same player}
+\subsection{Predicting the same player (Pair classification)}
 There was a subtle issue with the way the first binary classification problem was framed, which led to very good accuracy and results for the machine learning model. The issue is that the first problem only worked and trained on a fixed set of players, and predicted out of that fixed set, whether it was one of the players or not. In the first stages, when testing on a small set of ~10 players, this gave very good results as the model only had to predict if a game belonged to one of the ten players. This meant that the model was not generalisable the set of every Dota 2 player, as it is not possible to train on all games by every player. Most importantly, the model is not able to predict games by players it has not trained on, always being fixed to the set of players used in training. To confirm this was an issue, the same model was trained and tested on a much larger set of players. It would be expected that the accuracy be reduced with an increased set of unique players, as the model must predict one player out of a larger pool.
 
 To solve this issue, the problem was framed in a different way. Rather than ask, ``given a game, which player does it belong to?'', the problem is framed as ``given two games, do they both belong to the same player?''. This question is subtly different, as the goal is after training on a large mix of players and games, to be able to predict whether two games belong to the same player, even if that player has never been seen before in training. Morever, this can be extended such that ``given a game and a player id, does the game belong to that player?'' by applying the pair problem for a list of games from the player id.
 
-\subsection{Methodology}
+\subsubsection{Methodology}
 The mouse movement features were altered in order to fit into this problem. Before, each game was evaluated separately, and so every level 3 action could be used. However, in this pair problem, two games must be used as inputs to the model. As games are of different lengths, the number of level 3 actions will be different for every game, which prevents the model taking every level 3 action as input. Instead, statistics such as the average, standard deviation and range are used for the list of level 3 actions over the entire game. 
 
 
