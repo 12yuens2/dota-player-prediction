@@ -2,7 +2,6 @@ package parser.stats;
 
 import parser.Parser;
 import skadistats.clarity.processor.runner.Context;
-import skadistats.clarity.wire.common.proto.DotaCommonMessages;
 import skadistats.clarity.wire.common.proto.DotaUserMessages;
 import util.ClarityUtil;
 
@@ -31,6 +30,11 @@ public class StatParser extends Parser {
         if (teamName == "Dire") {
             // Offset id to get team data
             id -= 5;
+        }
+
+        if (duration == 0) {
+            duration = (float) (gameTick/30.0) - 90;
+            System.out.println("Using gametick " + gameTick + "for duation " + duration);
         }
         String teamData = TEAM_DATA + teamName;
         int kills = getPlayerStat(ctx, id, PLAYER_RESOURCE, "m_vecPlayerTeamData.%i.m_iKills");
