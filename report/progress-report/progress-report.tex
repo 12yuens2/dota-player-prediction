@@ -1,17 +1,20 @@
-\documentclass{../sty/SizheArticle}
+\documentclass{SizheArticle}
+
 
 \title{Progress report}
 \author{Sizhe Yuen}
-\usepackage{../sty/sizhetitle}
+\usepackage{sizhetitle}
 \addbibresource{references.bib}
 
 \usetikzlibrary{arrows}
 
 \begin{document}
-\maketitle{CS5199 - Individual Masters Project}{John Thomson}
+\maketitlepage{CS5199 - Individual Masters Project}{John Thomson}
 
 \section{Introduction}
-The parsing of features . Furthermore, most of the steps are scripted to run automatically, such as automatically downloading replays from the OpenDota API, parsing the replays and saving the parsed data. This makes it trivial to get new data as it only takes time, but no manual effort. 
+Progress has been made towards extraction of features and multiple models trained to guide the direction of the project. The features are parsed from Dota 2 replay files and different problems explored, from using every row of features as input, to collating all rows and using each game as input to different models. Furthermore, most of the steps are scripted to run automatically, such as automatically downloading replays from the OpenDota API, parsing the replays and saving the parsed data. This makes it trivial to get new data as it only takes time, but no manual effort. 
+
+The parts currently lacking in the project are rigorous and methodical experiments to gather data properly, and to analyse that data. Having a rigorous method will also help the analysis and evaluation of combining different features, which is a key piece of the project. Finally, more development must be done in order to turn the various scripts into some form of simple program or tool, with a trained model that can predict on new data provided as input.  
 
 \section{Machine learning features}
 Currently, there are two subsets of features used for machine learning: mouse movement and game-specific features. The mouse movement features looks only at the way the player moves their cursor, while the game-specific features look at statistics such as gold per minute and number of attack commands sent. 
@@ -67,7 +70,7 @@ The combination of a MM action followed by a command action defines the \textbf{
 \item Mouse movement sequence followed by a move command (MMMC)
 \item Mouse movement sequence followed by a spell cast command (MMSC)
 \end{itemize}
-To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands TODO. The features of the level 3 actions are statistics of the features in table \ref{mm-features} with two additional features:
+To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands. The features of the level 3 actions are statistics of the features in table \ref{mm-features} with two additional features:
 \begin{itemize}
 \item Game ticks to commands $t_n$ - the number of game ticks between the last two mouse positions
 \item Distance to command - the distance travelled between the last two mouse positions
@@ -103,23 +106,29 @@ Distance to command & Single value & 1 \\ \hline
 
 
 \subsection{Game-specific statistics}
-The other feature subset that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player, rather than purely their behaviour. The statistics are:
+The other feature subset that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player, rather than purely their behaviour. 
+
+The statistics are:
 \begin{itemize}
 \item Gold per minute
 \item XP per minute
 \item CS per minute
 \item Denies
 \item Actions per minute
-\item Number of move commands on target
-\item Number of move commands on position
-\item Number of attack commands on target
-\item Number of attack commands on position
-\item Number of spell cast commands on target
-\item Number of spell cast commands on position
-\item Number of spell cast commands with no target
-\item Number of hold position commands
+\item No. of move commands on target per minute
+\item No. of move commands on position per minute
+\item No. of attack commands on target per minute
+\item No. of attack commands on position per minute
+\item No. of spell cast commands on target per minute
+\item No. of spell cast commands on position per minute
+\item No. of spell cast commands with no target per minute
+\item No. of hold position commands per minute
 \end{itemize}
-Some of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies not taken as per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of them game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
+Most of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies is not taken as per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of them game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
+
+There are some obvious statistics that were omitted from this feature set. The most obvious is the number of kills, deaths and assists (KDA) for the player. This was omitted because the KDA stats varies for the same player depending on their personal performance, and the performance of their team for a single game. Further, it is not uncommon for different players to have similar KDA statistics as there is not a large range of values for the number of kills, deaths and assists, making the stats unlikely to be very useful in player prediction. However, it is still interesting to see and prove that the KDA is not useful by evaluating models that use it, compared to models that don't. For this reason, this statistic is still kept accessible for the future. 
+
+
 
 \section{Experiments and results}
 
@@ -192,7 +201,7 @@ To download the replays, a combination of the OpenDota \cite{opendota} API and V
 Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API is required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Occasionally, the replay files are not found as they may have been deleted, or the cluster unreachable. This is not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
 
 \subsubsection{Data processing}
-The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands for level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game. 
+The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands of level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game. 
 
 
 \subsubsection{Feature extraction}
@@ -200,42 +209,51 @@ With the csv data available after parsing, the data is collated into \texttt{pan
 
 The features extracted into the dataframes differ depending on the machine learning model and problem. For some models, the dataframes were unchanged from the raw csvs, but for others, further processing was done. For more complex models which require further processing of dataframes, the resulting dataframes are stored in order to reduce the time taken so the dataframes do not have to be re-calculated and created when new models or techniques are trained and tested. 
 
+
 \subsection{Predicting the player (Game classification)}
 The first machine learning problem was modelled as a binary classification problem. The model was trained on the question: \textit{Given a game of Dota 2, is the player on a specific hero the player we are looking for?} The problem used a fixed hero in order to remove any extra complexity that may rise from including different heroes, such as playstyle of the hero. 
 
 
 \subsubsection{Methodology}
-This problem was investigated with two different uses of the data.  Initially, each individual level 3 action was taken as a single data point for training, rather than all level 3 actions in a single game. This meant there was no concept of a game, as the model simply took lists of level 3 actions instead. The three level 3 actions were each used individually to see which would be more indicative for identifying the player. Each action was assigned as a positive sample if came from the particular player, and a negative sample otherwise. This meant there was a large number of training and testing samples, as each game contained thousands of level 3 actions. Further, the mouse movement features and game-specific features were investigated independently in order to see how effective each type of feature. This first experiment was not done very rigorously as it was done to get preliminary results on whether the features were correlated to who the player is, and to give an indication to what direction should be taken next. 
+This problem was investigated with two different uses of the data.  Initially, each individual level 3 action was taken as a single data point for training, rather than all level 3 actions in a single game. This meant there was no concept of a game, as the model simply took lists of level 3 actions instead. The three level 3 actions were each used individually to see which would be more indicative for identifying the player. In this sense, it be asking the question: \textit{Given a level 3 action, is the player who performed this action the player we are looking for?} Each action was assigned as a positive sample if came from the particular player, and a negative sample otherwise. This meant there was a large number of training and testing samples, as each game contained thousands of level 3 actions. Further, the mouse movement features and game-specific features were investigated independently in order to see how effective each type of feature. Clearly, this is not a very realistic experiment or result to look at, but it gives a good indication that looking at mouse movements alone can have some amount of predictive capabilities. 
 
 In the second iteration of this problem, the level 3 actions were combined together so that a model could be trained on individual games as data points rather than actions. In this approach, a separate model was used for each of the level 3 actions as before, but the results of the models are combined by a simple voting mechanism and a simple MLP classifier. This gave a better representation of identifying a player from a game from training, rather than a large list of level 3 actions. This time, a more rigorous approach was used, making sure games from the training data did not appear in the testing data. Further, the same method was applied to different heroes and players. This showed the model being general enough to work for any hero or player as long as it was re-trained. 
 
-\begin{figure}[H]
-\caption{Difference between the first and second approach towards mouse movements in game classification.}
-\end{figure}
+%\begin{figure}[H]
+%\caption{Difference between the first and second approach towards mouse movements in game classification.}
+%\end{figure}
 
-\subsubsection{Results}
-TODO graphs
+%\subsubsection{Results}
+%TODO graphs
 
 
 
 \subsection{Predicting the same player (Pair classification)}
 There was a subtle issue with the way the first binary classification problem was framed, which led to very good accuracy and results for the machine learning model. The issue is that the first problem only worked and trained on a fixed set of players, and predicted out of that fixed set, whether it was one of the players or not. In the first stages, when testing on a small set of ~10 players, this gave very good results as the model only had to predict if a game belonged to one of the ten players. This meant that the model was not generalisable the set of every Dota 2 player, as it is not possible to train on all games by every player. Most importantly, the model is not able to predict games by players it has not trained on, always being fixed to the set of players used in training. To confirm this was an issue, the same model was trained and tested on a much larger set of players. It would be expected that the accuracy be reduced with an increased set of unique players, as the model must predict one player out of a larger pool.
 
-To solve this issue, the problem was framed in a different way. Rather than ask, ``given a game, which player does it belong to?'', the problem is framed as ``given two games, do they both belong to the same player?''. This question is subtly different, as the goal is after training on a large mix of players and games, to be able to predict whether two games belong to the same player, even if that player has never been seen before in training. Morever, this can be extended such that ``given a game and a player id, does the game belong to that player?'' by applying the pair problem for a list of games from the player id.
+To solve this issue, the problem was framed in a different way. Rather than ask, \textit{Given a game, which player does it belong to?}, the problem is framed as \textit{Given a pair of games, do they both belong to the same player?}. This question is subtly different, as the goal is to train on a large mix of players and games, then to be able to predict whether two games belong to the same player, even if that player has never been seen before in training. Moreover, this can be extended such that \textit{Given a game and a player id, does the game belong to that player?} by applying the pair problem for a list of games from the player id. The idea is instead of finding a pattern for a specific player based on the features, which would not be general, the model finds a pattern to differentiate two players given two sets of the features for comparison. 
 
 \subsubsection{Methodology}
-The mouse movement features were altered in order to fit into this problem. Before, each game was evaluated separately, and so every level 3 action could be used. However, in this pair problem, two games must be used as inputs to the model. As games are of different lengths, the number of level 3 actions will be different for every game, which prevents the model taking every level 3 action as input. Instead, statistics such as the average, standard deviation and range are used for the list of level 3 actions over the entire game. 
+The mouse movement features were altered from the game classifier problem in order to fit into this problem. Before, each game was evaluated separately, so every level 3 action could be used. However, in this pair problem, two games must be used as inputs to the model. As games are of different lengths, the number of level 3 actions will be different for every game, which prevents the model taking every level 3 action as input. Instead, statistics such as the average, standard deviation and range are used for the list of level 3 actions over the entire game. This causes lots of data to be lost, as the hundreds of level 3 actions are reduced to a few statistics. To alleviate this issue as much as possible, the games are split into portions, where each portions has its own statistics. For example, each game can be split into thirds where each third will have its own average and standard deviation for each type of level 3 action. Splitting a game like this not only decreases the data loss due to averaging, but enables each portion to be evaluated individually to see whether any section of a game is more indicative of player behaviour compared to another section. 
 
 
 
 \section{Conclusion and future work}
-A lot of the foundational work has been completed, and a working model and machine learning pipeline has been established with good results. The goal of the next few weeks is to discover how to improve on the current results and find interesting relationships between the data and the predictive power of the models. 
+A lot of the foundational work has been completed, and a working model and machine learning pipeline have been established with good results. The goal of the next few weeks is to discover how to improve on the current results and find interesting relationships between the data and the predictive power of the models. 
 
-\subsection{Heroes as a priori or feature}
-Currently, all machine learning has been done using the a fixed hero. This removes the addition factor of hero selection affecting the results and features, as different heroes have different playstyles. The next major piece of work is to incorporate hero selection as part of the pipeline, rather than excluding it. 
+\subsection{Additional game-specific features}
+Although there are some game-specific features used in the current models, there are some more strategy-based features that can be easily extracted. These are features such as item purchases, skill builds and item slots. These features are potentially very useful, as players have different strategies and preferences for certain items or builds. At the same time, the same strategy can often be echoed by a majority of players because it is the most optimised and established strategy. Regardless, it is important to include these features as it is interesting to see whether they are useful or not, especially depending on the combination of these features with the other features that have already been extracted. 
+
+\subsection{Graphs and results}
+All results gathered so far in the project are preliminary results used to guide the direction of the project. The results are a means to get an early indication as to the success of the various approaches used. However, because they have not been gathered through a methodical method, it is currently difficult to draw comparisons between the different models and experiments. Going forward, an important step is to establish a method in which all models can be evaluated against, using the same data.
+
+\subsection{Pair classification with account ids}
+Though the current models are able to perform classification on a pair of games, ideally  they take a single game and an account id. This can be done by downloading more games from the given account id and running a pair classification on each downloaded game and the given game. 
+
+Another point of concern is that currently all machine learning has been done using the a fixed hero. This removes the additional factor of hero selection affecting the results and features, as different heroes have different playstyles. It is still under discussion whether to start the major piece of work to incorporate hero selection as part of the pipeline, rather than excluding it. A simpler solution would be to train a different model for each hero. This means the models will not be general to all heroes, but could be interesting to see if some heroes are more predictive than others, or whether some heroes need tweaked models. 
 
 \subsection{Feature selection}
-
+There are many known methods and algorithms that can be used to select a subset of features for machine learning. The current method of feature selection is based on heuristic knowledge of what might be useful, but it is difficult to judge especially when it comes to the combination of many features. It would be interesting to see what the best results can be achieved by heuristic selection of features, and compared these results to those achieved by automatic selection algorithms. Perhaps the feature selection algorithms can pick out combinations that give good results and remove noise that would not have been thought of from a heuristic point of view. 
 
 \printbibliography
 
