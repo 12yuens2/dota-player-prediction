@@ -46,6 +46,7 @@ public class StatParser extends Parser {
         int denies = getPlayerStat(ctx, id, teamData, "m_vecDataTeam.%i.m_iDenyCount");
 
         StringBuilder sb = new StringBuilder();
+	sb.append(String.format("%d,", filterSteamID));
         sb.append(String.format("%d,%d,%d,%d,%d,%d,%d,", kills, assists, deaths, totalGold, totalXP, lastHits, denies));
         sb.append(String.format("%f,%f,%f,", totalGold/duration, totalXP/duration, lastHits/duration));
         sb.append(statsMap.get(filterSteamID).getStats(duration));
@@ -55,7 +56,7 @@ public class StatParser extends Parser {
 
     public void writeStats(Context ctx, int playerID, String teamName, String outputFilename) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter((outputFilename));
-        writer.write("kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
+        writer.write("steamid,kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
         writer.write(getStats(ctx, playerID, teamName));
         writer.flush();
 
