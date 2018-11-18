@@ -70,12 +70,14 @@ def get_headers(stats, fid, i):
         for col in range(len(stats.columns.values))
     ]
 
+
 def get_data(stats):
     return [
         stats.iloc[row,col]
         for row in range(len(stats.index))
         for col in range(len(stats.columns.values))
     ]
+
 
 def get_mouse_dfs(pair, splits, separate=False):
         attacks, moves, casts = [], [], []
@@ -90,13 +92,13 @@ def same_pair(pair):
 
 
 
-
 def get_stats_df(pair):
     file0, file1 = pair
     df0 = stats_df_from_file(file0, 0)
     df1 = stats_df_from_file(file1, 1)
 
-    return pd.merge(df0, df1, how="inner").drop("tmp", 1)
+    return pd.merge(df0, df1, how="inner").drop("tmp", 1).fillna(0)
+
 
 def stats_df_from_file(filename, i):
     filename = filename.replace("mouseaction", "playerstats")
@@ -106,11 +108,13 @@ def stats_df_from_file(filename, i):
 
     return df.fillna(0)
 
+
 class Pair:
     def __init__(self, pair, y, splits):
         attack_df, move_df, cast_df = get_mouse_dfs(pair, splits)
         stats_df = get_stats_df(pair)
-        
+
+        self.files = pair
         self.splits = splits
         self.attack_df = attack_df
         self.move_df = move_df
@@ -118,20 +122,33 @@ class Pair:
         self.stats_df = stats_df
 
         self.y = y
- 
-            
+
+
+    def get_df(self, df_type, split_num):
+        if df_type == "ATTACK":
+            return self.get_attack_df(split_num)
+        elif df_type == "MOVE":
+            return self.get_move_df(split_num)
+        elif df_type == "CAST":
+            return self.get_cast_df(split_num)
+        elif df_type == "STATS":
+            return self.get_stats_df(split_num)
+
+
     def get_attack_df(self, split_num):
         if split_num > 0:
             return self.attack_df.filter(regex="-split{}".format(split_num - 1))
         else:
             return self.attack_df
-        
+
+
     def get_move_df(self, split_num):
         if split_num > 0:
             return self.move_df.filter(regex="-split{}".format(split_num - 1))
         else:
             return self.move_df
-        
+
+
     def get_cast_df(self, split_num):
         if split_num > 0:
             return self.cast_df.filter(regex="-split{}".format(split_num - 1))

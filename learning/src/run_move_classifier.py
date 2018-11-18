@@ -39,7 +39,7 @@ data = []
 lr_mc = MoveClassifier(filter_id, lr_model_map, path)
 data.extend(lr_mc.cross_validate(5))
 
-rf_mc = MoveClassifier(fitler_id, rf_model_map, path)
+rf_mc = MoveClassifier(filter_id, rf_model_map, path)
 data.extend(rf_mc.cross_validate(5))
 
 with open("out.data", "w") as f:

@@ -12,49 +12,47 @@ def print_scores(accuracy, precision, recall):
 
 class PairClassifier:
     
-    def __init__(self, attack_model, move_model, cast_model, stats_model, network_size):
-        self.attack_model = attack_model
-        self.move_model = move_model
-        self.cast_model = cast_model
-        self.stats_model = stats_model
-        
+    def __init__(self, model_map, network_size):
+        self.model_map = model_map
         self.network = MLPClassifier(solver="lbfgs", hidden_layer_sizes=network_size, random_state=42)
         
-    def get_pairs_dfs(self, pairs, split_num=-1):
-        attacks, moves, casts, stats = [], [], [], []
-        for pair in pairs:
-            attacks.append(pair.get_attack_df(split_num))
-            moves.append(pair.get_move_df(split_num))
-            casts.append(pair.get_cast_df(split_num))
-            stats.append(pair.get_stats_df(split_num))
+    def concat_pairs(self, pairs, split_num=-1):
+        dfs = {}
+        for feature, model in self.model_map.items():
+            df = pd.concat([pair.get_df(feature, split_num) for pair in pairs])
+            dfs[feature] = df
 
-            
-        return (self.attack_model, pd.concat(attacks)), (self.move_model, pd.concat(moves)), (self.cast_model, pd.concat(casts)), (self.stats_model, pd.concat(stats))
-        
+        return dfs
+
+
     def train(self, pairs, y, split_num=-1):
-        for model, train_df in self.get_pairs_dfs(pairs, split_num):
-            model.fit(train_df, y)
+        for feature, df in self.concat_pairs(pairs, split_num).items():
+            self.model_map[feature].fit(df, y)
         self.fit_network(pairs, y, split_num)
-        
+
+
     def fit_network(self, pairs, y, split_num):
         X = [self.get_all_probas(pair, split_num) for pair in pairs]
         self.network.fit(X, y)
+
         
     def get_proba(self, model, df):
         return model.predict_proba(df)[0]
-        
+
+
     def get_all_probas(self, pair, split_num=-1):
-        attack_proba = self.get_proba(self.attack_model, pair.get_attack_df(split_num))
-        move_proba = self.get_proba(self.move_model, pair.get_move_df(split_num))
-        cast_proba = self.get_proba(self.cast_model, pair.get_cast_df(split_num))
-        stats_proba = self.get_proba(self.stats_model, pair.get_stats_df(split_num))
-        
-        return [attack_proba[1], move_proba[1], cast_proba[1], stats_proba[1]]
-        
+        probas = []
+        for feature, model in self.model_map.items():
+            probas.append(self.get_proba(model, pair.get_df(feature, split_num)))
+
+        return [proba[1] for proba in probas]
+
+
     def predict(self, pairs, split_num=-1):
         probabilities = [self.get_all_probas(pair, split_num) for pair in pairs]
         return self.network.predict(probabilities)
-    
+
+
     def test(self, pairs, y, split_num=-1):
         predictions = self.predict(pairs, split_num)
         

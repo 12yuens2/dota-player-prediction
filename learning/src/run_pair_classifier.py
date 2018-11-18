@@ -32,35 +32,34 @@ def ml_split(X, y, model, cv, splits):
     ml(X, y, model, cv, -1)
 
 
-network_size = (4,)
+network_size = (3,)
 
-lr = PairClassifier(LogisticRegression(class_weight="balanced"), 
-                    LogisticRegression(class_weight="balanced"), 
-                    LogisticRegression(class_weight="balanced"),
-                    LogisticRegression(class_weight="balanced"), 
-                    network_size)
+rf_map = {
+    "ATTACK": RandomForestClassifier(class_weight="balanced"),
+    "MOVE": RandomForestClassifier(class_weight="balanced"),
+    "CAST": RandomForestClassifier(class_weight="balanced"),
+    "STATS": RandomForestClassifier(class_weight="balanced")
+}
 
-rf = PairClassifier(RandomForestClassifier(class_weight="balanced"), 
-                    RandomForestClassifier(class_weight="balanced"), 
-                    RandomForestClassifier(class_weight="balanced"),
-                    RandomForestClassifier(class_weight="balanced"), 
-                    network_size)
+clf_map = {
+    "ATTACK": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    "MOVE": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    "CAST": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    "STATS": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,))
+}
 
-clf = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
-                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
-                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
-                     MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,64,)),
-                     network_size)
+rf = PairClassifier(rf_map, network_size)
+clf = PairClassifier(clf_map, network_size)
 
-clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-                      network_size)
+#clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+#                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+#                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
+#                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,)),
+#                      network_size)
 
 def run_models(name, pairs, y, size):
-    print("lr {}".format(name))
-    ml_split(pairs, y, lr, 5, size)
+#    print("lr {}".format(name))
+#    ml_split(pairs, y, lr, 5, size)
 
     print("rf {}".format(name))
     ml_split(pairs, y, rf, 5, size)
@@ -68,8 +67,8 @@ def run_models(name, pairs, y, size):
     print("mlp {}".format(name))
     ml_split(pairs, y, clf, 5, size)
 
-    print("mlp small {}".format(name))
-    ml_split(pairs, y, clfs, 5, size)
+#    print("mlp small {}".format(name))
+#    ml_split(pairs, y, clfs, 5, size)
 
 
 def get_ys(pairs):
@@ -81,15 +80,15 @@ import pickle
 hero_id = sys.argv[1]
 path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
 
-#pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
-#run_models("pairs1", pairs1, get_ys(pairs1), 1)
+pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
+run_models("pairs1", pairs1, get_ys(pairs1), 1)
 
 pairs2 = pickle.load(open("{}/pairs2.df".format(path), "rb"))
 run_models("pairs2", pairs2, get_ys(pairs2), 2)
 
 pairs3 = pickle.load(open("{}/pairs3.df".format(path), "rb"))
 run_models("pairs3", pairs3, get_ys(pairs3), 3)
-#
+
 #pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
 #run_models("pairs5", pairs5, get_ys(pairs5), 5)
 
