@@ -6,6 +6,7 @@ import pandas as pd
 def get_action_df(raw_df, action):
     return raw_df.loc[raw_df["actionType"] == action].drop("actionType", 1)
 
+
 def get_action_dfs(csvpath, dropna=True):
     raw_df = pd.read_csv(csvpath)
     if dropna:
@@ -16,6 +17,7 @@ def get_action_dfs(csvpath, dropna=True):
     cast_df = get_action_df(raw_df, "CAST")
 
     return [attack_df, move_df, cast_df]
+
 
 def get_df(file0, file1, splits):
     dfs0 = [get_properties(df, 0, splits) for df in get_action_dfs(file0)]
@@ -87,11 +89,6 @@ def get_mouse_dfs(pair, splits, separate=False):
         return dfs[0], dfs[1], dfs[2]
 
 
-def same_pair(pair):
-    return int(pair[0] == pair[1])
-
-
-
 def get_stats_df(pair):
     file0, file1 = pair
     df0 = stats_df_from_file(file0, 0)
@@ -126,35 +123,17 @@ class Pair:
 
     def get_df(self, df_type, split_num):
         if df_type == "ATTACK":
-            return self.get_attack_df(split_num)
+            return self._get_split_df(self.attack_df, split_num)
         elif df_type == "MOVE":
-            return self.get_move_df(split_num)
+            return self._get_split_df(self.move_df, split_num)
         elif df_type == "CAST":
-            return self.get_cast_df(split_num)
+            return self._get_split_df(self.cast_df, split_num)
         elif df_type == "STATS":
-            return self.get_stats_df(split_num)
+            return self.stats_df
 
 
-    def get_attack_df(self, split_num):
+    def _get_split_df(self, df, split_num):
         if split_num > 0:
-            return self.attack_df.filter(regex="-split{}".format(split_num - 1))
+            return df.filter(regex="-split{}".format(split_num - 1))
         else:
-            return self.attack_df
-
-
-    def get_move_df(self, split_num):
-        if split_num > 0:
-            return self.move_df.filter(regex="-split{}".format(split_num - 1))
-        else:
-            return self.move_df
-
-
-    def get_cast_df(self, split_num):
-        if split_num > 0:
-            return self.cast_df.filter(regex="-split{}".format(split_num - 1))
-        else:
-            return self.cast_df
-
-
-    def get_stats_df(self, split_num):
-        return self.stats_df
+            return df

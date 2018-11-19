@@ -42,7 +42,7 @@ class Game:
         self.csv_file = csv_file
 
 
-    def get_df(self, df_type):
+    def get_df(self, df_type, split_num):
         if df_type == "ATTACK":
             return self.attack_df
 

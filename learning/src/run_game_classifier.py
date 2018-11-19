@@ -1,10 +1,10 @@
 import os
+import classifiers
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 
 from game import Game
-from game_classifier import GameClassifier
 
 
 def contains_player(game, filter_id):
@@ -48,17 +48,20 @@ rf_stats_model_map = {
     "STATS": RandomForestClassifier(class_weight="balanced")
 }
 
-lr_gc = GameClassifier(filter_id, lr_model_map, (3,))
-data.extend(lr_gc.cross_validate(games, 5))
 
-rf_gc = GameClassifier(filter_id, rf_model_map, (3,))
-data.extend(rf_gc.cross_validate(games, 5))
+lr_gc = classifiers.GameClassifier(filter_id, lr_model_map, (3,))
+classifiers.cross_validate(games, 5, lr_gc, lr_gc.contains_player)
+#lr_gc.train(games, 
+#data.extend(lr_gc.cross_validate(games, 5))
 
-rf_stats_gc = GameClassifier(filter_id, rf_stats_model_map, (3,))
-data.extend(rf_stats_gc.cross_validate(games, 5))
+#rf_gc = GameClassifier(filter_id, rf_model_map, (3,))
+#data.extend(rf_gc.cross_validate(games, 5))
+#
+#rf_stats_gc = GameClassifier(filter_id, rf_stats_model_map, (3,))
+#data.extend(rf_stats_gc.cross_validate(games, 5))
 
-with open("out2.data", "w") as f:
-    f.write("move_type,model,eval_type,accuracy,precision,recall\n")
-    for line in data:
-        f.write(line)
-    f.flush()
+#with open("out2.data", "w") as f:
+#    f.write("move_type,model,eval_type,accuracy,precision,recall\n")
+#    for line in data:
+#        f.write(line)
+#    f.flush()

@@ -1,3 +1,5 @@
+import classifiers
+
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -6,8 +8,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import StratifiedKFold
-
-from pair_classifier import PairClassifier
 
 
 def ml(X, y, pc, cv, split_num):
@@ -48,8 +48,8 @@ clf_map = {
     "STATS": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,))
 }
 
-rf = PairClassifier(rf_map, network_size)
-clf = PairClassifier(clf_map, network_size)
+rf = classifiers.PairClassifier(rf_map, network_size)
+clf = classifiers.PairClassifier(clf_map, network_size)
 
 #clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
 #                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
@@ -57,22 +57,23 @@ clf = PairClassifier(clf_map, network_size)
 #                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,)),
 #                      network_size)
 
-def run_models(name, pairs, y, size):
+#def run_models(name, pairs, y, size):
 #    print("lr {}".format(name))
 #    ml_split(pairs, y, lr, 5, size)
 
-    print("rf {}".format(name))
-    ml_split(pairs, y, rf, 5, size)
-
-    print("mlp {}".format(name))
-    ml_split(pairs, y, clf, 5, size)
+#    print("rf {}".format(name))
+#    classifiers.cross_validate(pairs, 5, rf, get_y, size)
+#    ml_split(pairs, y, rf, 5, size)
+#
+#    print("mlp {}".format(name))
+#    ml_split(pairs, y, clf, 5, size)
 
 #    print("mlp small {}".format(name))
 #    ml_split(pairs, y, clfs, 5, size)
 
 
-def get_ys(pairs):
-    return [pair.y for pair in pairs]
+def get_y(pair):
+    return pair.y
 
 import sys
 import pickle
@@ -81,16 +82,17 @@ hero_id = sys.argv[1]
 path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
 
 pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
-run_models("pairs1", pairs1, get_ys(pairs1), 1)
+classifiers.cross_validate(pairs1, 5, rf, get_y, 1)
 
 pairs2 = pickle.load(open("{}/pairs2.df".format(path), "rb"))
-run_models("pairs2", pairs2, get_ys(pairs2), 2)
+classifiers.cross_validate(pairs2, 5, rf, get_y, 2)
 
 pairs3 = pickle.load(open("{}/pairs3.df".format(path), "rb"))
-run_models("pairs3", pairs3, get_ys(pairs3), 3)
+classifiers.cross_validate(pairs3, 5, rf, get_y, 3)
 
-#pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
-#run_models("pairs5", pairs5, get_ys(pairs5), 5)
+pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
+classifiers.cross_validate(pairs5, 5, rf, get_y, 5)
+
 
 #from sklearn.pipeline import Pipeline
 #from sklearn.decomposition import PCA
