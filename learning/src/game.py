@@ -1,5 +1,8 @@
 import pandas as pd
 
+from items import get_hashed_items_df
+
+
 def get_action_df(raw_df, action):
     return raw_df.loc[raw_df["actionType"] == action].drop("actionType", 1)
 
@@ -38,8 +41,11 @@ class Game:
         self.move_df = m
         self.cast_df = c
         self.stats_df = stats_df_from_file(csv_file)
+        self.start_items_df = get_hashed_items_df(csv_file, "START_GAME")
+        self.end_items_df = get_hashed_items_df(csv_file, "END_GAME")
         
         self.csv_file = csv_file
+
 
 
     def get_df(self, df_type, split_num):
@@ -54,3 +60,9 @@ class Game:
 
         elif df_type == "STATS":
             return self.stats_df
+
+        elif df_type == "START_ITEMS":
+            return self.start_items_df
+
+        elif df_type == "END_ITEMS":
+            return self.end_items_df

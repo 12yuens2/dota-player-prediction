@@ -1,4 +1,5 @@
 import os
+import sys
 import classifiers
 
 from sklearn.linear_model import LogisticRegression
@@ -23,34 +24,37 @@ def load_games(filepath):
 
 
 filter_id = 76561198047065028
-path = "/cs/scratch/sy35/dota-data/15/data/mouseaction"
+hero_id = int(sys.argv[1])
+path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
 games = load_games(path)
 
-data = []
+#lr_model_map = {
+#    "ATTACK": LogisticRegression(class_weight="balanced"),
+#    "MOVE": LogisticRegression(class_weight="balanced"),
+#    "CAST": LogisticRegression(class_weight="balanced"),
+#    "STATS": LogisticRegression(class_weight="balanced")
+#}
+#
+#rf_model_map = {
+#    "ATTACK": RandomForestClassifier(class_weight="balanced"),
+#    "MOVE": RandomForestClassifier(class_weight="balanced"),
+#    "CAST": RandomForestClassifier(class_weight="balanced")
+#}
+#
+#rf_stats_model_map = {
+#    "ATTACK": RandomForestClassifier(class_weight="balanced"),
+#    "MOVE": RandomForestClassifier(class_weight="balanced"),
+#    "CAST": RandomForestClassifier(class_weight="balanced"),
+#    "STATS": RandomForestClassifier(class_weight="balanced")
+#}
 
-lr_model_map = {
-    "ATTACK": LogisticRegression(class_weight="balanced"),
-    "MOVE": LogisticRegression(class_weight="balanced"),
-    "CAST": LogisticRegression(class_weight="balanced"),
-    "STATS": LogisticRegression(class_weight="balanced")
+rf_map = {
+    "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
+    "END_ITEMS": RandomForestClassifier(class_weight="balanced")
 }
 
-rf_model_map = {
-    "ATTACK": RandomForestClassifier(class_weight="balanced"),
-    "MOVE": RandomForestClassifier(class_weight="balanced"),
-    "CAST": RandomForestClassifier(class_weight="balanced")
-}
-
-rf_stats_model_map = {
-    "ATTACK": RandomForestClassifier(class_weight="balanced"),
-    "MOVE": RandomForestClassifier(class_weight="balanced"),
-    "CAST": RandomForestClassifier(class_weight="balanced"),
-    "STATS": RandomForestClassifier(class_weight="balanced")
-}
-
-
-lr_gc = classifiers.GameClassifier(filter_id, lr_model_map, (3,))
-classifiers.cross_validate(games, 5, lr_gc, lr_gc.contains_player)
+rf_gc = classifiers.GameClassifier(filter_id, rf_map, (3,))
+classifiers.cross_validate(games, 5, rf_gc, rf_gc.contains_player)
 #lr_gc.train(games, 
 #data.extend(lr_gc.cross_validate(games, 5))
 
