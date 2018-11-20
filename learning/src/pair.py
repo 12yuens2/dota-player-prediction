@@ -1,6 +1,7 @@
 import math
 import pandas as pd
 
+from items import get_hashed_items_df
 
 
 def get_action_df(raw_df, action):
@@ -82,41 +83,58 @@ def get_data(stats):
 
 
 def get_mouse_dfs(pair, splits, separate=False):
-        attacks, moves, casts = [], [], []
-        file0, file1 = pair
-        
-        dfs = get_df(file0, file1, splits)
-        return dfs[0], dfs[1], dfs[2]
-
-
-def get_stats_df(pair):
+    attacks, moves, casts = [], [], []
     file0, file1 = pair
-    df0 = stats_df_from_file(file0, 0)
-    df1 = stats_df_from_file(file1, 1)
 
-    return pd.merge(df0, df1, how="inner").drop("tmp", 1).fillna(0)
+    dfs = get_df(file0, file1, splits)
+    return dfs[0], dfs[1], dfs[2]
 
 
-def stats_df_from_file(filename, i):
+def get_stats_df(filename):
     filename = filename.replace("mouseaction", "playerstats")
     df = pd.read_csv(filename)
+
+    return df
+
+def concat_preprocess(df, i):
     df.columns = ["{}-{}".format(colname, i) for colname in df.columns]
     df["tmp"] = 1
 
-    return df.fillna(0)
+    return df
+
+
+def get_pair_dfs(pair, func):
+    file0, file1 = pair
+    df0 = concat_preprocess(func(file0), 0)
+    df1 = concat_preprocess(func(file1), 1)
+
+    return pd.merge(df0, df1, how="inner").drop("tmp", 1)
+
+
+def get_items_df(pair, period):
+    file0, file1 = pair
+    df0 = concat_preprocess(get_hashed_items_df(file0, period), 0)
+    df1 = concat_preprocess(get_hashed_items_df(file1, period), 1)
+
+    return pd.merge(df0, df1, how="inner").drop("tmp", 1)
 
 
 class Pair:
     def __init__(self, pair, y, splits):
         attack_df, move_df, cast_df = get_mouse_dfs(pair, splits)
-        stats_df = get_stats_df(pair)
+        stats_df = get_pair_dfs(pair, get_stats_df)
+        start_items = get_items_df(pair, "START_GAME")
+        end_items = get_items_df(pair, "END_GAME")
 
         self.files = pair
         self.splits = splits
+
         self.attack_df = attack_df
         self.move_df = move_df
         self.cast_df = cast_df
         self.stats_df = stats_df
+        self.start_items_df = start_items
+        self.end_items_df = end_items
 
         self.y = y
 
@@ -130,6 +148,10 @@ class Pair:
             return self._get_split_df(self.cast_df, split_num)
         elif df_type == "STATS":
             return self.stats_df
+        elif df_type == "START_ITEMS":
+            return self.start_items_df
+        elif df_type == "END_ITEMS":
+            return self.end_items_df
 
 
     def _get_split_df(self, df, split_num):

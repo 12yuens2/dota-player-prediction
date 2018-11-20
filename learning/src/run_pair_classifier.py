@@ -7,38 +7,16 @@ from sklearn.metrics import recall_score
 from sklearn.linear_model import LogisticRegression 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import StratifiedKFold
-
-
-def ml(X, y, pc, cv, split_num):
-    skf = StratifiedKFold(cv)
-
-    for train_index, test_index in skf.split(X, y):
-        X_train = [X[i] for i in train_index]
-        X_test = [X[i] for i in test_index]
-        y_train = [y[i] for i in train_index]
-        y_test = [y[i] for i in test_index]
-
-        pc.train(X_train, y_train, split_num)
-        pc.test(X_test, y_test, split_num)
-
-        
-def ml_split(X, y, model, cv, splits):
-    for i in range(splits):
-        print("split {}".format(i))
-        ml(X, y, model, cv, i)
-        
-    print("all")
-    ml(X, y, model, cv, -1)
-
 
 network_size = (3,)
 
 rf_map = {
-    "ATTACK": RandomForestClassifier(class_weight="balanced"),
-    "MOVE": RandomForestClassifier(class_weight="balanced"),
-    "CAST": RandomForestClassifier(class_weight="balanced"),
-    "STATS": RandomForestClassifier(class_weight="balanced")
+    "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
+    "END_ITEMS": RandomForestClassifier(class_weight="balanced")
+#    "ATTACK": RandomForestClassifier(class_weight="balanced"),
+#    "MOVE": RandomForestClassifier(class_weight="balanced"),
+#    "CAST": RandomForestClassifier(class_weight="balanced"),
+#    "STATS": RandomForestClassifier(class_weight="balanced")
 }
 
 clf_map = {
@@ -49,7 +27,10 @@ clf_map = {
 }
 
 rf = classifiers.PairClassifier(rf_map, network_size)
-clf = classifiers.PairClassifier(clf_map, network_size)
+#clf = classifiers.PairClassifier(clf_map, network_size)
+
+
+
 
 #clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
 #                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),

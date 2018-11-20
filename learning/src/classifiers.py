@@ -7,7 +7,6 @@ from sklearn.metrics import recall_score
 from sklearn.neural_network import MLPClassifier
 
 
-
 class Classifier:
 
     def __init__(self, model_map, network_size):
@@ -138,6 +137,18 @@ def cross_validate(xs, cv, classifier, get_y, split_num=-1):
 
         classifier.train(X_train, y_train, split_num)
         classifier.test(X_test, y_test, split_num)
+
+
+def train_test(X_train, X_test, classifier, get_y, split_num=-1):
+    y_train = [get_y(x) for x in train_x]
+    y_test = [get_y(x) for x in test_y]
+
+    classifier.train(X_train, y_train, split_num)
+    acc, pre, rec = classifier.test(X_test, y_test, split_num)
+
+    # Return csv format of results
+    features = ["{}-{}".format(f, type(m).__name__) for f,m in self.model_map.items()]
+    return "'{}',{},{},{}".format(",".join(features), acc, pre, rec)
 
 
 def print_scores(accuracy, precision, recall):
