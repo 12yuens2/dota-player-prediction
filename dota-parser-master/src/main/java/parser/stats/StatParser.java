@@ -1,6 +1,7 @@
 package parser.stats;
 
 import parser.Parser;
+import parser.PlayerData;
 import skadistats.clarity.processor.runner.Context;
 import skadistats.clarity.wire.common.proto.DotaUserMessages;
 import util.ClarityUtil;
@@ -54,8 +55,10 @@ public class StatParser extends Parser {
         return sb.toString();
     }
 
-    public void writeStats(Context ctx, int playerID, String teamName, String outputFilename) throws FileNotFoundException {
-        PrintWriter writer = new PrintWriter((outputFilename));
+    public void writeStats(Context ctx, PlayerData pd, String outputFilename) throws FileNotFoundException {
+        int playerID = pd.getPlayerID();
+        String teamName = pd.getTeamName();
+        PrintWriter writer = new PrintWriter(outputFilename);
         writer.write("steamid,kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
         writer.write(getStats(ctx, playerID, teamName));
         writer.flush();

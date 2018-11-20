@@ -1,10 +1,15 @@
 package parser;
 
 import org.apache.commons.compress.compressors.CompressorException;
+import parser.game.GameParser;
+import parser.game.Inventory;
 import parser.mouse.MouseParser;
 import parser.stats.StatParser;
+import skadistats.clarity.Clarity;
+import skadistats.clarity.decoder.Util;
 import skadistats.clarity.event.Insert;
 import skadistats.clarity.model.Entity;
+import skadistats.clarity.model.StringTable;
 import skadistats.clarity.processor.entities.Entities;
 import skadistats.clarity.processor.entities.OnEntityCreated;
 import skadistats.clarity.processor.entities.UsesEntities;
@@ -15,6 +20,9 @@ import skadistats.clarity.processor.resources.UsesResources;
 import skadistats.clarity.processor.runner.Context;
 import skadistats.clarity.processor.runner.ControllableRunner;
 import skadistats.clarity.processor.runner.SimpleRunner;
+import skadistats.clarity.processor.stringtables.OnStringTableCreated;
+import skadistats.clarity.processor.stringtables.StringTables;
+import skadistats.clarity.processor.stringtables.UsesStringTable;
 import skadistats.clarity.wire.common.proto.DotaUserMessages;
 import skadistats.clarity.wire.s2.proto.S2DotaGcCommon;
 import util.ClarityUtil;
@@ -22,11 +30,10 @@ import util.DotaReplayStream;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
+@UsesStringTable("EntityNames")
 @UsesResources
 @UsesEntities
 public class MainParser extends Parser{
@@ -52,6 +59,7 @@ public class MainParser extends Parser{
     private File replayDir;
     private MouseParser mouseParser;
     private StatParser statParser;
+    private GameParser gameParser;
 
     private HashMap<Long, PlayerData> steamPDMap;
     private HashMap<Integer, Long> idSteamMap;
@@ -100,17 +108,25 @@ public class MainParser extends Parser{
 
                     String outputName = replayDir.getAbsolutePath() + "/../data/" + replayFile.getName();
                     mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
+                    gameParser.initWriter(outputName + "-iteminfo.csv");
 
                     initProcessing();
                     run();
 
+                    // End game stats and items
                     PlayerData pd = steamPDMap.get(filterSteamID);
-                    statParser.writeStats(ctx, pd.getPlayerID(), pd.getTeamName(), outputName + "-playerstats.csv");
+                    statParser.writeStats(ctx, pd, outputName + "-playerstats.csv");
+                    gameParser.writeItems(ctx, pd.getPlayerID(), Inventory.Period.END_GAME);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     if (mouseParser != null) {
                         mouseParser.closeWriter();
+                    }
+
+                    if (gameParser != null) {
+                        gameParser.closeWriter();
                     }
                 }
             }
@@ -126,6 +142,7 @@ public class MainParser extends Parser{
     private void initParsers() {
         this.mouseParser = new MouseParser(filterSteamID);
         this.statParser = new StatParser(filterSteamID);
+        this.gameParser = new GameParser(filterSteamID);
     }
 
     /**
@@ -192,24 +209,42 @@ public class MainParser extends Parser{
         if (statParser != null) {
             statParser.tick();
         }
+
+        if (gameParser != null) {
+            gameParser.tick();
+        }
     }
 
     @OnTickStart
     public void onTickStart(Context ctx, boolean synthetic) {
         if (running && idMap != null) {
+            Entity grp = ClarityUtil.getEntity(ctx, "CDOTAGamerulesProxy");
+            Integer gameState = ClarityUtil.getEntityProperty(grp, "m_pGameRules.m_nGameState");
+
             if (filterSteamID == NO_FILTER) {
                 for (Map.Entry<Long, PlayerData> entry : steamPDMap.entrySet()) {
                     PlayerData pd = entry.getValue();
-                    mouseParser.writeMouseMovements(pd, idMap.get(pd.getPlayerID()));
+                    if (pd != null) {
+                        mouseParser.writeMouseMovements(pd, idMap.get(pd.getPlayerID()));
+                    }
                 }
             } else {
                 PlayerData pd = steamPDMap.get(filterSteamID);
-                mouseParser.writeMouseMovements(pd, idMap.get(pd.getPlayerID()));
+                if (pd != null) {
+                    mouseParser.writeMouseMovements(pd, idMap.get(pd.getPlayerID()));
+                }
             }
-            tick();
-        }
 
+            // Starting items
+            if (gameState != null && gameState > 3 && !gameParser.writtenStartingItems()) {
+                gameParser.writeStartingItems(ctx, gameTick, steamPDMap.get(filterSteamID).getPlayerID());
+            }
+
+            tick();
+
+        }
     }
+
 
     @OnEntityCreated
     public void OnEntityCreated(Entity e) {
