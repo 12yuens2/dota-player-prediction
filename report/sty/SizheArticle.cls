@@ -54,7 +54,7 @@
 %\RequirePackage{syntax}
 
 % tikz : Drawing diagrams and plots (included in plots.sty)
-%\RequirePackage{tikz}
+\RequirePackage{tikz}
 
 
 %---------------------%
