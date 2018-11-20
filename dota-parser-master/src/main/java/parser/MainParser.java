@@ -29,6 +29,7 @@ import util.ClarityUtil;
 import util.DotaReplayStream;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -57,6 +58,8 @@ public class MainParser extends Parser{
     private boolean running;
 
     private File replayDir;
+
+    private ArrayList<Parser> parsers;
     private MouseParser mouseParser;
     private StatParser statParser;
     private GameParser gameParser;
@@ -73,6 +76,7 @@ public class MainParser extends Parser{
 
         this.running = false;
 
+        this.parsers = new ArrayList<>();
         this.steamPDMap = new HashMap<>();
         this.idSteamMap = new HashMap<>();
         this.idMap = new HashMap<>();
@@ -104,11 +108,12 @@ public class MainParser extends Parser{
                     this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
                     this.filterSteamID = Long.parseLong(replayFile.getName().substring(0, 17));
 
-                    initParsers();
-
                     String outputName = replayDir.getAbsolutePath() + "/../data/" + replayFile.getName();
-                    mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
-                    gameParser.initWriter(outputName + "-iteminfo.csv");
+
+                    initParsers(outputName);
+
+//                    mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
+//                    gameParser.initWriter(outputName + "-iteminfo.csv");
 
                     initProcessing();
                     run();
@@ -121,12 +126,8 @@ public class MainParser extends Parser{
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (mouseParser != null) {
-                        mouseParser.closeWriter();
-                    }
-
-                    if (gameParser != null) {
-                        gameParser.closeWriter();
+                    for (Parser p : parsers) {
+                        if (p != null) p.closeWriter();
                     }
                 }
             }
@@ -139,10 +140,16 @@ public class MainParser extends Parser{
         System.out.println("Finish " + filterSteamID);
     }
 
-    private void initParsers() {
-        this.mouseParser = new MouseParser(filterSteamID);
-        this.statParser = new StatParser(filterSteamID);
-        this.gameParser = new GameParser(filterSteamID);
+    private void initParsers(String outputPath) throws FileNotFoundException {
+        this.mouseParser = new MouseParser(filterSteamID, outputPath);
+        this.statParser = new StatParser(filterSteamID, outputPath);
+        this.gameParser = new GameParser(filterSteamID, outputPath);
+
+        parsers.addAll(Arrays.asList(mouseParser, statParser, gameParser));
+
+        for (Parser p : parsers) {
+            p.initWriter();
+        }
     }
 
     /**
@@ -182,7 +189,7 @@ public class MainParser extends Parser{
                 cRunner.halt();
             }
         }
-        System.out.println(filterSteamID + " - " + replayFile);
+        System.out.println("Init: " + filterSteamID + " - " + replayFile);
     }
 
     public void run() {
@@ -202,17 +209,20 @@ public class MainParser extends Parser{
     @Override
     public void tick() {
         super.tick();
-        if (mouseParser != null) {
-            mouseParser.tick();
-        }
 
-        if (statParser != null) {
-            statParser.tick();
+        for (Parser p : parsers) {
+            if (p != null)  p.tick();
         }
+    }
 
-        if (gameParser != null) {
-            gameParser.tick();
-        }
+    @Override
+    public void initWriter() throws FileNotFoundException {
+        // empty
+    }
+
+    @Override
+    public void closeWriter() {
+        //empty
     }
 
     @OnTickStart
@@ -241,7 +251,6 @@ public class MainParser extends Parser{
             }
 
             tick();
-
         }
     }
 

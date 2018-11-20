@@ -15,14 +15,12 @@ import java.io.PrintWriter;
 
 public class GameParser extends Parser {
 
-    public static int DEFAULT_DRAFT_DURATION = (MainParser.TICK_RATE * 90) + 20;
-
     private PrintWriter itemWriter;
     private int startItemGameTick;
     private boolean wroteStartingItems;
 
-    public GameParser(long filterSteamID) {
-        super(filterSteamID);
+    public GameParser(long filterSteamID, String outputPath) {
+        super(filterSteamID, outputPath);
 
         this.startItemGameTick = -1;
         this.wroteStartingItems = false;
@@ -85,8 +83,8 @@ public class GameParser extends Parser {
         return Item.emptyItem();
     }
 
-    public void initWriter(String itemInfoFilename) throws FileNotFoundException {
-        itemWriter = new PrintWriter(itemInfoFilename);
+    public void initWriter() throws FileNotFoundException {
+        itemWriter = new PrintWriter(outputPath + "-iteminfo.csv");
         itemWriter.write(Inventory.headers() + "\n");
         itemWriter.flush();
     }
@@ -100,6 +98,10 @@ public class GameParser extends Parser {
         if (startItemGameTick == gameTick) {
             if (writeItems(ctx, playerID, Inventory.Period.START_GAME)) {
                 wroteStartingItems = true;
+            } else {
+
+                // Increment start tick to try again on next tick
+                startItemGameTick++;
             }
         }
 

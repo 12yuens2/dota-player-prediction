@@ -18,12 +18,26 @@ public class StatParser extends Parser {
 
     public float duration;
 
+    private PrintWriter statWriter;
     private HashMap<Long, PlayerStats> statsMap;
 
-    public StatParser(long filterSteamID) {
-        super(filterSteamID);
+    public StatParser(long filterSteamID, String outputPath) {
+        super(filterSteamID, outputPath);
 
         statsMap = new HashMap<>();
+    }
+
+    @Override
+    public void initWriter() throws FileNotFoundException {
+        statWriter = new PrintWriter(outputPath + "-playerstats.csv");
+        statWriter.write("steamid,kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
+        statWriter.flush();
+    }
+
+    @Override
+    public void closeWriter() {
+        statWriter.flush();
+        statWriter.close();
     }
 
 
@@ -47,7 +61,7 @@ public class StatParser extends Parser {
         int denies = getPlayerStat(ctx, id, teamData, "m_vecDataTeam.%i.m_iDenyCount");
 
         StringBuilder sb = new StringBuilder();
-	sb.append(String.format("%d,", filterSteamID));
+	    sb.append(String.format("%d,", filterSteamID));
         sb.append(String.format("%d,%d,%d,%d,%d,%d,%d,", kills, assists, deaths, totalGold, totalXP, lastHits, denies));
         sb.append(String.format("%f,%f,%f,", totalGold/duration, totalXP/duration, lastHits/duration));
         sb.append(statsMap.get(filterSteamID).getStats(duration));
@@ -58,12 +72,10 @@ public class StatParser extends Parser {
     public void writeStats(Context ctx, PlayerData pd, String outputFilename) throws FileNotFoundException {
         int playerID = pd.getPlayerID();
         String teamName = pd.getTeamName();
-        PrintWriter writer = new PrintWriter(outputFilename);
-        writer.write("steamid,kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
-        writer.write(getStats(ctx, playerID, teamName));
-        writer.flush();
+        statWriter.write(getStats(ctx, playerID, teamName));
+        statWriter.flush();
 
-        writer.close();
+        statWriter.close();
     }
 
     public void parseUnitOrder(long steamid, DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {

@@ -31,8 +31,8 @@ public class MouseParser extends Parser {
 
     private PrintWriter mouseMovementWriter, mouseActionWriter;
 
-    public MouseParser(long filterSteamID) {
-        super(filterSteamID);
+    public MouseParser(long filterSteamID, String outputPath) {
+        super(filterSteamID, outputPath);
         this.movements = new ArrayList<>();
         this.lastPositions = new HashMap<>();
         this.currentSequences = new HashMap<>();
@@ -110,16 +110,16 @@ public class MouseParser extends Parser {
     }
 
 
-    public void initWriter(String mouseMovementFilename, String mouseActionFilename) throws FileNotFoundException {
+    public void initWriter() throws FileNotFoundException {
         MousePosition tempPosition = new MousePosition(0, 0, 0);
         MouseMoveSequence tempSequence = new MouseMoveSequence(tempPosition);
         MouseMoveAttack tempAction = new MouseMoveAttack(tempSequence, tempPosition);
 
-        mouseMovementWriter = new PrintWriter(mouseMovementFilename);
+        mouseMovementWriter = new PrintWriter(outputPath + "-mousesequence.csv");
         mouseMovementWriter.write(headers(tempSequence));
         mouseMovementWriter.flush();
 
-        mouseActionWriter = new PrintWriter(mouseActionFilename);
+        mouseActionWriter = new PrintWriter(outputPath + "-mouseaction.csv");
         mouseActionWriter.write(headers(tempAction));
         mouseActionWriter.flush();
     }
