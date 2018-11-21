@@ -1,7 +1,7 @@
 import math
 import pandas as pd
 
-from items import get_hashed_items_df
+from items import get_hashed_items_df, get_onehot_items_df
 
 
 def get_action_df(raw_df, action):
@@ -113,8 +113,8 @@ def get_pair_dfs(pair, func):
 
 def get_items_df(pair, period):
     file0, file1 = pair
-    df0 = concat_preprocess(get_hashed_items_df(file0, period), 0)
-    df1 = concat_preprocess(get_hashed_items_df(file1, period), 1)
+    df0 = concat_preprocess(get_onehot_items_df(file0, period), 0)
+    df1 = concat_preprocess(get_onehot_items_df(file1, period), 1)
 
     return pd.merge(df0, df1, how="inner").drop("tmp", 1)
 

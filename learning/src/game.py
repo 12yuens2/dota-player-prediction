@@ -1,6 +1,6 @@
 import pandas as pd
 
-from items import get_hashed_items_df
+from items import get_hashed_items_df, get_onehot_items_df
 
 
 def get_action_df(raw_df, action):
@@ -41,8 +41,8 @@ class Game:
         self.move_df = m
         self.cast_df = c
         self.stats_df = stats_df_from_file(csv_file)
-        self.start_items_df = get_hashed_items_df(csv_file, "START_GAME")
-        self.end_items_df = get_hashed_items_df(csv_file, "END_GAME")
+        self.start_items_df = get_onehot_items_df(csv_file, "START_GAME")
+        self.end_items_df = get_onehot_items_df(csv_file, "END_GAME")
         
         self.csv_file = csv_file
 
