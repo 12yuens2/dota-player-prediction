@@ -24,8 +24,9 @@ def load_games(filepath):
 
 
 filter_id = 76561198047065028
-hero_id = int(sys.argv[1])
-path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
+#hero_id = int(sys.argv[1])
+#path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
+path = sys.argv[1]
 games = load_games(path)
 
 #lr_model_map = {

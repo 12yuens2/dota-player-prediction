@@ -58,12 +58,13 @@ def dump_pickle(filepath, obj):
     pickle.dump(obj, open(filepath, "wb"))
 
 
-hero_id= sys.argv[1]
-dfpath = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
+path = sys.argv[1]
+dfpath = sys.argv[2]
+#dfpath = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
 if not os.path.exists(dfpath):
     os.makedirs(dfpath)
 
-path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
+#path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
 pairs = get_pair_names(path)
 ys = get_ys(pairs)
 pair_names, y = sample(pairs, ys, 0.5)

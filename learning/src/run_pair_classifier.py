@@ -12,21 +12,23 @@ network_size = (3,)
 
 rf_map = {
     "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
-    "END_ITEMS": RandomForestClassifier(class_weight="balanced")
-#    "ATTACK": RandomForestClassifier(class_weight="balanced"),
-#    "MOVE": RandomForestClassifier(class_weight="balanced"),
-#    "CAST": RandomForestClassifier(class_weight="balanced"),
-#    "STATS": RandomForestClassifier(class_weight="balanced")
+    "END_ITEMS": RandomForestClassifier(class_weight="balanced"),
+    "ATTACK": RandomForestClassifier(class_weight="balanced"),
+    "MOVE": RandomForestClassifier(class_weight="balanced"),
+    "CAST": RandomForestClassifier(class_weight="balanced"),
+    "STATS": RandomForestClassifier(class_weight="balanced")
 }
 
 clf_map = {
-    "ATTACK": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
-    "MOVE": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
-    "CAST": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
-    "STATS": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,))
+    "START_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
+    "END_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
+    #"ATTACK": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    #"MOVE": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    #"CAST": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    #"STATS": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,))
 }
 
-rf = classifiers.PairClassifier(rf_map, network_size)
+rf = classifiers.PairClassifier(clf_map, network_size)
 #clf = classifiers.PairClassifier(clf_map, network_size)
 
 
@@ -59,8 +61,9 @@ def get_y(pair):
 import sys
 import pickle
 
-hero_id = sys.argv[1]
-path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
+#hero_id = sys.argv[1]
+#path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
+path = sys.argv[1]
 
 pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
 classifiers.cross_validate(pairs1, 5, rf, get_y, 1)

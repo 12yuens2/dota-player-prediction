@@ -1,7 +1,27 @@
-matrix:
+jobs:
   include:
     - language: java
       before_script:
         - cd dota-parser-master
+        - mkdir -p ../build/data/
       script: 
         - mvn package
+        - java -jar target/dota-parser-1.0.jar ../build/replays/
+
+      after_success:
+        - cd ..
+        - mkdir -p build/data/{mouseaction,mousesequence,playerstats,iteminfo}
+        - mkdir -p build/dfs
+        - sh move_data.sh build/data
+
+    - language: python3
+      python:
+        - "3.6"
+      before_script:
+        - cd learning/src
+        - pip install -r ../requirements.txt
+      script:
+        - python run_game_classifier.py ../../build/data/mouseaction
+        - python create_featureset.py ../../build/data/mouseaction ../../build/dfs
+        - python run_pair_classifier.py ../../build/dfs
+      
