@@ -129,6 +129,7 @@ public class MainParser extends Parser{
                     for (Parser p : parsers) {
                         if (p != null) p.closeWriter();
                     }
+                    parsers.clear();
                 }
             }
         }

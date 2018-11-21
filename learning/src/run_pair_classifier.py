@@ -64,18 +64,19 @@ import pickle
 #hero_id = sys.argv[1]
 #path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
 path = sys.argv[1]
+cv = int(sys.argv[2])
 
 pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
-classifiers.cross_validate(pairs1, 5, rf, get_y, 1)
+classifiers.cross_validate(pairs1, cv, rf, get_y, 1)
 
 pairs2 = pickle.load(open("{}/pairs2.df".format(path), "rb"))
-classifiers.cross_validate(pairs2, 5, rf, get_y, 2)
+classifiers.cross_validate(pairs2, cv, rf, get_y, 2)
 
 pairs3 = pickle.load(open("{}/pairs3.df".format(path), "rb"))
-classifiers.cross_validate(pairs3, 5, rf, get_y, 3)
+classifiers.cross_validate(pairs3, cv, rf, get_y, 3)
 
 pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
-classifiers.cross_validate(pairs5, 5, rf, get_y, 5)
+classifiers.cross_validate(pairs5, cv, rf, get_y, 5)
 
 
 #from sklearn.pipeline import Pipeline

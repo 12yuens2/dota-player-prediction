@@ -27,6 +27,8 @@ filter_id = 76561198047065028
 #hero_id = int(sys.argv[1])
 #path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
 path = sys.argv[1]
+cv = int(sys.argv[2])
+filter_id = int(sys.argv[3])
 games = load_games(path)
 
 #lr_model_map = {
@@ -55,7 +57,7 @@ rf_map = {
 }
 
 rf_gc = classifiers.GameClassifier(filter_id, rf_map, (3,))
-classifiers.cross_validate(games, 5, rf_gc, rf_gc.contains_player)
+classifiers.cross_validate(games, cv, rf_gc, rf_gc.contains_player)
 #lr_gc.train(games, 
 #data.extend(lr_gc.cross_validate(games, 5))
 
