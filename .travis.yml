@@ -14,7 +14,7 @@ jobs:
         - mkdir -p build/dfs
         - sh move_data.sh build/data
 
-    - language: python3
+    - language: python
       python:
         - "3.6"
       install:
