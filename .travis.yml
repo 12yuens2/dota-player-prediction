@@ -17,9 +17,10 @@ jobs:
     - language: python3
       python:
         - "3.6"
+      install:
+        - pip install -r learning/requirements.txt
       before_script:
         - cd learning/src
-        - pip install -r ../requirements.txt
       script:
         - python run_game_classifier.py ../../build/data/mouseaction
         - python create_featureset.py ../../build/data/mouseaction ../../build/dfs
