@@ -17,6 +17,15 @@ jobs:
     - language: python
       python:
         - "3.6"
+      before_install:
+        - cd dota-parser-master
+        - mkdir -p ../build/data/
+        - mvn package
+        - java -jar target/dota-parser-1.0.jar ../build/replays
+        - cd ..
+        - mkdir -p build/data/{mouseaction,mousesequence,playerstats,iteminfo}
+        - mkdir -p build/dfs
+        - sh move_data.sh build/data
       install:
         - pip install -r learning/requirements.txt
       before_script:
