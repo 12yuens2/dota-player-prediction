@@ -30,7 +30,10 @@ public class StatParser extends Parser {
     @Override
     public void initWriter() throws FileNotFoundException {
         statWriter = new PrintWriter(outputPath + "-playerstats.csv");
-        statWriter.write("steamid,kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min,apm,moves(p),moves(t),attacks(p),attacks(t),casts(p),casts(t),casts(n),holds(p)\n");
+        statWriter.write("steamid,kills,assists,deaths,gold,xp,cs,denies,gold/min,xp/min,cs/min," +
+                "apm,moves(p),moves(p)/min,moves(t),moves(t)/min," +
+                "attacks(p),attacks(p)/min,attacks(t),attacks(t)/min," +
+                "casts(p),casts(p)/min,casts(t),casts(t)/min,casts(n),casts(n)/min,holds(p),holds(p)/min\n");
         statWriter.flush();
     }
 
@@ -70,12 +73,12 @@ public class StatParser extends Parser {
     }
 
     public void writeStats(Context ctx, PlayerData pd, String outputFilename) throws FileNotFoundException {
-        int playerID = pd.getPlayerID();
-        String teamName = pd.getTeamName();
-        statWriter.write(getStats(ctx, playerID, teamName));
-        statWriter.flush();
-
-        statWriter.close();
+        if (pd != null) {
+            int playerID = pd.getPlayerID();
+            String teamName = pd.getTeamName();
+            statWriter.write(getStats(ctx, playerID, teamName));
+            statWriter.flush();
+        }
     }
 
     public void parseUnitOrder(long steamid, DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {

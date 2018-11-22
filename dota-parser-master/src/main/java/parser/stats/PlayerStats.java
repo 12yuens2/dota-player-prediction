@@ -17,12 +17,12 @@ public class PlayerStats {
     }
 
     public String getStats(float duration) {
-        return String.format("%f,%d,%d,%d,%d,%d,%d,%d,%d\n",
+        return String.format("%f,%d,%f,%d,%f,%d,%f,%d,%f,%d,%f,%d,%f,%d,%f,%d,%f\n",
                 numActions/duration,
-                movePos, moveTarget,
-                attackPos, attackTarget,
-                castPos, castTarget, castNoTarget,
-                holdPos);
+                movePos, movePos/duration, moveTarget, moveTarget/duration,
+                attackPos, attackPos/duration, attackTarget, attackTarget/duration,
+                castPos, castPos/duration, castTarget, castTarget/duration, castNoTarget,castNoTarget/duration,
+                holdPos, holdPos/duration);
     }
 
     public void update(DotaUserMessages.CDOTAUserMsg_SpectatorPlayerUnitOrders msg) {

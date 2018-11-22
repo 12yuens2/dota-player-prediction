@@ -2,6 +2,7 @@ package parser.game;
 
 import parser.MainParser;
 import parser.Parser;
+import parser.PlayerData;
 import skadistats.clarity.decoder.Util;
 import skadistats.clarity.model.Entity;
 import skadistats.clarity.model.StringTable;
@@ -26,9 +27,10 @@ public class GameParser extends Parser {
         this.wroteStartingItems = false;
     }
 
-    public boolean writeItems(Context ctx, int playerID, Inventory.Period period) {
+    public boolean writeItems(Context ctx, PlayerData pd, Inventory.Period period) {
         Entity pr = ClarityUtil.getEntity(ctx, "CDOTA_PlayerResource");
-        if (pr != null) {
+        if (pr != null && pd != null) {
+            int playerID = pd.getPlayerID();
             int id = ClarityUtil.resolveValue(ctx, "CDOTA_PlayerResource", "m_vecPlayerTeamData.%i.m_hSelectedHero", playerID, 0, 0);
             Entity player = ctx.getProcessor(Entities.class).getByHandle(id);
             if (player != null) {
@@ -68,16 +70,19 @@ public class GameParser extends Parser {
     }
 
     private Item getItem(Context ctx, Entity e, int index) {
-        StringTable entityNames = ctx.getProcessor(StringTables.class).forName("EntityNames");
+        try {
+            StringTable entityNames = ctx.getProcessor(StringTables.class).forName("EntityNames");
+            Entities entities = ctx.getProcessor(Entities.class);
 
-        Entities entities = ctx.getProcessor(Entities.class);
+            int hItem = e.getProperty("m_hItems." + Util.arrayIdxToString(index));
+            Entity eItem = entities.getByHandle(hItem);
 
-        int hItem = e.getProperty("m_hItems." + Util.arrayIdxToString(index));
-        Entity eItem = entities.getByHandle(hItem);
-
-        if (eItem != null && entityNames != null) {
-            String itemName = entityNames.getNameByIndex(eItem.getProperty("m_pEntity.m_nameStringableIndex"));
-            return new Item(hItem, itemName);
+            if (eItem != null && entityNames != null) {
+                String itemName = entityNames.getNameByIndex(eItem.getProperty("m_pEntity.m_nameStringableIndex"));
+                return new Item(hItem, itemName);
+            }
+        } catch (Exception ex) {
+            System.err.println("Get item " + index + " : " + ex);
         }
 
         return Item.emptyItem();
@@ -89,14 +94,14 @@ public class GameParser extends Parser {
         itemWriter.flush();
     }
 
-    public void writeStartingItems(Context ctx, int gameTick, int playerID) {
+    public void writeStartingItems(Context ctx, int gameTick, PlayerData pd) {
         if (startItemGameTick == -1) {
             startItemGameTick = gameTick + (30 * MainParser.TICK_RATE);
             return;
         }
 
         if (startItemGameTick == gameTick) {
-            if (writeItems(ctx, playerID, Inventory.Period.START_GAME)) {
+            if (writeItems(ctx, pd, Inventory.Period.START_GAME)) {
                 wroteStartingItems = true;
             } else {
 

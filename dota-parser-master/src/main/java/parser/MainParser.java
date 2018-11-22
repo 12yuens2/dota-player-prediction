@@ -108,7 +108,7 @@ public class MainParser extends Parser{
                     this.replayFile = replayDir.getAbsolutePath() + "/" + replayFile.getName();
                     this.filterSteamID = Long.parseLong(replayFile.getName().substring(0, 17));
 
-                    String outputName = replayDir.getAbsolutePath() + "/../data/" + replayFile.getName();
+                    String outputName = replayDir.getAbsolutePath() + "/../../data/" + replayFile.getName();
 
                     initParsers(outputName);
 
@@ -121,7 +121,7 @@ public class MainParser extends Parser{
                     // End game stats and items
                     PlayerData pd = steamPDMap.get(filterSteamID);
                     statParser.writeStats(ctx, pd, outputName + "-playerstats.csv");
-                    gameParser.writeItems(ctx, pd.getPlayerID(), Inventory.Period.END_GAME);
+                    gameParser.writeItems(ctx, pd, Inventory.Period.END_GAME);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -248,7 +248,7 @@ public class MainParser extends Parser{
 
             // Starting items
             if (gameState != null && gameState > 3 && !gameParser.writtenStartingItems()) {
-                gameParser.writeStartingItems(ctx, gameTick, steamPDMap.get(filterSteamID).getPlayerID());
+                gameParser.writeStartingItems(ctx, gameTick, steamPDMap.get(filterSteamID));
             }
 
             tick();

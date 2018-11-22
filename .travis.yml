@@ -6,7 +6,7 @@ jobs:
         - mkdir -p ../build/data/
       script: 
         - mvn package
-        - java -jar target/dota-parser-1.0.jar ../build/replays/
+        - java -jar target/dota-parser-1.0.jar ../build/replays/test
 
       after_success:
         - cd ..
@@ -21,7 +21,7 @@ jobs:
         - cd dota-parser-master
         - mkdir -p ../build/data/
         - mvn package
-        - java -jar target/dota-parser-1.0.jar ../build/replays
+        - java -jar target/dota-parser-1.0.jar ../build/replays/test
         - cd ..
         - mkdir -p build/data/{mouseaction,mousesequence,playerstats,iteminfo}
         - mkdir -p build/dfs
