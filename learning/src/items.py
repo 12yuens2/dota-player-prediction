@@ -57,6 +57,7 @@ def get_hashed_items_df(filename, period):
 def get_onehot_items_df(filename, period):
     filename = filename.replace("mouseaction", "iteminfo")
     items_df = pd.read_csv(filename)
+    items_df = items_df[items_df["period"] == period].drop("period", 1)
 
     features = _get_slot_features()
     item_names = _get_item_names()
