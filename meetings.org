@@ -215,7 +215,7 @@ Note many of these features should be recorded relative to the duration of the g
 ** TODO week
 - [] Keep evaluation/testing players separate from training to see if it still works
 - [] See if continually increasing training samples increases accuracy
-- [] Use split games to see which sections are better
+- [x] Use split games to see which sections are better
 - [] Add more features
 - [] Draft report sections
 
@@ -225,6 +225,7 @@ https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scroll
 * Week 8
 
 ** TODO week
+- [x] Progress report
 - [] Using graphics card?
 - [x] More features
 - [] At what stage adding more data isn't helpful
@@ -236,4 +237,102 @@ https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scroll
 - [] Start plotting graphs
 
 
+* Week 9
+** Notes on item features
+- Using one-hot encoding creates a very large number of features (curse of dimensionality) as it becomes number of items * inventory slots number of features
+- Inspired by bin-counting, feature hashing (categories)
 
+1. Encode based on item type/use, eg. item_strength_active, item_agility_active, item_boots, item_consumable, item_ward
+  - num features = slots * categories
+  - Lose information due to categories
+  + Reduced number of features
+
+2. Use numerical value to represent slots (0 if not present)
+  - num features =  num items
+  + Reduce num features by factor of 6 (or greater)
+  - Numerical values do not properly represent what the data means
+
+3. Encode item existence once, then encode category and/or slots
+  - num features = num items + (slots * categories) or num items + categories (if slots are encoded as numerical)
+
+4. Encode one hot for each item and slot combination
+  - num features = num items * slots
+  - High cardinality
+
+5. Use sklearn FeatureHasher to has item name
+  + can choose num features (also a con, as need to decide what would be a good num feature)
+  + pre defined, no need to code
+  - does not represent meaning of items as much
+  
+6. Encode as difference between two games
+
+
+** TODO week
+- [] MMR climbing players to see if they are the same player
+- [x] Get ethics letter
+- [] Discuss/investigate not general model for heroes, but instead a separate model for each hero
+- [] Q,W,E,R spell counts
+- [] Accuracies for different models for different heroes
+
+Obvious features
+- [] Itemisation
+- [] Items in what slots
+  - [x] FeatureHasher encoding
+  - [x] -Numerical for slots encoding (every item)- (Can't do, cannot encode multiple same item on different slots)
+  - [] Categorise slots encoding
+  - [] Categorise slots + item existence encoding
+  - [] Some numerical representation of item
+
+Results TODO
+- [] Create dataset with training and test data to be used for every model/problem (Have players never seen in training)
+  - [] Smaller dataset with few players many games
+  - [] Larger dataset with more players fewer games
+- [] Output csv for the following models/features
+  - [x] Mouse movement rows
+  - [x] Game-specific features per game
+
+  - [x] Mouse movement in game classifier
+  - [x] Combination of mouse movement and game features in game classifier
+  - [x] Mouse movement only for pair classifier
+  - [x] Game-specific only for pair classifier
+  - [x] Combination of mouse and game features in pair classifier
+
+- [] Script to grid search different models, features and preprocessing steps
+
+
+* Week 10
+** Before meeting
+- For report objectives, how to write the objectives have changed from original?
+- Use difference in pair classification instead of concat two features together
+
+
+** TODO week
+- Smaller items of things, such as only boots, blink, dagger
+- Start evaluation first, then add items or features incrementally, rather than adding many new features without knowing what is good or not
+
+
+- [] Itemisation for select items (only boots slot, tp slot and boots type)
+
+- [] Create datasets split into training and test for 2-3 heroes
+  - [] Make note of properties for each data set (num players and num games, num datapoints for game/pair classification)
+
+- [] Analyse or at least get data for each dataset with
+  - [] Just all mouse movement
+    - [] Row classification
+    - [] Game classification
+    - [] Pair classification
+  - [] Just particular mouse movement
+    - [] Game classification
+    - [] Pair classification
+  - [] Just statistics
+    - [] Game classification
+    - [] Pair classification
+  - [] Just items
+    - [] Pair classification (one hot)
+    - [] Pair classification (similarity - early game)
+    - [] Pair classification (similarity - late game)
+    - [] Pair classification (select items)
+  - [] Combined greedy (Take best of all, incrementally)
+  - [] Combined all
+
+- [] After all pair classification, try pair classification with difference instead of concatenation

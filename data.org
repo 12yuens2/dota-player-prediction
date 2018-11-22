@@ -1,0 +1,53 @@
+* Dataset information
+
+** 20
+- Games: 218
+- Players: 93
+- Game classification: No
+- Pair classification: Yes
+
+*** training
+- Games: 198
+- Players: 84
+
+**** pair classification no items
+- 277 negative samples
+- 292 positive samples
+
+*** testing
+- Games: 20
+- Players: 9
+
+
+** 19
+- Games: 144
+- Players: 14
+
+*** training
+- Games: 124
+- Players 11
+
+**** pair classification no items
+- 1378 negative samples
+- 1356 positive samples
+
+*** testing
+- Games: 20
+- Players: 3
+
+** 15
+- Games: 138
+- Players: 58
+- Game classification ok
+
+*** training
+- Games: 123
+- Players: 51
+
+**** pair classification no items
+- 3071 negative samples
+- 2970 positive samples
+
+*** testing
+- Games: 15
+- Players: 8
