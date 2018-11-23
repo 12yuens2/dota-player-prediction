@@ -6,12 +6,46 @@
 
 
 \subsection{Dota 2}
+%Terms to explain:
+% - Winning conditions
+% - Real time game (strategy + skill are both important)
+
+% - a 'match' is an instance of a game
+% - Abilities/spells
+% - Hotkey
+% - Items
+% - Heroes
+% - Gameplay flow (laning, farming, teamfights...)
+% - Game length is variable based on time
+
 
 Dota 2
 
 \subsection{Related work}
 
 \subsubsection{Starcraft 2 Player Identification}
+The problem of player identification based on play style has been explored in the game of Starcraft 2. Liu et al. \cite{starcraft-identification} first looked at using machine learning algorithms to identify a Starcraft 2 player from features extracted from match replays and followed their results with further research \cite{starcraft-actions} on predicting a player's next actions based on their previous actions in the match. 
+
+Starcraft 2 is classified as a Real Time Strategy (RTS) game, which differs in some places to Dota 2. In Starcraft, players have to manage the generation of resources, production of buildings and units in additional to the control of a large number of units which make up the player's army. This differs vastly from Dota 2's gameplay of controlling only a single unit (except for a few particular heroes with more complex mechanics) and more simplified economy. Furthermore, Dota 2 is played as a team game with five players on each side, whereas competitive games in Starcraft are mostly played as one versus one. However, there are also many similarities between the two games. Firstly, both games are real time, unlike many other adversarial games. This means that players must both think and act quickly as both strategy and precision of control are important factors to victory. Secondly, the mechanic in which a player controls units in both games is virtually identical - movement is controlled using mouse clicks by clicking on the position the player wishes to move to and any attack or ability commands are done by pressing the associated hotkey and aiming at the desired location with the mouse. Finally, TODO.
+
+Liu et al. used a binary classification approach, focusing on a specific player in their dataset, with half the matches in their dataset coming from the same player, and the other half from other players. This method is less general, as the trained model will only be able to predict on the single player it is trained on.
+
+For their evaluation model, four different techniques were applied. They are:
+\begin{itemize}
+\item J48 - C4.5 Decision Tree
+\item Artificial Neural Networks
+\item Adaptive Boosting
+\item Random Forest
+\end{itemize}
+
+
+\subsubsection{Win prediction}
+There has been much work in using machine learning techniques to predict the outcome of a Dota 2 match. \cite{dota-draft} 
+
+
+\subsubsection{Player role classification}
+Another area that was explored using Dota 2 match data is the classification of player roles. 
+
 
 \subsubsection{Forensic mouse movement to detect user}
 
