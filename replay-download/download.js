@@ -4,13 +4,9 @@ const request = require("request");
 const fs = require('fs');
 const util = require('util');
 
-//const account_id = process.argv[3];
 const hero_id = process.argv[2];
 const num_players = process.argv[3];
 const num_games = process.argv[4];
-
-//const account_id = 104070670; //https://www.opendota.com/players/255077828
-//const hero_id = 67; //spectre
 
 
 const requestPlayersUnlimited = (hero_id) => {
@@ -101,7 +97,11 @@ requestPlayers(hero_id)
 
         ids.map(([account_id, steam_id]) => requestMatches(account_id, num_games, 3, hero_id)
                 .then(matches => {
-                    const matchIds = matches.map(({ match_id }) => match_id);
+                    //const sorted_matches = matches.sort((a,b) => a["start_time"] - b["start_time"])
+                    //const sliced_matches = sorted_matches.slice(0, num_games)
+                    const filtered_matches = matches.filter(match => match["start_time"] < 1542499200)
+
+                    const matchIds = filtered_matches.map(({ match_id }) => match_id);
                     const fetchReplays = matchIds.map(matchId => requestReplay(matchId));
 
                     return Promise.all(fetchReplays)
@@ -114,6 +114,6 @@ requestPlayers(hero_id)
 
                            return filename;
                        }))
-                 .then((filenames) => console.log(filenames)))
+                 .then((filenames) => console.log(filenames.length)))
     });
 
