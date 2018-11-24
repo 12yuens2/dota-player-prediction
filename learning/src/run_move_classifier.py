@@ -1,52 +1,52 @@
 import ntpath
 import os
 import random
+import sys
+
+import pandas as pd
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from move_classifier import MoveClassifier
 
+import classifiers
 
-def ml(path, splits, class_weight, filter_id):
-    csvs = ["{}/{}".format(path,file) for file in os.listdir(path)]
-    
-    dfs = [pd.read_csv(csv_file) for csv_file in csvs]
-    ys = [is_filter_player(filter_id, ntpath.basename(csv_file)[:17]) for csv_file in csvs]
-    
-    cross_validate(dfs, ys, splits, filter_id, class_weight)
+def get_y(csv_file):
+    return is_filter_player(self.filter_id, ntpath.basename(csv_file)[:17])
 
+#filter_id = 76561198030654385
+#path = "/cs/scratch/sy35/dota-data/13/data/train/mouseaction"
 
+path = sys.argv[1]
+cv = int(sys.argv[2])
+filter_id = int(sys.argv[3])
 
-filter_id = 76561198047065028
-path = "/cs/scratch/sy35/dota-data/15/data/mouseaction"
-
-#path = sys.argv[1]
-#filter_id = int(sys.argv[2])
 lr_model_map = {
     "ATTACK": LogisticRegression(class_weight="balanced"),
     "MOVE": LogisticRegression(class_weight="balanced"),
     "CAST": LogisticRegression(class_weight="balanced")
 }
-
+#76561198066839629
 rf_model_map = {
     "ATTACK": RandomForestClassifier(class_weight="balanced"),
     "MOVE": RandomForestClassifier(class_weight="balanced"),
     "CAST": RandomForestClassifier(class_weight="balanced")
 }
 
-data = []
 
-lr_mc = MoveClassifier(filter_id, lr_model_map, path)
-data.extend(lr_mc.cross_validate(5))
+lr_mc = classifiers.MoveClassifier(filter_id, lr_model_map)
+xs = ["{}/{}".format(path, file) for file in os.listdir(path)]
 
-rf_mc = MoveClassifier(filter_id, rf_model_map, path)
-data.extend(rf_mc.cross_validate(5))
-
-with open("out.data", "w") as f:
-    f.write("move_type,model,eval_type,accuracy,precision,recall\n")
-    for line in data:
-        f.write(line)
-    f.flush()
+classifiers.cross_validate(xs, cv, lr_mc, lr_mc._get_ys)
+#data.extend(lr_mc.cross_validate(5))
+#
+#rf_mc = MoveClassifier(filter_id, rf_model_map, path)
+#data.extend(rf_mc.cross_validate(5))
+#
+#with open("out.data", "w") as f:
+#    f.write("move_type,model,eval_type,accuracy,precision,recall\n")
+#    for line in data:
+#        f.write(line)
+#    f.flush()
 
 
                     

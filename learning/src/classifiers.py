@@ -1,3 +1,4 @@
+import ntpath
 import pandas as pd
 
 from sklearn.model_selection import StratifiedKFold
@@ -109,6 +110,63 @@ class GameClassifier(Classifier):
 
         # Average the probability of all rows
         return sum(probabilities)/len(probabilities)
+
+
+class MoveClassifier(GameClassifier):
+
+    def __init__(self, filter_id, model_map):
+        super(MoveClassifier, self).__init__(filter_id, model_map, (1,))
+
+
+    def train(self, xs, y, split_num=-1):
+        df_map = self._get_dfs(xs)
+
+        for feature, model in self.model_map.items():
+            self._fit(model, df_map[feature], y)
+
+
+    def test(self, xs, y, split_num=-1):
+        df_map = self._get_dfs(xs)
+        predictions_map = self.predict(df_map)
+
+        score_map = {}
+        for feature, predictions in predictions_map.items():
+            y = self._get_y(df_map[feature])
+            accuracy = accuracy_score(y, predictions)
+            precision = precision_score(y, predictions)
+            recall = recall_score(y, predictions)
+
+            print(feature)
+            print_scores(accuracy, precision, recall)
+            score_map[feature] = (accuracy, precision, recall)
+
+        return score_map
+
+
+    def predict(self, df_map):
+        return {
+            feature: model.predict(df_map[feature].drop("steamid", 1))
+            for feature,model in self.model_map.items()
+        }
+
+
+    def _get_action_df(self, raw_df, action):
+        return raw_df.loc[raw_df["actionType"] == action].drop("actionType", 1)
+
+
+    def _get_dfs(self, csvs):
+        dfs = [pd.read_csv(csv_file) for csv_file in csvs]
+        raw_df = pd.concat(dfs, ignore_index=True).dropna()
+
+        return {
+            feature: self._get_action_df(raw_df, feature)
+            for feature,_ in self.model_map.items()
+        }
+
+
+    # Used for cv step
+    def _get_ys(self, csv_file):
+        return self._is_filter_player(int(ntpath.basename(csv_file)[:17]))
 
 
 class PairClassifier(Classifier):

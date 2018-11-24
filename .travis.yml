@@ -31,6 +31,7 @@ jobs:
       before_script:
         - cd learning/src
       script:
+        - python run_move_classifier.py ../../build/data/mouseaction 2 76561198019729122
         - python run_game_classifier.py ../../build/data/mouseaction 2 76561198019729122
         - python create_featureset.py ../../build/data/mouseaction ../../build/dfs
         - python run_pair_classifier.py ../../build/dfs 2
