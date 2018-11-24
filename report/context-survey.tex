@@ -28,25 +28,50 @@ The problem of player identification based on play style has been explored in th
 
 Starcraft 2 is classified as a Real Time Strategy (RTS) game, which differs in some places to Dota 2. In Starcraft, players have to manage the generation of resources, production of buildings and units in additional to the control of a large number of units which make up the player's army. This differs vastly from Dota 2's gameplay of controlling only a single unit (except for a few particular heroes with more complex mechanics) and more simplified economy. Furthermore, Dota 2 is played as a team game with five players on each side, whereas competitive games in Starcraft are mostly played as one versus one. However, there are also many similarities between the two games. Firstly, both games are real time, unlike many other adversarial games. This means that players must both think and act quickly as both strategy and precision of control are important factors to victory. Secondly, the mechanic in which a player controls units in both games is virtually identical - movement is controlled using mouse clicks by clicking on the position the player wishes to move to and any attack or ability commands are done by pressing the associated hotkey and aiming at the desired location with the mouse. Finally, TODO.
 
-Liu et al. used a binary classification approach, focusing on a specific player in their dataset, with half the matches in their dataset coming from the same player, and the other half from other players. This method is less general, as the trained model will only be able to predict on the single player it is trained on.
-
-For their evaluation model, four different techniques were applied. They are:
+Liu et al. used a binary classification approach, focusing on a specific player in their dataset, with half the matches in their dataset coming from the same player, and the other half from other players. This method is less general, as the trained model will only be able to predict on the single player it is trained on, but boosts the accuracy of the model. Their later work \cite{starcraft-actions} extends on this binary classification to a multi-class classification, predicting out of 41 different players. Though the methodology for this extension is interesting and useful, it is still not a general model, as the model only recognises matches from the 41 players, which is a small subset compared to all possible Starcraft 2 players. Multiple machine learning models were used for evaluation, which gives a good indication of what models may perform well for player prediction and allows for comparison of the performance of the models for Starcraft and Dota, to see if any similarities can be drawn. The models they used were:
 \begin{itemize}
 \item J48 - C4.5 Decision Tree
 \item Artificial Neural Networks
 \item Adaptive Boosting
 \item Random Forest
 \end{itemize}
+It is also interesting to see the type of features that were used. Liu et el. categorised their features used into three parts: general game information, state of the game and time that first actions were taken. TODO link features to DOTA features
 
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\image{1.2\textwidth}{imgs/starcraft-models.png}{Starcraft models}
+\end{subfigure}
+\hspace{\fill}
+\begin{subfigure}{0.45\textwidth}
+\image{1.2\textwidth}{imgs/starcraft-features.png}{Starcraft features}
+\end{subfigure}
+\caption{Results figures extracted from \cite{starcraft-identification}}
+\end{figure}
+
+Their results show the performance of each machine learning model is dependent on the features used. For example, the ANN performed better using all features while the other models performed better using a smaller set of best features. This indicates that the model being trained should be taken into account during feature selection, as features that work well for one model do not necessarily work well for other ones. 
 
 \subsubsection{Win prediction}
 There has been much work in using machine learning techniques to predict the outcome of a Dota 2 match. \cite{dota-draft} 
 
 
 \subsubsection{Player role classification}
-Another area that was explored using Dota 2 match data is the classification of player roles. 
+Another area that was explored using Dota 2 match data is the classification of player roles. As Dota 2 is a team game, each player on the game typically fulfils a certain role in a match, similar to real life sports games like football and basketball. Gao et al. \cite{dota-gao} presented positive results in the identification of \textit{both} the hero and role that a player played using a mix of performance data and behavioural data that involved ability and item usage. Their work showed that for both roles and heroes, classification accuracies were higher when all features were used in combination together, compared to using each type of feature individually.
 
+\begin{figure}[H]
+\begin{subfigure}{0.45\textwidth}
+\image{1\textwidth}{imgs/dota-gao-results.png}{Results from Gao et al. \cite{dota-gao}.} 
+\end{subfigure}
+\hspace{\fill}
+\begin{subfigure}{0.45\textwidth}
+\image{1\textwidth}{imgs/dota-eggert-results.png}{Results from Eggert et al. \cite{dota-eggert}.}
+\end{subfigure}
+\caption{Contrasting results for role classification with different feature sets.}
+\end{figure}
 
+The features used by Gao et al. are very interesting as they show high correlation with the hero role, which is simplified to one of \textit{carry}, \textit{solo lane} and \textit{support} roles. This is related to the aim of this project to predict the actual player TODO. 
+
+Eggert et al. \cite{dota-eggert} took a further step in feature generation for role classification, constructing complex attributes using low-level data from a parsed replay of a match. While Gao et al. were able to improve the accuracy of their model slightly by combining all the feature sets together, Eggert et al. were able to achieve much larger improvements with a reduced set of features, which were experimentally chosen based on the number of folds the feature was selected in a 10-fold cross-validation. 
 \subsubsection{Forensic mouse movement to detect user}
 
 \end{document}
