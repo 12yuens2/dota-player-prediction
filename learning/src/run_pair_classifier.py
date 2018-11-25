@@ -10,50 +10,34 @@ from sklearn.neural_network import MLPClassifier
 
 network_size = (3,)
 
+lr_map = {
+    "ATTACK": LogisticRegression(class_weight="balanced"),
+    "MOVE": LogisticRegression(class_weight="balanced"),
+    "CAST": LogisticRegression(class_weight="balanced")
+}
 rf_map = {
-    "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
-    "END_ITEMS": RandomForestClassifier(class_weight="balanced"),
+#    "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
+#    "END_ITEMS": RandomForestClassifier(class_weight="balanced"),
     "ATTACK": RandomForestClassifier(class_weight="balanced"),
     "MOVE": RandomForestClassifier(class_weight="balanced"),
-    "CAST": RandomForestClassifier(class_weight="balanced"),
-    "STATS": RandomForestClassifier(class_weight="balanced")
+    "CAST": RandomForestClassifier(class_weight="balanced")
+#    "STATS": RandomForestClassifier(class_weight="balanced")
 }
 
 clf_map = {
-    "START_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
-    "END_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
-    #"ATTACK": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
-    #"MOVE": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
-    #"CAST": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    #"START_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
+    #"END_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
+    "ATTACK": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    "MOVE": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
+    "CAST": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,))
     #"STATS": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,))
 }
 
-rf = classifiers.PairClassifier(clf_map, network_size)
-#clf = classifiers.PairClassifier(clf_map, network_size)
+lr = classifiers.PairClassifier(lr_map, network_size, "../results/15-pair-move-lr-cv.csv")
+rf = classifiers.PairClassifier(rf_map, network_size, "../results/15-pair-move-rf-cv.csv")
+clf = classifiers.PairClassifier(clf_map, network_size, "../results/15-pair-move-mlp-cv.csv")
 
-
-
-
-#clfs = PairClassifier(MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-#                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-#                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,16,)),
-#                      MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,)),
-#                      network_size)
-
-#def run_models(name, pairs, y, size):
-#    print("lr {}".format(name))
-#    ml_split(pairs, y, lr, 5, size)
-
-#    print("rf {}".format(name))
-#    classifiers.cross_validate(pairs, 5, rf, get_y, size)
-#    ml_split(pairs, y, rf, 5, size)
-#
-#    print("mlp {}".format(name))
-#    ml_split(pairs, y, clf, 5, size)
-
-#    print("mlp small {}".format(name))
-#    ml_split(pairs, y, clfs, 5, size)
-
+models = [lr, rf, clf]
 
 def get_y(pair):
     return pair.y
@@ -67,16 +51,23 @@ path = sys.argv[1]
 cv = int(sys.argv[2])
 
 pairs1 = pickle.load(open("{}/pairs1.df".format(path), "rb"))
-classifiers.cross_validate(pairs1, cv, rf, get_y, 1)
+for model in models:
+    classifiers.cross_validate(pairs1, cv, model, get_y, 1)
 
 pairs2 = pickle.load(open("{}/pairs2.df".format(path), "rb"))
-classifiers.cross_validate(pairs2, cv, rf, get_y, 2)
+for model in models:
+    classifiers.cross_validate(pairs2, cv, model, get_y, 1)
+    classifiers.cross_validate(pairs2, cv, model, get_y, 2)
 
 pairs3 = pickle.load(open("{}/pairs3.df".format(path), "rb"))
-classifiers.cross_validate(pairs3, cv, rf, get_y, 3)
+for model in models:
+    classifiers.cross_validate(pairs3, cv, model, get_y, 1)
+    classifiers.cross_validate(pairs3, cv, model, get_y, 2)
+    classifiers.cross_validate(pairs3, cv, model, get_y, 3)
 
 pairs5 = pickle.load(open("{}/pairs5.df".format(path), "rb"))
-classifiers.cross_validate(pairs5, cv, rf, get_y, 5)
+for model in models:
+    classifiers.cross_validate(pairs5, cv, model, get_y, 5)
 
 
 #from sklearn.pipeline import Pipeline

@@ -31,33 +31,25 @@ cv = int(sys.argv[2])
 filter_id = int(sys.argv[3])
 games = load_games(path)
 
-#lr_model_map = {
-#    "ATTACK": LogisticRegression(class_weight="balanced"),
-#    "MOVE": LogisticRegression(class_weight="balanced"),
-#    "CAST": LogisticRegression(class_weight="balanced"),
-#    "STATS": LogisticRegression(class_weight="balanced")
-#}
-#
-#rf_model_map = {
-#    "ATTACK": RandomForestClassifier(class_weight="balanced"),
-#    "MOVE": RandomForestClassifier(class_weight="balanced"),
-#    "CAST": RandomForestClassifier(class_weight="balanced")
-#}
-#
-#rf_stats_model_map = {
-#    "ATTACK": RandomForestClassifier(class_weight="balanced"),
-#    "MOVE": RandomForestClassifier(class_weight="balanced"),
-#    "CAST": RandomForestClassifier(class_weight="balanced"),
-#    "STATS": RandomForestClassifier(class_weight="balanced")
-#}
-
-rf_map = {
-    "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
-    "END_ITEMS": RandomForestClassifier(class_weight="balanced")
+lr_map = {
+    "ATTACK": LogisticRegression(class_weight="balanced"),
+    "MOVE": LogisticRegression(class_weight="balanced"),
+    "CAST": LogisticRegression(class_weight="balanced")
 }
 
-rf_gc = classifiers.GameClassifier(filter_id, rf_map, (3,))
+rf_map = {
+    "ATTACK": RandomForestClassifier(class_weight="balanced"),
+    "MOVE": RandomForestClassifier(class_weight="balanced"),
+    "CAST": RandomForestClassifier(class_weight="balanced")
+}
+
+lr_gc = classifiers.GameClassifier(filter_id, lr_map, (3,), "../results/15-game-move-lr-cv.csv")
+classifiers.cross_validate(games, cv, lr_gc, lr_gc.contains_player)
+
+rf_gc = classifiers.GameClassifier(filter_id, rf_map, (3,), "../results/15-game-move-rf-cv.csv")
 classifiers.cross_validate(games, cv, rf_gc, rf_gc.contains_player)
+
+
 #lr_gc.train(games, 
 #data.extend(lr_gc.cross_validate(games, 5))
 

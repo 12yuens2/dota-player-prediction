@@ -7,6 +7,7 @@ import pandas as pd
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 
 import classifiers
 
@@ -32,22 +33,25 @@ rf_model_map = {
     "CAST": RandomForestClassifier(class_weight="balanced")
 }
 
+mlp_model_map = {
+    "ATTACK": MLPClassifier(alpha=0.001),
+    "MOVE": MLPClassifier(alpha=0.001),
+    "CAST": MLPClassifier(alpha=0.001)
+}
 
-lr_mc = classifiers.MoveClassifier(filter_id, lr_model_map)
+
+lr_mc = classifiers.MoveClassifier(filter_id, lr_model_map, "../results/15-move-lr-cv.csv")
+rf_mc = classifiers.MoveClassifier(filter_id, rf_model_map, "../results/15-move-rf-cv.csv")
+mlp_mc = classifiers.MoveClassifier(filter_id, mlp_model_map, "../results/15-move-mlp-cv.csv")
+
+
 xs = ["{}/{}".format(path, file) for file in os.listdir(path)]
 
+print("Logistic Regression")
 classifiers.cross_validate(xs, cv, lr_mc, lr_mc._get_ys)
-#data.extend(lr_mc.cross_validate(5))
-#
-#rf_mc = MoveClassifier(filter_id, rf_model_map, path)
-#data.extend(rf_mc.cross_validate(5))
-#
-#with open("out.data", "w") as f:
-#    f.write("move_type,model,eval_type,accuracy,precision,recall\n")
-#    for line in data:
-#        f.write(line)
-#    f.flush()
 
+print("Random Forest")
+classifiers.cross_validate(xs, cv, rf_mc, rf_mc._get_ys)
 
-                    
-
+print("MLP")
+classifiers.cross_validate(xs, cv, mlp_mc, mlp_mc._get_ys)

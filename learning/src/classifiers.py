@@ -46,7 +46,7 @@ class Classifier:
 
             # Concat all xs into one dataframe
             df = pd.concat([x.get_df(feature, split_num) for x in xs])
-            dfs[feature] = df
+            dfs[feature] = df.fillna(0)
 
         return dfs
 
@@ -76,10 +76,13 @@ class Classifier:
 
 class GameClassifier(Classifier):
 
-    def __init__(self, filter_id, model_map, network_size):
+    def __init__(self, filter_id, model_map, network_size, output_file):
         super(GameClassifier, self).__init__(model_map, network_size)
 
         self.filter_id = filter_id
+        self.output = open(output_file, "w")
+        self.output.write("accuracy,precision,recall\n");
+        self.output.flush()
 
 
     def contains_player(self, game):
@@ -87,6 +90,15 @@ class GameClassifier(Classifier):
             return 1
         else:
             return 0
+
+
+    def test(self, xs, y, split_num=-1):
+        accuracy, precision, recall =  super(GameClassifier, self).test(xs, y, split_num)
+
+        self.output.write("{},{},{}\n".format(accuracy, precision, recall))
+        self.output.flush()
+
+        return accuracy, precision, recall
 
         
     def _fit(self, model, df, y):
@@ -114,8 +126,12 @@ class GameClassifier(Classifier):
 
 class MoveClassifier(GameClassifier):
 
-    def __init__(self, filter_id, model_map):
+    def __init__(self, filter_id, model_map, output_file):
         super(MoveClassifier, self).__init__(filter_id, model_map, (1,))
+
+        self.output = open(output_file, "w")
+        self.output.write("feature,accuracy,precision,recall\n");
+        self.output.flush()
 
 
     def train(self, xs, y, split_num=-1):
@@ -139,6 +155,9 @@ class MoveClassifier(GameClassifier):
             print(feature)
             print_scores(accuracy, precision, recall)
             score_map[feature] = (accuracy, precision, recall)
+
+            self.output.write("{},{},{},{}\n".format(feature, accuracy, precision, recall))
+            self.output.flush()
 
         return score_map
 
@@ -171,9 +190,21 @@ class MoveClassifier(GameClassifier):
 
 class PairClassifier(Classifier):
 
-    def __init__(self, model_map, network_size):
+    def __init__(self, model_map, network_size, output_file):
         super(PairClassifier, self).__init__(model_map, network_size)
 
+        self.output = open(output_file, "w")
+        self.output.write("numSplits,split,accuracy,precision,recall\n");
+        self.output.flush()
+
+
+    def test(self, xs, y, split_num=-1):
+        accuracy, precision, recall =  super(PairClassifier, self).test(xs, y, split_num)
+
+        self.output.write("{},{},{},{}\n".format(xs[0].splits, split_num, accuracy, precision, recall))
+        self.output.flush()
+
+        return accuracy, precision, recall
 
     def _get_proba(self, model, df):
         return model.predict_proba(df)[0]
