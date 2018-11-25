@@ -35,7 +35,7 @@ Liu et al. used a binary classification approach, focusing on a specific player 
 \item Adaptive Boosting
 \item Random Forest
 \end{itemize}
-It is also interesting to see the type of features that were used. Liu et el. categorised their features used into three parts: general game information, state of the game and time that first actions were taken. TODO link features to DOTA features
+It is also interesting to see the type of features that were used. Liu et el. categorised their features used into three parts: general game information, state of the game and time that first actions were taken. The general game information contained information such as match length, winner, map name, etc. Some of these, such as game length and winner can be directly translated to a match in Dota 2 as well. Others such as the map name cannot be translated, as there is only a single map in Dota 2. The game state data used is based on the production of buildings and units in a small time slice of a match. The closest features to this in Dota 2 are the levelling order of a heroes skills and the items purchased. 
 
 \begin{figure}[H]
 \centering
@@ -52,7 +52,7 @@ It is also interesting to see the type of features that were used. Liu et el. ca
 Their results show the performance of each machine learning model is dependent on the features used. For example, the ANN performed better using all features while the other models performed better using a smaller set of best features. This indicates that the model being trained should be taken into account during feature selection, as features that work well for one model do not necessarily work well for other ones. 
 
 \subsubsection{Win prediction}
-There has been much work in using machine learning techniques to predict the outcome of a Dota 2 match. \cite{dota-draft} 
+There has been much work in using data extracted from Dota 2 matches to predict the outcome of matches. \cite{dota-draft} 
 
 
 \subsubsection{Player role classification}
@@ -66,12 +66,14 @@ Another area that was explored using Dota 2 match data is the classification of 
 \begin{subfigure}{0.45\textwidth}
 \image{1\textwidth}{imgs/dota-eggert-results.png}{Results from Eggert et al. \cite{dota-eggert}.}
 \end{subfigure}
-\caption{Contrasting results for role classification with different feature sets.}
+\caption{Results for role classification showing the combination of features performing the best \cite{dota-gao} and showing logistic regression as the best performing model \cite{dota-eggert}.}
 \end{figure}
 
-The features used by Gao et al. are very interesting as they show high correlation with the hero role, which is simplified to one of \textit{carry}, \textit{solo lane} and \textit{support} roles. This is related to the aim of this project to predict the actual player TODO. 
+The features used by Gao et al. are very interesting as they show high correlation with the hero role, which is simplified to one of \textit{carry}, \textit{solo lane} and \textit{support} roles. This is related to the aim of this project to predict the actual player as the features indicate differences in player behaviour. Eggert et al. \cite{dota-eggert} took a further step in feature generation for role classification, constructing complex attributes using low-level data from a parsed replay of a match. This included features such as player positional movement and damage done during teamfights. However, some of these features are not as relevant, as they are able to differentiate between roles and heroes, but are not as applicable to differentiating different players on the same role or hero. Eggert et al. \cite{dota-eggert} further found that logistic regression was the best performing classifier out of multiple different classifiers - random forest classifiers, support vector machines, naive Bayes classifiers and Bayesian networks - while Gao et al. \cite{dota-gao} found very similar performance for random forest and logistic regression. As these two models have found good success, they are the first models used to test the player prediction features in this project. 
 
-Eggert et al. \cite{dota-eggert} took a further step in feature generation for role classification, constructing complex attributes using low-level data from a parsed replay of a match. While Gao et al. were able to improve the accuracy of their model slightly by combining all the feature sets together, Eggert et al. were able to achieve much larger improvements with a reduced set of features, which were experimentally chosen based on the number of folds the feature was selected in a 10-fold cross-validation. 
+Quantitative research is not the only kind done in previous research on player roles in Dota 2. Nuangjumnong and Mitomo \cite{dota-leadership} conducted a survey on players which showed correlation between the leadership style of players and the role they played in the team. This relates to how different players choose roles and heroes based on their behavioural differences. 
+
+
 \subsubsection{Forensic mouse movement to detect user}
 
 \end{document}

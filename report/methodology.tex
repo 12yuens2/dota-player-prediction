@@ -3,12 +3,202 @@
 \begin{document}
 
 \section{Methodology}
+This section describes the methodology of each part of the project, explaining the design decisions and illustrating their details. Most notably, the process for data collection and processing is explained, and the reasoning behind choosing different subsets of features and how they are extracted from match replays is detailed. 
+
+
+\subsection{Data collection}
+To download the replays, a combination of the OpenDota \cite{opendota} API and Valve's official API was used. The OpenDota API is used to fetch a list of players and their games given a number of conditions. This allows the replays downloaded to be controlled in a very specific way. For example, the game mode and hero id can be specified to ensure all games returned by the API are from the same player, in the same game mode and playing the same hero. This control is important to isolate additional variables that may affect player behaviour. 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=stealth']
+% Locations
+\def\ClientToServer{++(6,0)}
+\def\ServerToClient{++(-7,0)}
+\def\ValveToClient{++(-12,0)}
+\def\Lifeline{++(0,-10)}
+
+% Lifelines
+\path (0,0) node[draw] (Client) {Client}
+      (7,0) node[draw] (Server) {OpenDota API}
+      (12,0) node[draw] (Valve)  {Valve API};
+\draw (Client) -- \Lifeline (Server) -- \Lifeline (Valve) -- \Lifeline;
+
+% Blocks
+\path (Server)
+      ++(0,-1) node (BeginHeroes) {} node[below right] {\texttt{\ /heroes}}
+      ++(0,-1) node (EndHeroes)   {};
+\filldraw[fill=blue!30] (BeginHeroes.west) rectangle (EndHeroes.east);
+
+\path (Server)
+      ++(0,-3.25) node (BeginPlayer) {} node[below right] {\texttt{\ /players}}
+      ++(0,-1) node (EndPlayer) {};
+\filldraw[fill=red!30] (BeginPlayer.west) rectangle (EndPlayer.east);
+
+\path (Server)
+      ++(0,-5.5) node (BeginMatches) {} node[below right] {\texttt{\ /matches}}
+      ++(0,-1) node (EndMatches) {};
+\filldraw[fill=green!30] (BeginMatches.west) rectangle (EndMatches.east);
+
+\path (Valve)
+      ++(0,-7.75) node (BeginReplays) {} node[below right] {\ Replay cluster}
+      ++(0,-1) node (EndReplays) {};
+\filldraw[fill=black!30] (BeginReplays.west) rectangle (EndReplays.east);
+
+
+% Calls
+\draw[->] (BeginHeroes)\ServerToClient -- node[above] {\texttt{hero\_id}} (BeginHeroes);
+\draw[->] (EndHeroes) -- node[above] {List of player ids} \ServerToClient;
+
+\draw[->] (BeginPlayer)\ServerToClient -- node[above] {\texttt{player\_id, gamemode, hero\_id}} (BeginPlayer);
+\draw[->] (EndPlayer) -- node[above] {List of match ids} \ServerToClient;
+
+\draw[->] (BeginMatches)\ServerToClient -- node[above] {\texttt{match\_id}} (BeginMatches);
+\draw[->] (EndMatches) -- node[above] {Replay cluster and salt} \ServerToClient;
+
+\draw[->] (BeginReplays)\ValveToClient -- node[above] {\texttt{cluster\_id, salt}} (BeginReplays);
+\draw[->] (EndReplays) -- node[above] {\texttt{.dem} replay file} \ValveToClient;
+
+\end{tikzpicture}
+\caption{Sequence of API calls to download  replay files}
+\label{fig:api-calls}
+\end{figure}
+
+Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API is required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Occasionally, the replay files are not found as they may have been deleted, or the cluster unreachable. This is not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
+
+\subsection{Data processing}
+
 
 \subsection{Mouse movement features}
+The mouse movement features extracted from the Dota 2 replays followed the approach by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also used to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
+
+There is a significant lack of precision in the data retrieved using the parser on a replay, especially when compared to direct recording of user mouse movements. For example, with live recording of mouse movements, multiple events and features can be extracted from a single mouse click: left click up event, left click down event, click time (the time between click up and click down events) and distanced travelled during the click. From the replay, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to directly recording mouse events.
+
+While multiple levels of mouse actions are defined by Feher et al \cite{mouse-dynamics}, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
+
+Four \textbf{level 1 actions} are defined, they are:
+\begin{itemize}
+\item Mouse movement sequence (MM)
+\item Attack command (AC)
+\item Move command (MC)
+\item Spell cast command (SC)
+\end{itemize}
+A mouse movement sequence is defined as a sequence of positions of the cursor. Rather than using a fixed interval of time in which the sequence must fit, a threshold $\tau$ is used to end the sequence if no change in cursor position has occurred within the time of the threshold. This more naturally records a sequence of mouse movements that doesn't break up a sequence of movements to fit within a fixed time interval. A larger threshold increases the average length of MM actions as more mouse positions are included into the sequence. 
+
+Each MM action consists of three vectors:
+\begin{itemize}
+\item $\boldsymbol{t} = \{t_i\}^{n}_{i=1}$ - The game tick
+\item $\boldsymbol{x} = \{x_i\}^{n}_{i=1}$ - The x coordinate sampled on game tick $t_i$
+\item $\boldsymbol{y} = \{y_i\}^{n}_{i=1}$ - The y coordinate sampled on game tick $t_i$
+\end{itemize}
+The length $i$ is the same across the three vectors, but each MM action can have varying values of $i$. The vectors themselves are further processed to give the following list of basic movement features, based on the approach described by Gamboa et al \cite{mouse-features}:
+\begin{table}[H]
+\renewcommand*{\arraystretch}{2.5}
+\centering
+\begin{tabular}{| c | c | c |}
+\hline
+& \textbf{Feature} & \textbf{Definition} \\ \hline
+1 & Angle of movement & $\theta_i = arctan(\dfrac{\delta y_1}{\delta x_1}) + \sum\limits_{j=1}^{i} \delta \theta_j$ \\ \hline
+2 & Curvature & $c = \dfrac{\delta\theta}{\delta s}$ \\ \hline
+3 & Rate of change of curvature & $\Delta c = \dfrac{\delta c}{\delta s}$ \\ \hline
+4 & Horizontal velocity & $V_x = \dfrac{\delta x}{\delta t}$ \\ \hline
+5 & Vertical velocity & $V_y = \dfrac{\delta y}{\delta t}$ \\ \hline
+6 & Velocity & $V = \sqrt{\delta V_{x}^{2} + \delta V_{y}^{2}}$ \\ \hline
+7 & Acceleration & $V' = \dfrac{\delta V}{\delta t}$ \\ \hline
+8 & Jerk & $V'' = \dfrac{\delta V'}{\delta t}$ \\ \hline
+9 & Angular velocity & $w = \dfrac{\delta \theta_t}{\delta t}$ \\ \hline
+\end{tabular}
+\caption{Basic mouse movement features used in \cite{mouse-features}}
+\label{mm-features}
+\end{table}
+
+Next, the basic features are extracted into the statistics: minimum, maximum, mean and standard deviation. This was done because each of the basic features are vectors of varying length. For example, features such as velocity and curvature have $n + 1$ data points compared to their derivative features. Taking statistics of these vectors eliminates the problem with varied length features, but causes some data to be lost in the conversion.
+
+The combination of a MM action followed by a command action defines the \textbf{level 3 actions}:
+\begin{itemize}
+\item Mouse movement sequence followed by an attack command (MMAC)
+\item Mouse movement sequence followed by a move command (MMMC)
+\item Mouse movement sequence followed by a spell cast command (MMSC)
+\end{itemize}
+To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands. The features of the level 3 actions are statistics of the features in table \ref{mm-features} with two additional features:
+\begin{itemize}
+\item Game ticks to commands $t_n$ - the number of game ticks between the last two mouse positions
+\item Distance to command - the distance travelled between the last two mouse positions
+\begin{equation}
+d_i = \sqrt{\delta x_{i}^2 + \delta y_{i}^2}
+\end{equation} 
+where $\delta x_i = x_{i+1} - x_i$ and $\delta y_i = y_{i+1} - y_i$
+\end{itemize}
+
+The total features of each level 3 action is shown in table \ref{tbl-level3features}, giving the total number of features as 38. 
+\newcommand{\fourfeatures}[1]{#1 & Minimum, maximum, mean, standard deviation & 4 \\ \hline}
+\begin{table}[H]
+\renewcommand*{\arraystretch}{1.5}
+\centering
+\begin{tabular}{| c | c | c |}
+\hline
+\textbf{Property} & \textbf{Features} & \textbf{Number of features} \\ \hline
+\fourfeatures{Angle of movement}
+\fourfeatures{Curvature}
+\fourfeatures{Rate of change of curvature}
+\fourfeatures{Horizontal velocity}
+\fourfeatures{Vertical velocity}
+\fourfeatures{Velocity}
+\fourfeatures{Acceleration}
+\fourfeatures{Jerk}
+\fourfeatures{Angular velocity}
+Game ticks to command & Single value & 1 \\ \hline
+Distance to command & Single value & 1 \\ \hline
+\end{tabular}
+\caption{Final processed features for each level 3 action}
+\label{tbl-level3features}
+\end{table}
 
 \subsection{Game statistic features}
+Another feature that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player, rather than purely their behaviour. 
+
+The statistics are:
+\begin{itemize}
+\item Gold per minute
+\item XP per minute
+\item CS per minute
+\item Denies
+\item Actions per minute
+\item No. of move commands on target per minute
+\item No. of move commands on position per minute
+\item No. of attack commands on target per minute
+\item No. of attack commands on position per minute
+\item No. of spell cast commands on target per minute
+\item No. of spell cast commands on position per minute
+\item No. of spell cast commands with no target per minute
+\item No. of hold position commands per minute
+\end{itemize}
+Most of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies is not taken as per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of them game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
+
+There are some obvious statistics that were omitted from this feature set. The most obvious is the number of kills, deaths and assists (KDA) for the player. This was omitted because the KDA stats varies for the same player depending on their personal performance, and the performance of their team for a single game. Further, it is not uncommon for different players to have similar KDA statistics as there is not a large range of values for the number of kills, deaths and assists, making the stats unlikely to be very useful in player prediction. However, it is still interesting to see and prove that the KDA is not useful by evaluating models that use it, compared to models that don't. For this reason, this statistic is still kept accessible for the future. 
+
 
 \subsection{Game itemisation features}
+As it was seen in previous studies on using Dota 2 match data \cite{dota-gao, dota-eggert}, the items purchased by players is a strong indicator to the hero and role of the player. This is because different roles and heroes in the game will purchase different items that fit that role. By itself, the itemisation is not telling of who the player is, as multiple players playing the same hero are likely to buy similar items to each other. However, the same items can be placed in different inventory positions for different players. This is related to how a player's controls are set up, with each inventory position corresponding to a hotkey, which is typically a personal and custom choice by a player. Moreover, many items in Dota 2 have active abilities - such as the \textit{Blink dagger}, which teleports the player's character a short distance - providing the player with additional abilities that may be cast. As such, the location an item occupies in a player's inventory reflects the player control settings and is an easy feature that can differentiate different players. It is also unlikely a player changes their control settings, especially in the short term, meaning a pattern found TODO. 
+
+The item names and inventory positions can be easily extracted at any game tick from the match replays. There are two areas of concern for this feature: when to sample for item positions and how to encode this information into numerical data. 
+
+The problem of encoding the item data is more complicated, the information of which items were purchased and which inventory position they occupied had to be represented as a numeric value. This was tricky, as just using a numeric values such as the item id implies a relation between the items that is false. For example, item 1 is the blink dagger and item 2 is the blades of attack. Using the item ids for encoding would imply that the blink dagger is 1 value less than the blades of attack where in reality it is illogical to rank them this way as they qualitatively very different - the blink dagger costs more gold and provides an active ability, while the blades of attack costs less gold but provides additional bonuses to the player. 
+
+\subsubsection{One-hot encoding}
+One-hot encoding is a well known and widely used approach to encode categorical values. It works by encoding each possible category as a separate binary feature, with 1 representing the existence of the original value. There is no concern with the numeric values misrepresenting the categorical values because each value creates its own feature. The issue with this encoding is that there are too many values to encode. Ideally, each combination of item and inventory position is encoded as unique value, which gives about 1800 binary features (\textasciitilde{}300 items $\times$ 6 inventory locations). 
+
+\begin{figure}
+\begin{tabular}{| c | c | c | c | c | c |}
+\hline
+Inventory slot 1 & Slot 2 & Slot 3 & Slot 4 & Slot 5 & Slot 6 \\ \hline
+item\_tango & item\_blink & item\_empty & item\_empty & item\_phase\_boots & item\_manta \\ \hline
+\end{tabular}
+\end{figure}
+
+\subsubsection{Feature hashing}
+
+
 
 \subsection{Predicting is a particular player}
 

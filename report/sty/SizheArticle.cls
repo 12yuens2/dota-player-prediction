@@ -55,6 +55,7 @@
 
 % tikz : Drawing diagrams and plots (included in plots.sty)
 \RequirePackage{tikz}
+\usetikzlibrary{arrows}
 
 
 %---------------------%
@@ -88,10 +89,15 @@
 % #3 - Caption
 \newcommand{\imagefig}[3]{
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=#1, keepaspectratio]{#2}
-	\caption{#3}
+    \image{#1}{#2}{#3}
 \end{figure}
+}
+
+% Image without the figure \image{Width}{Path}{Caption}
+\newcommand{\image}[3] {
+\centering
+\includegraphics[width=#1, keepaspectratio]{#2}
+\caption{#3}
 }
 
 
@@ -100,7 +106,7 @@
 % Custom options %
 %----------------%
 % Table of contents max depth
-\setcounter{tocdepth}{2}
+%\setcounter{tocdepth}{2}
 
 
 
