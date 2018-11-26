@@ -127,7 +127,7 @@ class GameClassifier(Classifier):
 class MoveClassifier(GameClassifier):
 
     def __init__(self, filter_id, model_map, output_file):
-        super(MoveClassifier, self).__init__(filter_id, model_map, (1,))
+        super(MoveClassifier, self).__init__(filter_id, model_map, (1,), output_file)
 
         self.output = open(output_file, "w")
         self.output.write("feature,accuracy,precision,recall\n");
@@ -201,7 +201,7 @@ class PairClassifier(Classifier):
     def test(self, xs, y, split_num=-1):
         accuracy, precision, recall =  super(PairClassifier, self).test(xs, y, split_num)
 
-        self.output.write("{},{},{},{}\n".format(xs[0].splits, split_num, accuracy, precision, recall))
+        self.output.write("{},{},{},{},{}\n".format(xs[0].splits, split_num, accuracy, precision, recall))
         self.output.flush()
 
         return accuracy, precision, recall

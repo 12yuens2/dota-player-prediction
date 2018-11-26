@@ -14,7 +14,15 @@ def get_pair_names(path):
     return list(itertools.permutations(files, 2))
 
 def get_pairs(pair_names, ys, splits):
-    return [Pair(pair, y, splits) for pair,y in zip(pair_names, y)]
+    pairs = []
+    for pair,y in zip(pair_names, ys):
+        try:
+            p = Pair(pair, y, splits)
+            pairs.append(p)
+        except FileNotFoundError:
+            print("File not found for {}".format(pair))
+
+    return pairs
 
 def get_playerid(name):
     return ntpath.basename(name)[:17]
