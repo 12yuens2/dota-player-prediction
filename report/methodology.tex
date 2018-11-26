@@ -64,10 +64,10 @@ To download the replays, a combination of the OpenDota \cite{opendota} API and V
 \label{fig:api-calls}
 \end{figure}
 
-Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API is required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Occasionally, the replay files are not found as they may have been deleted, or the cluster unreachable. This is not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
+Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API are required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Other parameters such as the game mode are defined in the script as they were kept constant for all the datasets. Occasionally, the replay files are not found as they may have been deleted, or the cluster unreachable. This is not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
 
 \subsection{Data processing}
-
+The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands of level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game. 
 
 \subsection{Mouse movement features}
 The mouse movement features extracted from the Dota 2 replays followed the approach by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also used to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
@@ -185,20 +185,31 @@ The item names and inventory positions can be easily extracted at any game tick 
 
 The problem of encoding the item data is more complicated, the information of which items were purchased and which inventory position they occupied had to be represented as a numeric value. This was tricky, as just using a numeric values such as the item id implies a relation between the items that is false. For example, item 1 is the blink dagger and item 2 is the blades of attack. Using the item ids for encoding would imply that the blink dagger is 1 value less than the blades of attack where in reality it is illogical to rank them this way as they qualitatively very different - the blink dagger costs more gold and provides an active ability, while the blades of attack costs less gold but provides additional bonuses to the player. 
 
+
+\subsubsection{Feature hashing}
+One method for encoding categorical features is to hash the features into a number of new features \cite{feature-hashing}. This provides a unique numeric value for each possible category, spread over a controllable number of features. This method is better than a simple numeric conversion in that TODO. However, it still suffers from the same issue of the hashed values not well representing categorical values. 
+
 \subsubsection{One-hot encoding}
 One-hot encoding is a well known and widely used approach to encode categorical values. It works by encoding each possible category as a separate binary feature, with 1 representing the existence of the original value. There is no concern with the numeric values misrepresenting the categorical values because each value creates its own feature. The issue with this encoding is that there are too many values to encode. Ideally, each combination of item and inventory position is encoded as unique value, which gives about 1800 binary features (\textasciitilde{}300 items $\times$ 6 inventory locations). 
 
-\begin{figure}
+\begin{figure}[H]
 \begin{tabular}{| c | c | c | c | c | c |}
 \hline
 Inventory slot 1 & Slot 2 & Slot 3 & Slot 4 & Slot 5 & Slot 6 \\ \hline
 item\_tango & item\_blink & item\_empty & item\_empty & item\_phase\_boots & item\_manta \\ \hline
 \end{tabular}
+\caption{Example of one-hot encoding inventory items.}
 \end{figure}
 
-\subsubsection{Feature hashing}
 
 
+\subsubsection{Item differences}
+A simple solution to encoding the items is instead to look at the differences in the items between the two matches being compared. 
+% advantage: simple to encode, shows difference information
+% disadvantage: lose information on exact item
+
+\subsubsection{Selective items}
+% Heuristic for which items we think are most useful and only encode those
 
 \subsection{Predicting is a particular player}
 

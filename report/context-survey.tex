@@ -6,6 +6,34 @@
 
 
 \subsection{Dota 2}
+\subsubsection{Overview}
+Dota 2 is a popular free-to-play multiplayer online battle arena (MOBA) video game developed by Valve Corporation. The player controls a single character as part of a team competing against an opponent team. The hero that the player controls is chosen from a roster of over 100 unique heroes. Each hero has their own unique abilities and characteristics, for example some heroes focus on dealing damage with spells and abilities, while other heroes use passive abilities to augment their basic attacks. To win, the team must destroy the opponent's base structure, known as the Ancient, located deep in the opponent controlled side of the map. The map is split into three lanes, with towers that must be destroyed in succession in order to remove the Ancient's invulnerability. Weaker, uncontrollable units called creeps periodically spawn from a team's Ancient and travel down the three lanes. Heroes gain experience when nearby creeps and heroes on the opposing team die. A hero then gains levels after gaining an amount of experience, which increases the hero's power and allows the player to spend a skill point on upgrading one of the hero's abilities. 
+
+Additionally, heroes gain gold throughout a match which can be used to purchase items. Item provide powerful bonuses and abilities to a hero. Every hero has 6 slots in their inventory in which they can place purchased items. Items can also be placed in the stash or backpack, however do not provide any bonuses unless they are in one of the 6 inventory slots. Gold is gained from multiple sources, most notably by getting the killing blow on creeps, killing opponent heroes, destroying opponent buildings and passively over time. 
+
+\imagefig{0.65\textwidth}{imgs/dota-map.png}{Labelled map of Dota 2, taken from \cite{dota-map}}
+
+The map in Dota 2 is asymmetrical and split in half for the two sides - Radiant and Dire. Playing on different sides leads to different strategies due to the asymmetry. There are further, more complicated mechanics in the game, such as the neutral jungle creeps and runes. As these mechanics do not form any part of the features used in this project, their explanation is omitted. 
+
+\subsubsection{Player control}
+An important aspect of Dota 2 which this project will utilise for data, is the method in which players control their characters in the game. Firstly, Dota 2 is a real time game, where player actions occur immediately. As such, players have very fine grained control of their characters, with their ability to react and mechanically execute commands in order and in time plays a core part towards their skill in the game. Further, strategic decisions have to be made with limited time constraints and with communication with their team members, making player skill in Dota 2 a combination of strategy, team work and mechanical ability. 
+
+\begin{figure}[H]
+\begin{subfigure}{0.4\textwidth}
+%\image{1\textwidth}{imgs/dota-move.png}{Movement commands}
+\end{subfigure}
+\hspace{\fill}
+\begin{subfigure}{0.4\textwidth}
+%\image{1\textwidth}{imgs/dota-cast.png}{Spell cast}
+\end{subfigure}
+\caption{Player executing movement and spell casting commands to their character in Dota 2.}
+\end{figure}
+
+Players control their characters through the mouse and keyboard. The position of the mouse cursor is central to the way the heroes are controlled. Right-clicking in the game moves the hero to the location the mouse cursor was when the click was registered and is the primary method to control movement. Right-clicking directly on top of opponent entities such as creeps and heroes commands the player's hero to attack that entity. 
+
+Spells and abilities are used as a combination of mouse and keyboard. The four unique abilities that each hero has is typically linked to the Q, W, E and R keys on the keyboard. Pressing the associated key activates the ability. For many abilities, the activated ability is aimed at the location of the mouse cursor. The time scale in which players have to aim their abilities vary based on player skill and situation in the game. Players with lower skill will usually allocate more time in order to aim accurately, while players with higher skills may allocate less time in order to send out additional commands, such as dodging the opponent's abilities. 
+
+\subsubsection{Gameplay flow}
 %Terms to explain:
 % - Winning conditions
 % - Real time game (strategy + skill are both important)
@@ -74,6 +102,6 @@ The features used by Gao et al. are very interesting as they show high correlati
 Quantitative research is not the only kind done in previous research on player roles in Dota 2. Nuangjumnong and Mitomo \cite{dota-leadership} conducted a survey on players which showed correlation between the leadership style of players and the role they played in the team. This relates to how different players choose roles and heroes based on their behavioural differences. 
 
 
-\subsubsection{Forensic mouse movement to detect user}
+\subsubsection{Forensic mouse movement to detect users}
 
 \end{document}
