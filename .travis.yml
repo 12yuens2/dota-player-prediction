@@ -1,5 +1,7 @@
 jobs:
   include:
+
+# Java step
     - language: java
       before_script:
         - cd dota-parser-master
@@ -8,6 +10,7 @@ jobs:
         - mvn package
         - java -jar target/dota-parser-1.0.jar ../build/replays/test
 
+# Python step
     - language: python
       python:
         - "3.6"
@@ -30,7 +33,11 @@ jobs:
         - python create_featureset.py ../../build/data/mouseaction ../../build/dfs
         - python run_pair_classifier.py ../../build/dfs 2
 
-    - before_script:
+# Latex step
+    - before_install:
+        - sudo apt-get update
+        - sudo apt-get install latexmk
+      before_script:
         - cd report/
       script:
         - latexmk -pdf Report.tex
