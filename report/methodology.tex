@@ -69,7 +69,7 @@ Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquirin
 \subsection{Data processing}
 The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands of level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game. 
 
-\subsection{Mouse movement features}
+\subsection{Mouse movement features}\label{sec:mm-features}
 The mouse movement features extracted from the Dota 2 replays followed the approach by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also used to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
 
 There is a significant lack of precision in the data retrieved using the parser on a replay, especially when compared to direct recording of user mouse movements. For example, with live recording of mouse movements, multiple events and features can be extracted from a single mouse click: left click up event, left click down event, click time (the time between click up and click down events) and distanced travelled during the click. From the replay, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to directly recording mouse events.
@@ -109,7 +109,7 @@ The length $i$ is the same across the three vectors, but each MM action can have
 9 & Angular velocity & $w = \dfrac{\delta \theta_t}{\delta t}$ \\ \hline
 \end{tabular}
 \caption{Basic mouse movement features used in \cite{mouse-features}}
-\label{mm-features}
+\label{tbl:mm-features}
 \end{table}
 
 Next, the basic features are extracted into the statistics: minimum, maximum, mean and standard deviation. This was done because each of the basic features are vectors of varying length. For example, features such as velocity and curvature have $n + 1$ data points compared to their derivative features. Taking statistics of these vectors eliminates the problem with varied length features, but causes some data to be lost in the conversion.
@@ -120,7 +120,7 @@ The combination of a MM action followed by a command action defines the \textbf{
 \item Mouse movement sequence followed by a move command (MMMC)
 \item Mouse movement sequence followed by a spell cast command (MMSC)
 \end{itemize}
-To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands. The features of the level 3 actions are statistics of the features in table \ref{mm-features} with two additional features:
+To create the three level 3 actions, the parser listens for attack, move and spell cast commands. If a command is recorded, the current MM sequence is used as the sequence leading up to the command. As such, these three features are identical in the way they are recorded, but potentially record very different kinds of data. For example, the move command is sent much more often than the other two commands. The features of the level 3 actions are statistics of the features in table \ref{tbl:mm-features} with two additional features:
 \begin{itemize}
 \item Game ticks to commands $t_n$ - the number of game ticks between the last two mouse positions
 \item Distance to command - the distance travelled between the last two mouse positions
