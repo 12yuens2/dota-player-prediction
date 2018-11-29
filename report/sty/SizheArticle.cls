@@ -48,14 +48,18 @@
 %\RequirePackage{sizhecode}
 
 % sizheplots.sty : Styles for plotting graphs
-%\RequirePackage{sizheplots}
+\RequirePackage{sty/sizheplots}
 
 % syntax : Writing grammars such as in BNF form
 %\RequirePackage{syntax}
 
 % tikz : Drawing diagrams and plots (included in plots.sty)
 \RequirePackage{tikz}
-\usetikzlibrary{arrows}
+\usetikzlibrary{arrows,shapes}
+
+% Large section titles and new page on new section
+\RequirePackage{sectsty}
+\sectionfont{\Huge\clearpage}
 
 
 %---------------------%
