@@ -36,7 +36,7 @@ jobs:
 # Latex step
     - before_install:
         - sudo apt-get update
-        - sudo apt-get install texlive-full
+        - sudo apt-get install texlive-full --fix-missing
         - sudo apt-get install latexmk
       before_script:
         - cd report/
