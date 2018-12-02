@@ -1,10 +1,10 @@
 \documentclass[Report.tex]{subfiles}
 
-% Read data
-%\pgfplotstableread[col sep=comma]{results/feature_eval_ratio.csv}\evalratio
 
 \begin{document}
 
+% Read data
+\pgfplotstableread[col sep=comma]{data/15-pair-cv.csv}\fifteenPairCV
 %\newcommand{\accprerecbarplot} {
 %  \addplot+[
 %    discard if not={feature}{#1},
@@ -17,12 +17,12 @@ This section describes the different experiments conducted and analyses their re
 \item After the 5-fold cross evaluation, the final model is trained using all the training data, and evaluated against the testing data. This is the best indication of how the models perform against unseen data, as the testing data is untouched until this point of the experiment. 
 \end{enumerate}
 
-\subsection{Mouse movement features}
+\subsection{Mouse movement features}\label{sec:mm-features-results}
 The first experiments and results looked only at using the mouse movement features to see how effective they were at predicting the player. As there are three types of level 3 mouse movement feature (MMAC, MMMC and MMSC) as described in section \ref{sec:mm-features}, each feature is first evaluated individually and together, to see which feature may be more important to player prediction. 
 
 
-\subsubsection{Classifying each individual mouse movement}
-Initially, each feature is evaluated individually by taking each MM action as a data point. This meant there was no concept of what a match was, as every level 3 action was put together into the dataset, with only the classification of the MM action (is player or is not player) differentiating each action. The models therefore are training on each row and predicted whether a single action belonged to the player or not. In this sense, is it asking the question: \textit{Given a level 3 action, is the player who performed this action the player we are looking for?} Moreover, by encoding the data this way, a very large number of training and testing samples is used for training, as each game contained thousands of level 3 actions. It must be noted that this is not a very realistic experiment, but it provides an initial indication at the predictive capability of using mouse movements alone.
+\subsubsection{Classifying each individual mouse movement}\label{sec:move-results}
+
 \newcommand{\newaxis}[4]{
 \begin{axis}[
     ybar,
@@ -79,92 +79,7 @@ Initially, each feature is evaluated individually by taking each MM action as a 
 \label{fig:move-results}
 \end{figure}
 
-\subsubsection{Classifying each game with mouse movements}
-The next step after looking at each level 3 mouse action individually is to group all the actions together for each game. In this approach, a model can be trained on each match as a data point, which is more representative of the aim of this project. To do this, a separate model is used to evaluate each of the three types of level 3 actions, then the results are combined by a simple multi-layer perceptron which takes the probability output of the separate models. 
-
-
-\pgfdeclarelayer{background}
-\pgfdeclarelayer{foreground}
-\pgfsetlayers{background,main,foreground}
-
-% Block styles
-\tikzstyle{data}=[draw, fill=blue!20, text width=5em, 
-    text centered, minimum height=2.5em]
-\tikzstyle{ann} = [above, text width=5em, text centered]
-\tikzstyle{model} = [data, text width=5em, fill=red!20, 
-    minimum height=3em, rounded corners]
-\tikzstyle{sc} = [sensor, text width=13em, fill=red!20, 
-    minimum height=10em, rounded corners]
-
-\newcommand{\newMoveModel}[3]{
-    \node (#2-model) at (2,#3) [model] {#1 Model};
-    \path (#2-model.west)+(-\blockdist,0) node (#2) [data] {#1 actions}; 
-   
-    \path (#2-model.east)+(\blockdist,0) node (#2-output) [data] {Predictions};
-    
-    \path [draw, ->] (#2.east) -- node {} (#2-model);
-    \path [draw, ->] (#2-model.east) -- node{} (#2-output);
-}
-
-\newcommand{\newGameModel}[3]{
-    \node (#2-model) at (2,#3) [model] {#1 Model};
-    \path (#2-model.west)+(-\blockdist,0) node (#2) [data] {#1 actions}; 
-   
-    \path [draw, ->] (#2.east) -- node {} (#2-model);
-}
-
-\def\blockdist{3}
-\def\edgedist{2.5}
-\begin{figure}[H]
-\begin{subfigure}{1\textwidth}
-\centering
-\begin{tikzpicture}
-\newMoveModel{AC}{ac}{4}
-\newMoveModel{MC}{mc}{2.5}
-\newMoveModel{SC}{sc}{1}
-\end{tikzpicture}
-\caption{Move classifier}
-\vspace{\baselineskip}
-\end{subfigure}
-
-\hspace{\fill}
-
-\begin{subfigure}{1\textwidth}
-\centering
-\def\blockdist{2}
-\begin{tikzpicture}
-\newGameModel{AC}{ac}{4}
-\newGameModel{MC}{mc}{2.5}
-\newGameModel{SC}{sc}{1}
-
-\path (mc-model.west)+(-6,0) node (game) [data] {Game};
-\path (mc-model.east)+(2.5,0) node (combine) [model] {MLP};
-\path (combine.east)+(2.5,0) node (output) [data] {Prediction};
-
-\path [draw, ->] (game.0) -- node [above] {} (mc.180);
-\path [draw, ->] (game.20) -- node [above] {} (ac.180);
-\path [draw, ->] (game.340) -- node [above] {} (sc.180);
-
-\path [draw, ->] (ac-model.east) -- node [above] {} (combine.160);
-\path [draw, ->] (mc-model.east) -- node [above] {} (combine.180);
-\path [draw, ->] (sc-model.east) -- node [above] {} (combine.200);
-\path [draw, ->] (combine.east) -- node [above] {} (output);
-
-\begin{pgfonlayer}{background}
-  \path (ac.west |- ac.north)+(-0.5,0.5) node (a) {};
-  \path (ac-model.south -| combine.east)+(+0.5,-0.5) node (b) {};
-  \path (combine.east |- sc-model.east)+(+0.5,-1) node (c) {};        
-  \path[fill=yellow!20,rounded corners, draw=black!50, dashed] (a) rectangle (c);           
-  \path (ac.north west)+(-0.2,0.2) node (a) {};        
-\end{pgfonlayer}
-\end{tikzpicture}
-\caption{Game classifier}
-\end{subfigure}
-\caption{Difference between classifying each level 3 action and classifying each game. For the game classifier, each type of level 3 action is split per game and evaluated with separate models. The probability of the separate models are then used for the combining model (MLP).}
-\end{figure}
-The idea of using a simple MLP for the combination step is to be able to learn the relative weights for each type of level 3 action, rather than use them all equally in a voting-based combination. The MLP model is kept very simple in order to avoid complications with large hidden layers and activation functions. It uses a TODO activation function and only contains one hidden layer with 3 nodes.
-
-Furthermore, as this approach uses individual games, the training and testing datasets can be split carefully, ensuring there are players in the testing set that have not been seen before in the training set. This model is able to work on any given hero and player, provided it was retrained on that particular hero and player. 
+\subsubsection{Classifying each game with mouse movements}\label{sbsec:game-classification}
 
 \begin{figure}[H]
 \centering
@@ -184,38 +99,65 @@ Furthermore, as this approach uses individual games, the training and testing da
 % Random forest gets perfect precision but low recall, hence likely predicting a very few positive results (shown by low recall), but always get the positive prediction correct (perfect precision)
 
 
-There is a subtle issue with the way the binary classification problem was framed with classifying individual games, which led to high accuracies for the logistic regression and multi-layer perceptron models. It is an issue with the generality of the model. The model is only trained on a relatively small, fixed set of players, which meant it was an easier problem, as it only has to learn from the behaviour of the players in the set. This meant that the model was not generalisable to the set of every Dota 2 player, as it is not possible to train on all games by every player. More importantly, the model is not able to predict games by players it has not seen or been trained on. In the next and final approach, deals with this issue by framing the player prediction problem in a different way. Rather than ask \textit{Given a game, which player does it belong to?} the problem is framed as \textit{Given a pair of games, do both games belong to the same player?}
-% TODO this leads to low testing accuracies?
-% TODO results on a lot more players leads to worse accuracy
-
 \subsubsection{Classifying pairs of games}
-The goal of this approach is to be able to train on a large mix of players and games, to learn on the features of both games, and predict if it is the same player or not even if many of the players have never been seen before. The idea is to learn the pattern that differentiates between two players. 
 
-To be able to train on pairs of games together, the features had to be altered to fit as single data points. Before, each game was evaluated separately, so every level 3 action in a game could be used. However, in this pair approach, two games must be used together as inputs to the model. Games in general are of different lengths, which causes the number of level 3 actions to be different for every game. Further, the method of generating level 3 actions (section \ref{sec:mm-features}) means even games of the exact same length will not have the same number of these mouse movement actions. The varying number of level 3 actions prevents a straightforward use of them as input to the machine learning model. Instead, statistics such as the mean, standard deviation and range must be used again. The statistics are calculated for each level 3 action feature over the entire game. This causes a lot of data to be lost, as the hundreds or thousands of level 3 actions are reduced to a small number of statistics. Furthermore, recall a majority of features in a level 3 action are already means and standard deviations, so this method is taking an average of a list of averages. To alleviate this issue as much as possible, the games are split into a few portions where each portion has its own statistics. For example, each game can be split into thirds where each third has its own mean, standard deviation and range for each type of level 3 action. Splitting a game this way not only decreases the data loss due to averaging, but enables each portion to be evaluated individually, to see whether any section of a game is more indicative and predictive of player behaviour compared to another section.
+\begin{figure}[H]
+\newcommand{\plotbar}[2]{
+\addplot+[
+	discard if not={split}{1},
+	discard if not={numSplits}{1},
+	discard if not={features}{mouse},
+] table [x=model, y=#1,col sep=comma] {data/15-pair-cv.csv};
+\addlegendentry{#2}
+}
+\centering
+\begin{tikzpicture}
+\newaxis{\textbf{Metrics for classifying pairs of games with mouse movement features}}{Metric rate}{0.6}{1.03}
 
-%\begin{tikzpicture}
-%\begin{axis}[
-%    ybar,
-%    title={Results},
-%    bar width=1em,
-%    legend style={at={(0.5,-0.25)},
-%      anchor=north,legend columns=-1},
-%    enlarge x limits=0.4,
-%
-%    x tick label style={align=center,text width=1.7cm},
-%    symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
-%    xtick=data,
-%    ylabel={Recall}
-%]
+\plotbar{accuracy}{Accuracy}
+\plotbar{precision}{Precision}
+\plotbar{recall}{Recall}
 
-%\legend{Attack,Move,Cast}
-%\end{axis}
-%\end{tikzpicture}
+\end{axis}
+\end{tikzpicture}
+\end{figure}
 
 \subsection{Game statistic features}
 
 \subsection{Game itemisation features}
 
 \subsection{Combining features}
+
+
+\begin{figure}[H]
+\newcommand{\plotbar}[2]{
+\addplot+[
+	discard if not={split}{1},
+	discard if not={numSplits}{1},
+	discard if not={features}{#1},
+] table [x=model,y=accuracy,col sep=comma] {data/15-pair-cv.csv};
+\addlegendentry{#2}
+}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+	ybar,
+	bar width=1.5em,
+	width=11cm,
+	legend style={at={(0.5,-0.15)},anchor=north,/tikz/every even column/.append style={column sep=0.5cm}},
+	xtick=data,
+	enlarge x limits=0.25,
+	symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
+    x tick label style={align=center,text width=2.5cm},
+]
+
+\plotbar{mouse}{Mouse movement only}
+\plotbar{stats}{Game statistics only}
+\plotbar{mouse-stats}{Mouse movement and game statistics}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Accuracy for pair classification with different features and models.}
+\end{figure}
 
 \end{document}
