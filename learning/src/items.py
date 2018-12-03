@@ -87,14 +87,14 @@ def get_onehot_all(filename, period):
     return _get_onehot_items_df(filename, period, "../items.txt")
 
 
-def get_onehot_starting_only(filename):
+def get_onehot_starting_only(filename, period):
     return _get_onehot_items_df(filename, "START_GAME", "../starting_items.txt")
 
 
-def get_onehot_select_only(filename):
+def get_onehot_select_only(filename, period):
     return _get_onehot_items_df(filename, "END_GAME", "../select_items.txt")
 
-    
+
 def get_item_difference(pair, period):
     items_df1 = _get_item_df(pair[0], period)
     items_df2 = _get_item_df(pair[1], period)

@@ -34,12 +34,12 @@ jobs:
         - python run_pair_classifier.py ../../build/dfs 2
 
 # Latex step
-    - before_install:
-        - sudo apt-get update
-        - sudo apt-get install texlive-full --fix-missing
-        - sudo apt-get install latexmk
-      before_script:
-        - cd report/
-      script:
-        - latexmk -pdf Report.tex
+#    - before_install:
+#        - sudo apt-get update
+#        - sudo apt-get install texlive-full --fix-missing
+#        - sudo apt-get install latexmk
+#      before_script:
+#        - cd report/
+#      script:
+#        - latexmk -pdf Report.tex
       

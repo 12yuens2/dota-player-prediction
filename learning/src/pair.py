@@ -1,7 +1,7 @@
 import math
 import pandas as pd
 
-#from items import get_hashed_items_df, get_onehot_items_df
+import items
 
 
 def get_action_df(raw_df, action):
@@ -96,6 +96,7 @@ def get_stats_df(filename):
 
     return df
 
+
 def concat_preprocess(df, i):
     df.columns = ["{}-{}".format(colname, i) for colname in df.columns]
     df["tmp"] = 1
@@ -111,20 +112,18 @@ def get_pair_dfs(pair, func):
     return pd.merge(df0, df1, how="inner").drop("tmp", 1)
 
 
-#def get_items_df(pair, period):
-#    file0, file1 = pair
-#    df0 = concat_preprocess(get_onehot_items_df(file0, period), 0)
-#    df1 = concat_preprocess(get_onehot_items_df(file1, period), 1)
-#
-#    return pd.merge(df0, df1, how="inner").drop("tmp", 1)
+def get_items_df(pair, period, func):
+    file0, file1 = pair
+    df0 = concat_preprocess(func(file0, period), 0)
+    df1 = concat_preprocess(func(file1, period), 1)
+
+    return pd.merge(df0, df1, how="inner").drop("tmp", 1)
 
 
 class Pair:
     def __init__(self, pair, y, splits):
         attack_df, move_df, cast_df = get_mouse_dfs(pair, splits)
         stats_df = get_pair_dfs(pair, get_stats_df)
-        #start_items = get_items_df(pair, "START_GAME")
-        #end_items = get_items_df(pair, "END_GAME")
 
         self.files = pair
         self.splits = splits
@@ -133,8 +132,18 @@ class Pair:
         self.move_df = move_df
         self.cast_df = cast_df
         self.stats_df = stats_df
-        #self.start_items_df = start_items
-        #self.end_items_df = end_items
+
+        self.start_items_hash_df = get_items_df(pair, "START_GAME", items.get_hashed_items)
+        self.end_items_hash_df = get_items_df(pair, "END_GAME", items.get_hashed_items)
+
+        self.start_items_onehot_df = get_items_df(pair, "START_GAME", items.get_onehot_all)
+        self.end_items_onehot_df = get_items_df(pair, "END_GAME", items.get_onehot_all)
+
+        self.start_items_diff_df = items.get_item_difference(pair, "START_GAME")
+        self.end_items_diff_df = items.get_item_difference(pair, "END_GAME")
+
+        self.start_items_only_df = get_items_df(pair, "", items.get_onehot_starting_only)
+        self.select_items_df = get_items_df(pair, "", items.get_onehot_select_only)
 
         self.y = y
 
@@ -148,10 +157,23 @@ class Pair:
             return self._get_split_df(self.cast_df, split_num)
         elif df_type == "STATS":
             return self.stats_df
-        #elif df_type == "START_ITEMS":
-        #    return self.start_items_df
-        #elif df_type == "END_ITEMS":
-        #    return self.end_items_df
+
+        elif df_type == "START_ITEMS_HASH":
+            return self.start_items_hash_df
+        elif df_type == "END_ITEMS_HASH":
+            return self.end_items_hash_df
+        elif df_type == "START_ITEMS_ONEHOT":
+            return self.start_items_onehot_df
+        elif df_type == "END_ITEMS_ONESHOT":
+            return self.end_items_onehot_df
+        elif df_type == "START_ITEMS_ONLY":
+            return self.start_items_only_df
+        elif df_type == "SELECT_ITEMS":
+            return self.select_items_df
+        elif df_type == "START_ITEMS_DIFF":
+            return self.start_items_diff_df
+        elif df_type == "END_ITEMS_DFF":
+            return self.end_items_diff_df
 
 
     def _get_split_df(self, df, split_num):
