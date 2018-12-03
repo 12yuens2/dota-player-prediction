@@ -20,9 +20,9 @@ lr_stats_map = {
     "STATS": LogisticRegression(class_weight="balanced")
 }
 
-lr_move_stats = {**lr_move_map, **lr_stats_map)
+lr_move_stats = {**lr_move_map, **lr_stats_map}
 
-rf_map = {
+rf_move_map = {
 #    "START_ITEMS": RandomForestClassifier(class_weight="balanced"),
 #    "END_ITEMS": RandomForestClassifier(class_weight="balanced"),
     "ATTACK": RandomForestClassifier(class_weight="balanced"),
@@ -35,9 +35,9 @@ rf_stats_map = {
     "STATS": RandomForestClassifier(class_weight="balanced")
 }
 
-rf_move_stats = {**rf_move_map, **rf_stats_map)
+rf_move_stats = {**rf_move_map, **rf_stats_map}
 
-clf_map = {
+clf_move_map = {
     #"START_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
     #"END_ITEMS": MLPClassifier(solver='lbfgs', alpha=0.001, hidden_layer_sizes=(10,)),
     "ATTACK": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(256,)),
@@ -50,15 +50,15 @@ clf_stats_map = {
     "STATS": MLPClassifier(solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10,))
 }
 
-clf_move_stats = {**clf_move_map, **clf_stats_map)
+clf_move_stats = {**clf_move_map, **clf_stats_map}
 
 #lr = classifiers.PairClassifier(lr_map, network_size, "../results/15-pair-move-lr-cv.csv")
 #rf = classifiers.PairClassifier(rf_map, network_size, "../results/15-pair-move-rf-cv.csv")
 #clf = classifiers.PairClassifier(clf_map, network_size, "../results/15-pair-move-mlp-cv.csv")
 models = [
-    ("Logistic Regression", lr_move_map, "mouse"), ("Random Forest", rf_move_map, "mouse"), ("Multi-layer Perceptron", mlp_move_map, "mouse"),
-    ("Logistic Regression", lr_stats_map, "stats"), ("Random Forest", rf_stats_map, "stats"), ("Multi-layer Perceptron", mlp_stats_map, "stats"),
-    ("Logistic Regression", lr_move_stats, "mouse-stats"), ("Random Forest", rf_move_stats, "mouse-stats"), ("Multi-layer Perceptron", mlp_move_stats, "mouse-stats")
+    ("Logistic Regression", lr_move_map, "mouse"), ("Random Forest", rf_move_map, "mouse"), ("Multi-layer Perceptron", clf_move_map, "mouse"),
+    ("Logistic Regression", lr_stats_map, "stats"), ("Random Forest", rf_stats_map, "stats"), ("Multi-layer Perceptron", clf_stats_map, "stats"),
+    ("Logistic Regression", lr_move_stats, "mouse-stats"), ("Random Forest", rf_move_stats, "mouse-stats"), ("Multi-layer Perceptron", clf_move_stats, "mouse-stats")
 ]
 
 
@@ -74,6 +74,7 @@ def run_pairs(pair_num, models, output):
 
     for model_name,model_map,features in models:
         for split_num in range(1, pair_num+1):
+            classifier = classifiers.PairClassifier(model_map, (3,))
             score_map = classifiers.cross_validate(pairs, cv, classifier, get_y, split_num)
 
             for feature,score in score_map.items():

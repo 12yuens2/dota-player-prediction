@@ -193,7 +193,7 @@ class MoveClassifier(GameClassifier):
 
 class PairClassifier(Classifier):
 
-    def __init__(self, model_map, network_size, output_file):
+    def __init__(self, model_map, network_size):
         super(PairClassifier, self).__init__(model_map, network_size)
 
         #self.output = open(output_file, "w")
