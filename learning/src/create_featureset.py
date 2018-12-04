@@ -64,6 +64,7 @@ import pickle
 def dump_pickle(filepath, obj):
     print("Dumping at {}".format(filepath))
     pickle.dump(obj, open(filepath, "wb"))
+    print("Drumped")
 
 
 path = sys.argv[1]

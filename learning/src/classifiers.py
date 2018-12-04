@@ -82,9 +82,6 @@ class GameClassifier(Classifier):
         super(GameClassifier, self).__init__(model_map, network_size)
 
         self.filter_id = filter_id
-        #self.output = open(output_file, "w")
-        #self.output.write("accuracy,precision,recall\n");
-        #self.output.flush()
 
 
     def contains_player(self, game):
@@ -94,15 +91,6 @@ class GameClassifier(Classifier):
             return 0
 
 
-    #def test(self, xs, y, split_num=-1):
-    #    accuracy, precision, recall =  super(GameClassifier, self).test(xs, y, split_num)
-
-    #    #self.output.write("{},{},{}\n".format(accuracy, precision, recall))
-    #    #self.output.flush()
-
-    #    return {"games": (accuracy, precision, recall)}
-
-        
     def _fit(self, model, df, y):
         y = self._get_y(df)
         X = df.drop("steamid", 1)
@@ -131,11 +119,6 @@ class MoveClassifier(GameClassifier):
     def __init__(self, filter_id, model_map):
         super(MoveClassifier, self).__init__(filter_id, model_map, (1,))
 
-        #self.output = open(output_file, "a")
-        #self.model_name = model_name
-        #self.output.write("feature,accuracy,precision,recall\n");
-        #self.output.flush()
-
 
     def train(self, xs, y, split_num=-1):
         df_map = self._get_dfs(xs)
@@ -158,9 +141,6 @@ class MoveClassifier(GameClassifier):
             print(feature)
             print_scores(accuracy, precision, recall)
             score_map[feature] = (accuracy, precision, recall)
-
-            #self.output.write("{},{},{},{},{}\n".format(feature, accuracy, precision, recall, self.model_name))
-            #self.output.flush()
 
         return score_map
 
@@ -196,18 +176,6 @@ class PairClassifier(Classifier):
     def __init__(self, model_map, network_size):
         super(PairClassifier, self).__init__(model_map, network_size)
 
-        #self.output = open(output_file, "w")
-        #self.output.write("numSplits,split,accuracy,precision,recall\n");
-        #self.output.flush()
-
-
-    #def test(self, xs, y, split_num=-1):
-    #    accuracy, precision, recall =  super(PairClassifier, self).test(xs, y, split_num)
-
-    #    #self.output.write("{},{},{},{},{}\n".format(xs[0].splits, split_num, accuracy, precision, recall))
-    #    #self.output.flush()
-
-    #    return {"pairs": (accuracy, precision, recall)}
 
     def _get_proba(self, model, df):
         return model.predict_proba(df)[0]
@@ -269,36 +237,3 @@ def train_test(X_train, X_test, classifier, get_y, split_num=-1):
 
 def print_scores(accuracy, precision, recall):
     print("Accuracy: {}, Precision: {}, Recall: {}".format(accuracy, precision, recall))
-
-
-# TODO voting
-    #def vote(self, *probabilities):
-    #    yes = 0
-    #    no = 0
-    #    for p in probabilities:
-    #        no_prob = p[0]
-    #        yes_prob = p[1]
-    #        
-    #        if yes_prob > no_prob:
-    #            yes += 1
-    #        else:
-    #            no += 1
-    #    
-    #    return (yes, no)
-    #
-    #
-    #def predict_voting(self, games):
-    #    predictions = []
-    #    for game in games:           
-    #        attack_proba = self.get_probas(self.attack_model, game.attack_df)
-    #        move_proba = self.get_probas(self.move_model, game.move_df)
-    #        cast_proba = self.get_probas(self.cast_model, game.cast_df)
-
-    #        yes_votes, no_votes = self.vote(attack_proba, move_proba, cast_proba)
-
-    #        if yes_votes > no_votes:
-    #            predictions.append(1)
-    #        else:
-    #            predictions.append(0)
-
-    #    return predictions

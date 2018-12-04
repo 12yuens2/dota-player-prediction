@@ -1,6 +1,6 @@
 import pandas as pd
 
-from items import get_hashed_items_df, get_onehot_items_df
+import items
 
 
 def get_action_df(raw_df, action):
@@ -41,28 +41,39 @@ class Game:
         self.move_df = m
         self.cast_df = c
         self.stats_df = stats_df_from_file(csv_file)
-        self.start_items_df = get_onehot_items_df(csv_file, "START_GAME")
-        self.end_items_df = get_onehot_items_df(csv_file, "END_GAME")
-        
-        self.csv_file = csv_file
 
+        self.start_items_hash_df = items.get_hashed_items(csv_file, "START_GAME")
+        self.end_items_hash_df = items.get_hashed_items(csv_file, "END_GAME")
+        
+        self.start_items_onehot_df = items.get_onehot_all(csv_file, "START_GAME")
+        self.end_items_onehot_df = items.get_onehot_all(csv_file, "END_GAME")
+
+        self.start_items_only_df = items.get_onehot_starting_only(csv_file, "")
+        self.select_items_df = items.get_onehot_select_only(csv_file, "")
+
+        self.csv_file = csv_file
 
 
     def get_df(self, df_type, split_num):
         if df_type == "ATTACK":
             return self.attack_df
-
         elif df_type == "MOVE":
             return self.move_df
-
         elif df_type == "CAST":
             return self.cast_df
 
         elif df_type == "STATS":
             return self.stats_df
 
-        elif df_type == "START_ITEMS":
-            return self.start_items_df
-
-        elif df_type == "END_ITEMS":
-            return self.end_items_df
+        elif df_type == "START_ITEMS_HASH":
+            return self.start_items_hash_df
+        elif df_type == "END_ITEMS_HASH":
+            return self.end_items_hash_df
+        elif df_type == "START_ITEMS_ONEHOT":
+            return self.start_items_onehot_df
+        elif df_type == "END_ITEMS_ONEHOT":
+            return self.end_items_onehot_df
+        elif df_type == "START_ITEMS_ONLY":
+            return self.start_items_only_df
+        elif df_type == "SELECT_ITEMS":
+            return self.select_items_df

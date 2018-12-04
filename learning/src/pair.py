@@ -164,7 +164,7 @@ class Pair:
             return self.end_items_hash_df
         elif df_type == "START_ITEMS_ONEHOT":
             return self.start_items_onehot_df
-        elif df_type == "END_ITEMS_ONESHOT":
+        elif df_type == "END_ITEMS_ONEHOT":
             return self.end_items_onehot_df
         elif df_type == "START_ITEMS_ONLY":
             return self.start_items_only_df

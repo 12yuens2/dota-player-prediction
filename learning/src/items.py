@@ -12,8 +12,9 @@ def _hash_transform(df, feature, n_features):
         columns = ["{}_{}".format(feature, i) for i in range(n_features)]
     )
 
-    # Replace feature with hashed feature
-    return df.join(hashed)
+    df["tmp"] = 1
+    hashed["tmp"] = 1
+    return pd.merge(hashed, df, how="inner").drop("tmp", 1)
 
 
 def _get_slot_features():
