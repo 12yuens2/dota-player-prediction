@@ -15,9 +15,7 @@
 - 292 positive samples
 
 *** testing
-- Games: 20
-- Players: 9
-
+- Games: 20 - Players: 9
 
 ** 19
 - Games: 144
@@ -38,7 +36,7 @@
 ** 15
 - Games: 138
 - Players: 58
-- Game classification ok
+- Game classification ok (playerid: 76561198047065028)
 
 *** training
 - Games: 123
@@ -51,3 +49,15 @@
 *** testing
 - Games: 15
 - Players: 8
+
+** 35
+- Games 1175
+- Players: 166
+
+*** training
+- Games:
+- Players:
+
+*** testing
+- Games
+- Players:
