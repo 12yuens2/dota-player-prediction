@@ -41,6 +41,7 @@ path = sys.argv[1]
 cv = int(sys.argv[2])
 output_path = sys.argv[3]
 
+models = run_maps.models
 with open(output_path, "w") as f:
     f.write("numSplits,split,accuracy,precision,recall,model\n")
     f.flush()

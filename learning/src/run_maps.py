@@ -121,7 +121,6 @@ models = [
     ("Logistic Regression", lr_items_onehot_map, "items-onehot"),
     ("Logistic Regression", lr_items_start_map, "items-starting"),
     ("Logistic Regression", lr_items_select_map, "items-select"),
-    ("Logistic Regression", lr_move_stats, "mouse-stats"),
 
     ("Logistic Regression", lr_move_stats, "mouse-stats"),
     ("Logistic Regression", lr_move_items_hashed, "mouse-items-hashed"),
@@ -166,6 +165,7 @@ models = [
     ("Multi-layer classifier", mlp_items_onehot_map, "items-onehot"),
     ("Multi-layer classifier", mlp_items_start_map, "items-starting"),
     ("Multi-layer classifier", mlp_items_select_map, "items-select"),
+
     ("Multi-layer classifier", mlp_move_stats, "mouse-stats"),
     ("Multi-layer classifier", mlp_move_items_hashed, "mouse-items-hashed"),
     ("Multi-layer classifier", mlp_move_items_onehot, "mouse-items-onehot"),
