@@ -114,69 +114,80 @@ mlp_move_stats_items_start = { **mlp_move_map, **mlp_stats_map, **mlp_items_star
 mlp_move_stats_items_select = { **mlp_move_map, **mlp_stats_map, **mlp_items_select_map }
 
 
+network_size = (3,)
+
+def lr_model(model_map, name, network_size=(3,)):
+    return ("Logistic Regression", model_map, name, network_size)
+
+def rf_model(model_map, name, network_size=(3,)):
+    return ("Random Forest", model_map, name, network_size)
+
+def mlp_model(model_map, name, network_size=(3,)):
+    return ("Multi-layer Perceptron", model_map, name, network_size)
+
 models = [
-    ("Logistic Regression", lr_move_map, "mouse"),
-    ("Logistic Regression", lr_stats_map, "stats"),
-    ("Logistic Regression", lr_items_hashed_map, "items-hashed"),
-    ("Logistic Regression", lr_items_onehot_map, "items-onehot"),
-    ("Logistic Regression", lr_items_start_map, "items-starting"),
-    ("Logistic Regression", lr_items_select_map, "items-select"),
+    lr_model(lr_move_map, "mouse"),
+    lr_model(lr_stats_map, "stats", None),
+    lr_model(lr_items_hashed_map, "items-hashed", None),
+    lr_model(lr_items_onehot_map, "items-onehot", None),
+    lr_model(lr_items_start_map, "items-starting", None),
+    lr_model(lr_items_select_map, "items-select", None),
 
-    ("Logistic Regression", lr_move_stats, "mouse-stats"),
-    ("Logistic Regression", lr_move_items_hashed, "mouse-items-hashed"),
-    ("Logistic Regression", lr_move_items_onehot, "mouse-items-onehot"),
-    ("Logistic Regression", lr_move_items_start, "mouse-items-start"),
-    ("Logistic Regression", lr_move_items_select, "mouse-items-select"),
-    ("Logistic Regression", lr_stats_items_hashed, "stats-items-hashed"),
-    ("Logistic Regression", lr_stats_items_onehot, "stats-items-onehot"),
-    ("Logistic Regression", lr_stats_items_start, "stats-items-start"),
-    ("Logistic Regression", lr_stats_items_select, "stats-items_select"),
-    ("Logistic Regression", lr_move_stats_items_hashed, "mouse-stats-items-hashed"),
-    ("Logistic Regression", lr_move_stats_items_onehot, "mouse-stats-items-onehot"),
-    ("Logistic Regression", lr_move_stats_items_start, "mouse-stats-items-start"),
-    ("Logistic Regression", lr_move_stats_items_select, "mouse-stats-items-select"),
-
-
-    ("Random Forest", rf_move_map, "mouse"),
-    ("Random Forest", rf_stats_map, "stats"),
-    ("Random Forest", rf_items_hashed_map, "items-hashed"),
-    ("Random Forest", rf_items_onehot_map, "items-onehot"),
-    ("Random Forest", rf_items_start_map, "items-starting"),
-    ("Random Forest", rf_items_select_map, "items-select"),
-
-    ("Random Forest", rf_move_stats, "mouse-stats"),
-    ("Random Forest", rf_move_items_hashed, "mouse-items-hashed"),
-    ("Random Forest", rf_move_items_onehot, "mouse-items-onehot"),
-    ("Random Forest", rf_move_items_start, "mouse-items-start"),
-    ("Random Forest", rf_move_items_select, "mouse-items-select"),
-    ("Random Forest", rf_stats_items_hashed, "stats-items-hashed"),
-    ("Random Forest", rf_stats_items_onehot, "stats-items-onehot"),
-    ("Random Forest", rf_stats_items_start, "stats-items-start"),
-    ("Random Forest", rf_stats_items_select, "stats-items_select"),
-    ("Random Forest", rf_move_stats_items_hashed, "mouse-stats-items-hashed"),
-    ("Random Forest", rf_move_stats_items_onehot, "mouse-stats-items-onehot"),
-    ("Random Forest", rf_move_stats_items_start, "mouse-stats-items-start"),
-    ("Random Forest", rf_move_stats_items_select, "mouse-stats-items-select"),
+    lr_model(lr_move_stats, "mouse-stats"),
+    lr_model(lr_move_items_hashed, "mouse-items-hashed"),
+    lr_model(lr_move_items_onehot, "mouse-items-onehot"),
+    lr_model(lr_move_items_start, "mouse-items-start"),
+    lr_model(lr_move_items_select, "mouse-items-select"),
+    lr_model(lr_stats_items_hashed, "stats-items-hashed"),
+    lr_model(lr_stats_items_onehot, "stats-items-onehot"),
+    lr_model(lr_stats_items_start, "stats-items-start"),
+    lr_model(lr_stats_items_select, "stats-items_select"),
+    lr_model(lr_move_stats_items_hashed, "mouse-stats-items-hashed"),
+    lr_model(lr_move_stats_items_onehot, "mouse-stats-items-onehot"),
+    lr_model(lr_move_stats_items_start, "mouse-stats-items-start"),
+    lr_model(lr_move_stats_items_select, "mouse-stats-items-select"),
 
 
-    ("Multi-layer classifier", mlp_move_map, "mouse"),
-    ("Multi-layer classifier", mlp_stats_map, "stats"),
-    ("Multi-layer classifier", mlp_items_hashed_map, "items-hashed"),
-    ("Multi-layer classifier", mlp_items_onehot_map, "items-onehot"),
-    ("Multi-layer classifier", mlp_items_start_map, "items-starting"),
-    ("Multi-layer classifier", mlp_items_select_map, "items-select"),
+    rf_model(rf_move_map, "mouse"),
+    rf_model(rf_stats_map, "stats", None),
+    rf_model(rf_items_hashed_map, "items-hashed", None),
+    rf_model(rf_items_onehot_map, "items-onehot", None),
+    rf_model(rf_items_start_map, "items-starting", None),
+    rf_model(rf_items_select_map, "items-select", None),
 
-    ("Multi-layer classifier", mlp_move_stats, "mouse-stats"),
-    ("Multi-layer classifier", mlp_move_items_hashed, "mouse-items-hashed"),
-    ("Multi-layer classifier", mlp_move_items_onehot, "mouse-items-onehot"),
-    ("Multi-layer classifier", mlp_move_items_start, "mouse-items-start"),
-    ("Multi-layer classifier", mlp_move_items_select, "mouse-items-select"),
-    ("Multi-layer classifier", mlp_stats_items_hashed, "stats-items-hashed"),
-    ("Multi-layer classifier", mlp_stats_items_onehot, "stats-items-onehot"),
-    ("Multi-layer classifier", mlp_stats_items_start, "stats-items-start"),
-    ("Multi-layer classifier", mlp_stats_items_select, "stats-items_select"),
-    ("Multi-layer classifier", mlp_move_stats_items_hashed, "mouse-stats-items-hashed"),
-    ("Multi-layer classifier", mlp_move_stats_items_onehot, "mouse-stats-items-onehot"),
-    ("Multi-layer classifier", mlp_move_stats_items_start, "mouse-stats-items-start"),
-    ("Multi-layer classifier", mlp_move_stats_items_select, "mouse-stats-items-select")
+    rf_model(rf_move_stats, "mouse-stats"),
+    rf_model(rf_move_items_hashed, "mouse-items-hashed"),
+    rf_model(rf_move_items_onehot, "mouse-items-onehot"),
+    rf_model(rf_move_items_start, "mouse-items-start"),
+    rf_model(rf_move_items_select, "mouse-items-select"),
+    rf_model(rf_stats_items_hashed, "stats-items-hashed"),
+    rf_model(rf_stats_items_onehot, "stats-items-onehot"),
+    rf_model(rf_stats_items_start, "stats-items-start"),
+    rf_model(rf_stats_items_select, "stats-items_select"),
+    rf_model(rf_move_stats_items_hashed, "mouse-stats-items-hashed"),
+    rf_model(rf_move_stats_items_onehot, "mouse-stats-items-onehot"),
+    rf_model(rf_move_stats_items_start, "mouse-stats-items-start"),
+    rf_model(rf_move_stats_items_select, "mouse-stats-items-select"),
+
+
+    mlp_model(mlp_move_map, "mouse"),
+    mlp_model(mlp_stats_map, "stats", None),
+    mlp_model(mlp_items_hashed_map, "items-hashed", None),
+    mlp_model(mlp_items_onehot_map, "items-onehot", None),
+    mlp_model(mlp_items_start_map, "items-starting", None),
+    mlp_model(mlp_items_select_map, "items-select", None),
+
+    mlp_model(mlp_move_stats, "mouse-stats"),
+    mlp_model(mlp_move_items_hashed, "mouse-items-hashed"),
+    mlp_model(mlp_move_items_onehot, "mouse-items-onehot"),
+    mlp_model(mlp_move_items_start, "mouse-items-start"),
+    mlp_model(mlp_move_items_select, "mouse-items-select"),
+    mlp_model(mlp_stats_items_hashed, "stats-items-hashed"),
+    mlp_model(mlp_stats_items_onehot, "stats-items-onehot"),
+    mlp_model(mlp_stats_items_start, "stats-items-start"),
+    mlp_model(mlp_stats_items_select, "stats-items_select"),
+    mlp_model(mlp_move_stats_items_hashed, "mouse-stats-items-hashed"),
+    mlp_model(mlp_move_stats_items_onehot, "mouse-stats-items-onehot"),
+    mlp_model(mlp_move_stats_items_start, "mouse-stats-items-start"),
+    mlp_model(mlp_move_stats_items_select, "mouse-stats-items-select")
 ]

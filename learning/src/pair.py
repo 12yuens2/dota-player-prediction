@@ -94,7 +94,7 @@ def get_stats_df(filename):
     filename = filename.replace("mouseaction", "playerstats")
     df = pd.read_csv(filename)
 
-    return df
+    return df.drop("steamid", 1)
 
 
 def concat_preprocess(df, i):
@@ -114,8 +114,8 @@ def get_pair_dfs(pair, func):
 
 def get_items_df(pair, period, func):
     file0, file1 = pair
-    df0 = concat_preprocess(func(file0, period), 0)
-    df1 = concat_preprocess(func(file1, period), 1)
+    df0 = concat_preprocess(func(file0, period), 0).drop("steamid-0", 1)
+    df1 = concat_preprocess(func(file1, period), 1).drop("steamid-1", 1)
 
     return pd.merge(df0, df1, how="inner").drop("tmp", 1)
 

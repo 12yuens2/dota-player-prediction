@@ -20,9 +20,11 @@ import pickle
 def run_pairs(pair_num, models, output):
     pairs = pickle.load(open("{}/pairs{}.df".format(path, pair_num), "rb"))
 
-    for model_name,model_map,features in models:
+    for model_name,model_map,features,network_size in models:
         for split_num in range(1, pair_num+1):
-            classifier = classifiers.PairClassifier(model_map, (3,))
+            print("{}, {}".format(model_name, features))
+
+            classifier = classifiers.PairClassifier(model_map, network_size)
             score_map = classifiers.cross_validate(pairs, cv, classifier, get_y, split_num)
 
             for feature,score in score_map.items():

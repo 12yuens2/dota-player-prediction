@@ -13,13 +13,19 @@ class Classifier:
 
     def __init__(self, model_map, network_size):
         self.model_map = model_map
-        self.network = MLPClassifier(solver='lbfgs', hidden_layer_sizes=network_size, random_state=42)
+        if network_size == None:
+            self.has_network = False
+        else:
+            self.has_network = True
+            self.network = MLPClassifier(solver='lbfgs', hidden_layer_sizes=network_size, random_state=42)
 
 
     def train(self, xs, y, split_num=-1):
         for feature, df in self._concat_xs(xs, split_num).items():
             self._fit(self.model_map[feature], df, y)
-        self._fit_network(xs, y, split_num)
+
+        if self.has_network:
+            self._fit_network(xs, y, split_num)
 
 
     def test(self, xs, y, split_num=-1):
@@ -34,10 +40,12 @@ class Classifier:
 
 
     def predict(self, xs, split_num=-1):
-        probabilities = [self._get_all_probas(x, split_num) for x in xs]
-
-
-        return self.network.predict(probabilities)
+        if self.has_network:
+            probabilities = [self._get_all_probas(x, split_num) for x in xs]
+            return self.network.predict(probabilities)
+        else:
+            for feature,model in self.model_map.items():
+                return model.predict([x.get_df(feature, split_num).values.tolist()[0] for x in xs]);
 
 
 ## Private functions for classifiers ##
