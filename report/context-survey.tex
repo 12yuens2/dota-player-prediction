@@ -80,8 +80,40 @@ It is also interesting to see the type of features that were used. Liu et el. ca
 Their results show the performance of each machine learning model is dependent on the features used. For example, the ANN performed better using all features while the other models performed better using a smaller set of best features. This indicates that the model being trained should be taken into account during feature selection, as features that work well for one model do not necessarily work well for other ones. 
 
 \subsubsection{Win prediction}
-There has been much work in using data extracted from Dota 2 matches to predict the outcome of matches. \cite{dota-draft} 
+There has been much work in using data extracted from Dota 2 matches to predict the outcome of matches. This involves both gameplay data and pre-game data such as the draft phase. Hodge et al. \cite{dota-mixed-rank-win} used a mix of pre-match data for the heroes picked and teams each hero is on, and in-game data of game states at different sliding window intervals as time-series data to predict the outcome of the match. The in-game data collected included the following features:
+\begin{itemize}
+\item Team damage dealt
+\item Team kills
+\item Team last hits
+\item Team net worth
+\item Team tower damage
+\item Team XP gained
+\end{itemize}
+The two types of data were compared with two different models - Logistic Regression and Random Forest - and showed that in-game data was by far a stronger predictor, giving over 70\% accuracy in amateur and professional games whereas the pre-game data only achieved about 50\% accuracy. There was not a significant different between logistic regression and random forest, as they differed in performance, both able to outperform each other depending on the type of match (amateur or professional). 
 
+Taking match prediction further, Yang, Qin and Lei \cite{dota-yang} were able to run match outcome prediction in real-time to get the probability of winning at each minute of the match. They also drew comparisons between prior data and real-time data. For prior data, three categories of features were used:
+\begin{enumerate}
+\item Hero features - This category contained three parts: hero selection, hero attributes and hero win rate. The hero selection feature simply identifies the hero while the attributes and win rates contain statistics such as in-game hero abilities like strength, agility, intelligence and win rates specifically for one hero against another hero.
+\item Player features - The player features contain data outside of the match about the player, such as their MMR (matchmaking ranking) scores and percentiles.
+\item Hero-player combined features - Knowing both the hero and player, statistics about the particular player's record on the specific hero are used for this feature. This once again contains data such as average gold gained per minute, average XP gain per minute etc. 
+\end{enumerate}
+For real-time data, the gold, experience and deaths for each player at each minute was averaged and the difference between the two teams calculated, giving $3 \times T$ features for a match that lasts $T$ minutes. 
+\begin{table}[H]
+\centering
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ & \textbf{Hero} & \textbf{Player} & \textbf{Hero-player} & \textbf{Hero + Player + Hero-Player} \\ \hline
+ Conley and Perry \cite{dota-conley} & 58.79\% & N/A & N/A & N/A \\ \hline
+ Kinkade and Lim \cite{dota-kinkade} & 58.69\% & N/A & N/A & N/A \\ \hline
+ Logistic Regression & 60.07\% & 55.77\% & 69.90\% & 71.49\% \\ \hline
+ Neural Network & 59.53\% & 56.39\% & 69.71\% & 70.46\% \\ \hline
+\end{tabular}
+\caption{Results for prior data extracted from Yang, Qin and Lei \cite{dota-yang}. They also compared their results with results from Conley and Perry \cite{dota-conley} and Kinkade and Lim \cite{dota-kinkade}.}
+\end{table}
+
+It was found that for prior data, combining the three types of features gave better results than each feature alone, though only by a small margin. They also compared their prior data with Conley and Perry \cite{dota-conley}, whose focus was in creating an engine for hero pick recommendations based on win predictions, and with Kinkade and Lim \cite{dota-kinkade}, who also investigated combinations of in-game statistics and draft picks for prediction. (TODO unfair comparison as kinkade got 73\% for some models/combinations). 
+
+ As for real-time data, they showed data from later stages of a match were more informative compared to data from earlier stages of a match.  
 
 \subsubsection{Player role classification}
 Another area that was explored using Dota 2 match data is the classification of player roles. As Dota 2 is a team game, each player on the game typically fulfils a certain role in a match, similar to real life sports games like football and basketball. Gao et al. \cite{dota-gao} presented positive results in the identification of \textit{both} the hero and role that a player played using a mix of performance data and behavioural data that involved ability and item usage. Their work showed that for both roles and heroes, classification accuracies were higher when all features were used in combination together, compared to using each type of feature individually.
@@ -101,6 +133,12 @@ The features used by Gao et al. are very interesting as they show high correlati
 
 Quantitative research is not the only kind done in previous research on player roles in Dota 2. Nuangjumnong and Mitomo \cite{dota-leadership} conducted a survey on players which showed correlation between the leadership style of players and the role they played in the team. This relates to how different players choose roles and heroes based on their behavioural differences. 
 
+\subsubsection{Other predictions TODO}
+Apart from match outcomes and player role classification, a few other aspects of Dota 2 have been studied as machine learning problems. Summerville et al. \cite{dota-draft} studied the drafting phase of the game to find common trends and predict the draft sequence. In particular, because the draft sequence was described as a list of words, the models they trained used a one-hot encoding with a categorical cross-entropy loss.
+
+\cite{dota-skill}
+
+ 
 
 \subsubsection{Forensic mouse movement to detect users}
 
