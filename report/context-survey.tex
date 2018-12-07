@@ -111,9 +111,7 @@ For real-time data, the gold, experience and deaths for each player at each minu
 \caption{Results for prior data extracted from Yang, Qin and Lei \cite{dota-yang}. They also compared their results with results from Conley and Perry \cite{dota-conley} and Kinkade and Lim \cite{dota-kinkade}.}
 \end{table}
 
-It was found that for prior data, combining the three types of features gave better results than each feature alone, though only by a small margin. They also compared their prior data with Conley and Perry \cite{dota-conley}, whose focus was in creating an engine for hero pick recommendations based on win predictions, and with Kinkade and Lim \cite{dota-kinkade}, who also investigated combinations of in-game statistics and draft picks for prediction. (TODO unfair comparison as kinkade got 73\% for some models/combinations). 
-
- As for real-time data, they showed data from later stages of a match were more informative compared to data from earlier stages of a match.  
+It was found that for prior data, combining the three types of features gave better results than each feature alone, though only by a small margin. They also compared their prior data with Conley and Perry \cite{dota-conley}, whose focus was in creating an engine for hero pick recommendations based on win predictions, and with Kinkade and Lim \cite{dota-kinkade}, who also investigated combinations of in-game statistics and draft picks for prediction. (TODO unfair comparison as kinkade got 73\% for some models/combinations). As for real-time data, it was shown that data from later stages of a match were more informative compared to data from earlier stages of a match. This was because the early portions of a match are similar to most other matches, and begins to change uniquely as the match progresses.
 
 \subsubsection{Player role classification}
 Another area that was explored using Dota 2 match data is the classification of player roles. As Dota 2 is a team game, each player on the game typically fulfils a certain role in a match, similar to real life sports games like football and basketball. Gao et al. \cite{dota-gao} presented positive results in the identification of \textit{both} the hero and role that a player played using a mix of performance data and behavioural data that involved ability and item usage. Their work showed that for both roles and heroes, classification accuracies were higher when all features were used in combination together, compared to using each type of feature individually.
@@ -136,10 +134,8 @@ Quantitative research is not the only kind done in previous research on player r
 \subsubsection{Other predictions TODO}
 Apart from match outcomes and player role classification, a few other aspects of Dota 2 have been studied as machine learning problems. Summerville et al. \cite{dota-draft} studied the drafting phase of the game to find common trends and predict the draft sequence. In particular, because the draft sequence was described as a list of words, the models they trained used a one-hot encoding with a categorical cross-entropy loss.
 
-\cite{dota-skill}
-
- 
+Drachen et al. \cite{dota-skill} studied how team behaviour varied as a function of player skill, specifically on the movement and positioning of heroes by players as spatial-temporal data. This contrasts with most other studies, which have focused on only temporal data like the gold and XP per minute statistics mentioned above. Their dataset of matches and player were split into four tiers of skill level and showed that novice players were less likely to move and change zones to coordinate strategies compared to experienced players. Moreover, there is a clear distinction of team distance (distance between each member of the team) between the skill tiers, especially later in the match, compared to the start.
 
 \subsubsection{Forensic mouse movement to detect users}
-
+Finally, there has been significant work done in the area of using mouse movement data to detect user behaviour. 
 \end{document}
