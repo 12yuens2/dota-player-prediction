@@ -44,6 +44,23 @@ cv = int(sys.argv[2])
 output_path = sys.argv[3]
 
 models = run_maps.models
+models.extend([
+    run_maps.lr_model(run_maps.lr_items_difference, "items-diff", None),
+    run_maps.lr_model(run_maps.lr_move_items_diff, "mouse-items-diff"),
+    run_maps.lr_model(run_maps.lr_stats_items_diff, "stats-items-diff"),
+    run_maps.lr_model(run_maps.lr_move_stats_items_diff, "mouse-stats-items-diff"),
+
+    run_maps.rf_model(run_maps.rf_items_difference, "items-diff", None),
+    run_maps.rf_model(run_maps.rf_move_items_diff, "mouse-items-diff"),
+    run_maps.rf_model(run_maps.rf_stats_items_diff, "stats-items-diff"),
+    run_maps.rf_model(run_maps.rf_move_stats_items_diff, "mouse-stats-items-diff"),
+
+    run_maps.mlp_model(run_maps.mlp_items_difference, "items-diff", None),
+    run_maps.mlp_model(run_maps.mlp_move_items_diff, "mouse-items-diff"),
+    run_maps.mlp_model(run_maps.mlp_stats_items_diff, "stats-items-diff"),
+    run_maps.mlp_model(run_maps.mlp_move_stats_items_diff, "mouse-stats-items-diff"),
+])
+
 with open(output_path, "w") as f:
     f.write("numSplits,split,accuracy,precision,recall,model\n")
     f.flush()

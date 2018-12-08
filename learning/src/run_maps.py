@@ -57,15 +57,17 @@ lr_move_items_hashed = { **lr_move_map, **lr_items_hashed_map }
 lr_move_items_onehot = { **lr_move_map, **lr_items_onehot_map }
 lr_move_items_start = { **lr_move_map, **lr_items_start_map }
 lr_move_items_select = { **lr_move_map, **lr_items_select_map }
+lr_move_items_diff  = { **lr_move_map, **lr_items_difference } # pair only
 lr_stats_items_hashed = { **lr_stats_map, **lr_items_hashed_map }
 lr_stats_items_onehot = { **lr_stats_map, **lr_items_onehot_map }
 lr_stats_items_start = { **lr_stats_map, **lr_items_start_map }
 lr_stats_items_select = { **lr_stats_map, **lr_items_select_map }
+lr_stats_items_diff = { **lr_stats_map, **lr_items_difference } # pair only
 lr_move_stats_items_hashed = { **lr_move_map, **lr_stats_map, **lr_items_hashed_map }
 lr_move_stats_items_onehot = { **lr_move_map, **lr_stats_map, **lr_items_onehot_map }
 lr_move_stats_items_start = { **lr_move_map, **lr_stats_map, **lr_items_start_map }
 lr_move_stats_items_select = { **lr_move_map, **lr_stats_map, **lr_items_select_map }
-
+lr_move_stats_items_diff = { **lr_move_map, **lr_stats_map, **lr_items_difference } # pair only
 
 
 rf_move_map = move_map(rf)
@@ -81,14 +83,17 @@ rf_move_items_hashed = { **rf_move_map, **rf_items_hashed_map }
 rf_move_items_onehot = { **rf_move_map, **rf_items_onehot_map }
 rf_move_items_start = { **rf_move_map, **rf_items_start_map }
 rf_move_items_select = { **rf_move_map, **rf_items_select_map }
+rf_move_items_diff  = { **rf_move_map, **rf_items_difference } # pair only
 rf_stats_items_hashed = { **rf_stats_map, **rf_items_hashed_map }
 rf_stats_items_onehot = { **rf_stats_map, **rf_items_onehot_map }
 rf_stats_items_start = { **rf_stats_map, **rf_items_start_map }
 rf_stats_items_select = { **rf_stats_map, **rf_items_select_map }
+rf_stats_items_diff = { **rf_stats_map, **rf_items_difference } # pair only
 rf_move_stats_items_hashed = { **rf_move_map, **rf_stats_map, **rf_items_hashed_map }
 rf_move_stats_items_onehot = { **rf_move_map, **rf_stats_map, **rf_items_onehot_map }
 rf_move_stats_items_start = { **rf_move_map, **rf_stats_map, **rf_items_start_map }
 rf_move_stats_items_select = { **rf_move_map, **rf_stats_map, **rf_items_select_map }
+rf_move_stats_items_diff = { **rf_move_map, **rf_stats_map, **rf_items_difference } # pair only
 
 
 mlp_move_map = move_map(mlp, hidden_layer_sizes=(256,))
@@ -104,14 +109,17 @@ mlp_move_items_hashed = { **mlp_move_map, **mlp_items_hashed_map }
 mlp_move_items_onehot = { **mlp_move_map, **mlp_items_onehot_map }
 mlp_move_items_start = { **mlp_move_map, **mlp_items_start_map }
 mlp_move_items_select = { **mlp_move_map, **mlp_items_select_map }
+mlp_move_items_diff  = { **mlp_move_map, **mlp_items_difference } # pair only
 mlp_stats_items_hashed = { **mlp_stats_map, **mlp_items_hashed_map }
 mlp_stats_items_onehot = { **mlp_stats_map, **mlp_items_onehot_map }
 mlp_stats_items_start = { **mlp_stats_map, **mlp_items_start_map }
 mlp_stats_items_select = { **mlp_stats_map, **mlp_items_select_map }
+mlp_stats_items_diff = { **mlp_stats_map, **mlp_items_difference } # pair only
 mlp_move_stats_items_hashed = { **mlp_move_map, **mlp_stats_map, **mlp_items_hashed_map }
 mlp_move_stats_items_onehot = { **mlp_move_map, **mlp_stats_map, **mlp_items_onehot_map }
 mlp_move_stats_items_start = { **mlp_move_map, **mlp_stats_map, **mlp_items_start_map }
 mlp_move_stats_items_select = { **mlp_move_map, **mlp_stats_map, **mlp_items_select_map }
+mlp_move_stats_items_diff = { **mlp_move_map, **mlp_stats_map, **mlp_items_difference } # pair only
 
 
 network_size = (3,)
@@ -124,6 +132,7 @@ def rf_model(model_map, name, network_size=(3,)):
 
 def mlp_model(model_map, name, network_size=(3,)):
     return ("Multi-layer Perceptron", model_map, name, network_size)
+
 
 models = [
     lr_model(lr_move_map, "mouse"),
