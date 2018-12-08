@@ -2,32 +2,45 @@
 
 \begin{document}
 
-\section{Software engineering process}
+\section{Tools and technologies}
 The project made use of a variety of tools and technologies. Some tools were 
 
 \subsection{Existing software}
 
 \subsubsection{Clarity}
-\texttt{clarity} is a parser for Dota 2 replay files \cite{clarity}. It is open source and developed by Martin Schrodt to allow the parsing and extraction of in game data via  the replay files. Because of the overwhelming amount of data that a single Dota 2 game contains, \texttt{clarity} does not simply output the game data. Instead, it provides an interface for any programmer to extract the exact data or information needed. In some cases, the data is preprocessed and can be retrieved directly, such an entity data of players. In other cases, the data is unprocessed and provided as an original protobuf object from the replay, where further processing is required. 
+\texttt{clarity} is an open source parser developed by Martin Schrodt for parsing Dota 2 replay files \cite{clarity}. It allows the parsing and extraction of in game data via match replay files. Because of the overwhelming amount of data that a single Dota 2 match contains, \texttt{clarity} does not simply output the game data. Instead, it provides an interface for any programmer to extract the exact data or information needed. In some cases, the data is preprocessed and can be retrieved directly, such an entity data of players. In other cases, the data is unprocessed and provided as an original protobuf object from the replay, where further processing is required. 
 
-\texttt{clarity} is not the only parser available for Dota 2, there is also \texttt{smoke} (https://github.com/skadistats/smoke) for Python and \texttt{rapier} (https://github.com/odota/rapier) for Javascript. However, \texttt{clarity} is both faster and more complete (for example, \texttt{rapier} does not support in-game entities) than all the other options. It is also the only one that is still being actively developed, making it the best choice of parser for this project. 
+\texttt{clarity} is not the only parser available for Dota 2, there is also \texttt{smoke} (https://github.com/skadistats/smoke) for Python and \texttt{rapier} (https://github.com/odota/rapier) for Javascript. However, \texttt{clarity} is both faster and more complete (for example, \texttt{rapier} does not support in-game entities) than all the other options. It is also the only one that is still being actively developed to keep up with game updates, making it the best choice of parser for this project. 
 
 Because \texttt{clarity} is written in Java, the parser written in the project also had to be in Java. 
 
 % The parser also supports CSGO (Counter-Strike: Global Offensive) replays, so this project can be extended to include prediction for CSGO players given just the replay
 
 \subsubsection{OpenDOTA}
-The OpenDota Project \cite{opendota} is an open source data platform which provides real time data for Dota 2 matches. Players can create account on OpenDota, which synchronises with their in-game account to download and analyse replays of the player. This provides a player with diverse statistics useful for analysing performance over time. In addition to the performance statistics OpenDota provides players, the project also provides an API for developers to fetch data from the platform. This API is useful for this project, as it provides an easy method to fetch a list of games and players.
+The OpenDota Project \cite{opendota} is an open source data platform which provides real time data for Dota 2 matches. Players can create account on OpenDota, which synchronises with their in-game account to download and analyse replays of the player. This provides a player with diverse statistics useful for analysing performance over time. In addition to the performance statistics OpenDota provides players, the project also provides an API for developers to fetch data from the platform. This API is useful for this project, as it provides an easy method to fetch a list of matches and players. The options that the API provides also help ensure the matches and players listed fall under certain categories and conditions, which isolates many variables such as team (radiant or dire), hero and game mode. 
 
-For this project, the OpenDota API is used to gather a list of players and their recent games, then it is used fetch the salt which is needed to download the replays of that player's games. 
+There are many other Dota 2 statistics platforms such as Dotabuff \cite{dotabuff} and datdota \cite{datdota}, however these platforms do not provide a programmable API to fetch data from as they cater to players. The details needed to download the exact replay of matches was also unavailable from these websites, which would not allow directly parsing the matches for data. For these reasons, the OpenDota platform was chosen and the OpenDota API was used to fetch the salt and cluster information to download replays. 
 
 
-\subsection{Engineering choices}
+\subsection{Technologies used}
+Rather than keep the whole project using the same language or technology, a mix of different technologies were used for different parts of the project. The languages and technologies were chosen for their suitability in each area, with the trade-off being the need to interface between them. 
+\subsubsection{Replay downloading}
+The OpenDota API is an HTTP API which returns JSON objects. This made web based technologies such as Javascript a strong candidate to be used. 
 
-\subsubsection{Parsing}
+\subsubsection{Replay parsing}
+With \texttt{clarity} only available for Java, it was the chosen language for parsing match replays. This was not a disadvantageous restriction, as Java was very suitable in this aspect. The static type system in Java 
+
+% types in java
+% OOP for extensibility of parser and generics
+% fast and more performant than many other choices
+
 
 \subsubsection{Machine learning}
+The \texttt{scikit-learn} library \cite{sklearn} is an open source machine learning library in Python which contains a vast number of functions and tools for machine learning algorithms. It interfaces with popular Python libraries such as NumPy and matplotlib, making it accessible and easy to use for machine learning. The library was heavily used to prevent the need to implement machine learning algorithms, such as a random forest classifier or logistic regression, by hand. Though there is some loss in the ability to customise cost functions and small details, \texttt{scikit-learn} provides a rather generic interface that gives fine grained control on most details of each machine learning algorithm. This allowed the project to focus on the extraction and processing of data from Dota 2 match replays, and the analysis of the various features, rather than being caught up in implementation of typical algorithms. The ease of use of the library also allowed repeatable experiments and multiple machine learning classifiers to be tested and compared.
 
+Python was therefore the language used in the machine learning section of this project. This had its own advantages and disadvantages. Apart from \texttt{scikit-learn}, the powerful data analysis library \texttt{pandas} \cite{pandas} was also available in Python, simplifying the pre-processing of extracted data. The \texttt{pandas} dataframes were also built on NumPy interfaces, which allowed them to be passed to \texttt{scikit-learn} library functions with no issue. 
+
+TODO disadvantages
 
 \subsection{Testing and continuous integration}
 

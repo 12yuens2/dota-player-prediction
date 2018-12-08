@@ -2,25 +2,24 @@
 
 \begin{document}
 
-\section{Context survey}
-
+\section{Background}
 
 \subsection{Dota 2}
 \subsubsection{Overview}
-Dota 2 is a popular free-to-play multiplayer online battle arena (MOBA) video game developed by Valve Corporation. The player controls a single character as part of a team competing against an opponent team. The hero that the player controls is chosen from a roster of over 100 unique heroes. Each hero has their own unique abilities and characteristics, for example some heroes focus on dealing damage with spells and abilities, while other heroes use passive abilities to augment their basic attacks. To win, the team must destroy the opponent's base structure, known as the Ancient, located deep in the opponent controlled side of the map. The map is split into three lanes, with towers that must be destroyed in succession in order to remove the Ancient's invulnerability. Weaker, uncontrollable units called creeps periodically spawn from a team's Ancient and travel down the three lanes. Heroes gain experience when nearby creeps and heroes on the opposing team die. A hero then gains levels after gaining an amount of experience, which increases the hero's power and allows the player to spend a skill point on upgrading one of the hero's abilities. 
+Dota 2 is a popular free-to-play multiplayer online battle arena (MOBA) video game developed by Valve Corporation. In Dota 2, the player controls a single character as part of a team competing against an opponent team. Teams consist of 5 players, each controlling only their hero. The hero that the player controls is chosen from a roster of over 100 unique heroes. Each hero has their own unique abilities and characteristics, for example some heroes focus on dealing damage with spells and abilities, while other heroes use passive abilities to augment their basic attacks. To win, the team must destroy the opponent's base structure, known as the Ancient, located deep in the opponent controlled side of the map. The map is split into three lanes, with towers that must be destroyed in succession in order to remove the Ancient's invulnerability. Weaker, uncontrollable units called creeps periodically spawn from a team's Ancient and travel down the three lanes. Heroes gain experience when nearby creeps and heroes on the opposing team die. A hero then gains levels after gaining an amount of experience, which increases the hero's power and allows the player to spend a skill point on upgrading one of the hero's abilities. 
 
 Additionally, heroes gain gold throughout a match which can be used to purchase items. Item provide powerful bonuses and abilities to a hero. Every hero has 6 slots in their inventory in which they can place purchased items. Items can also be placed in the stash or backpack, however do not provide any bonuses unless they are in one of the 6 inventory slots. Gold is gained from multiple sources, most notably by getting the killing blow on creeps, killing opponent heroes, destroying opponent buildings and passively over time. 
 
 \imagefig{0.65\textwidth}{imgs/dota-map.png}{Labelled map of Dota 2, taken from \cite{dota-map}}
 
-The map in Dota 2 is asymmetrical and split in half for the two sides - Radiant and Dire. Playing on different sides leads to different strategies due to the asymmetry. There are further, more complicated mechanics in the game, such as the neutral jungle creeps and runes. As these mechanics do not form any part of the features used in this project, their explanation is omitted. 
+The map in Dota 2 is asymmetrical and split in half for the two sides - Radiant and Dire. Playing on different sides leads to different strategies due to the asymmetry. There are further, more complicated mechanics in the game, such as the neutral jungle creeps and runes. However, these mechanics do not form any part of the features or data extracted in this project, and therefore their explanation is omitted. 
 
 \subsubsection{Player control}
-An important aspect of Dota 2 which this project will utilise for data, is the method in which players control their characters in the game. Firstly, Dota 2 is a real time game, where player actions occur immediately. As such, players have very fine grained control of their characters, with their ability to react and mechanically execute commands in order and in time plays a core part towards their skill in the game. Further, strategic decisions have to be made with limited time constraints and with communication with their team members, making player skill in Dota 2 a combination of strategy, team work and mechanical ability. 
+An important aspect of Dota 2 which this project will utilise for data, is the method in which players control their characters in the game. Firstly, Dota 2 is a real time game, where player actions occur immediately. As such, players have very fine grained control of their characters. The ability to react and mechanically execute commands in order and in time plays a core part towards a player's skill in the game. Further, strategic decisions have to be made with limited time constraints and with communication with team members, making player skill in Dota 2 a combination of strategy, team work and mechanical ability. 
 
 \begin{figure}[H]
 \begin{subfigure}{0.4\textwidth}
-\image{1\textwidth}{imgs/dota-move.png}{Movement commands}
+\image{1\textwidth}{imgs/dota-move.png}{Executing movement commands}
 \end{subfigure}
 \hspace{\fill}
 \begin{subfigure}{0.4\textwidth}
@@ -31,7 +30,11 @@ An important aspect of Dota 2 which this project will utilise for data, is the m
 
 Players control their characters through the mouse and keyboard. The position of the mouse cursor is central to the way the heroes are controlled. Right-clicking in the game moves the hero to the location the mouse cursor was when the click was registered and is the primary method to control movement. Right-clicking directly on top of opponent entities such as creeps and heroes commands the player's hero to attack that entity. 
 
-Spells and abilities are used as a combination of mouse and keyboard. The four unique abilities that each hero has is typically linked to the Q, W, E and R keys on the keyboard. Pressing the associated key activates the ability. For many abilities, the activated ability is aimed at the location of the mouse cursor. The time scale in which players have to aim their abilities vary based on player skill and situation in the game. Players with lower skill will usually allocate more time in order to aim accurately, while players with higher skills may allocate less time in order to send out additional commands, such as dodging the opponent's abilities. 
+Spells and abilities are used as a combination of mouse and keyboard. The four unique abilities that each hero has is typically linked to the Q, W, E and R keys on the keyboard. Pressing the associated key activates the ability. For many abilities, the activated ability is aimed at the location of the mouse cursor. The time scale in which players have to aim their abilities vary based on player skill and situation in the game. Players with lower skill will usually allocate more time in order to aim accurately, while players with more experience may allocate less time in order to execute additional commands, such as dodging the opponent's abilities. There are also different methods of accomplishing the same command, for example right-clicking on top of opponent entities executes an attack command, but the attack command can also be executed by pressing the A key and left-clicking a position, which causes the hero to attack all opponent entities in the path towards the position. Further, many experienced players \textit{quickcast} their spells, an option that skips the aiming portion of casting an ability by immediately casting at the location of the mouse without the additional click input. 
+
+%These different methods of play, combined with different player experience and behaviour, make interesting and possibly unique mouse movements by different players.
+
+% This means the mouse movements of a player are based off experience, hero chosen and individual behaviour.
 
 \subsubsection{Gameplay flow}
 %Terms to explain:
@@ -52,7 +55,7 @@ Dota 2
 \subsection{Related work}
 
 \subsubsection{Starcraft 2 Player Identification}
-The problem of player identification based on play style has been explored in the game of Starcraft 2. Liu et al. \cite{starcraft-identification} first looked at using machine learning algorithms to identify a Starcraft 2 player from features extracted from match replays and followed their results with further research \cite{starcraft-actions} on predicting a player's next actions based on their previous actions in the match. 
+The problem of player identification based on play style has been explored in the game of Starcraft 2. Liu et al. \cite{starcraft-identification} first looked at using machine learning algorithms to identify a Starcraft 2 player from features extracted from match replays and followed up with further research \cite{starcraft-actions} on predicting a player's next actions based on their previous actions in the match. 
 
 Starcraft 2 is classified as a Real Time Strategy (RTS) game, which differs in some places to Dota 2. In Starcraft, players have to manage the generation of resources, production of buildings and units in additional to the control of a large number of units which make up the player's army. This differs vastly from Dota 2's gameplay of controlling only a single unit (except for a few particular heroes with more complex mechanics) and more simplified economy. Furthermore, Dota 2 is played as a team game with five players on each side, whereas competitive games in Starcraft are mostly played as one versus one. However, there are also many similarities between the two games. Firstly, both games are real time, unlike many other adversarial games. This means that players must both think and act quickly as both strategy and precision of control are important factors to victory. Secondly, the mechanic in which a player controls units in both games is virtually identical - movement is controlled using mouse clicks by clicking on the position the player wishes to move to and any attack or ability commands are done by pressing the associated hotkey and aiming at the desired location with the mouse. Finally, TODO.
 
@@ -136,6 +139,12 @@ Apart from match outcomes and player role classification, a few other aspects of
 
 Drachen et al. \cite{dota-skill} studied how team behaviour varied as a function of player skill, specifically on the movement and positioning of heroes by players as spatial-temporal data. This contrasts with most other studies, which have focused on only temporal data like the gold and XP per minute statistics mentioned above. Their dataset of matches and player were split into four tiers of skill level and showed that novice players were less likely to move and change zones to coordinate strategies compared to experienced players. Moreover, there is a clear distinction of team distance (distance between each member of the team) between the skill tiers, especially later in the match, compared to the start.
 
-\subsubsection{Forensic mouse movement to detect users}
-Finally, there has been significant work done in the area of using mouse movement data to detect user behaviour. 
+\subsubsection{Biometric mouse dynamics for user identification}
+Finally, there has been a larger number of studies done in the area of using mouse dynamics to detect user identity. This is a behavioural biometric technology that analyses different mouse movement attributes, such as the velocity or curvature of the mouse cursor. A significant portion of Dota 2's gameplay revolved around the use of mouse clicks and movements, combined with occasional key presses. Bhatnagar et al. \cite{mouse-vs-keyboard} compared the use of mouse vs keyboard dynamics as a biometric technique and stated that keystroke dynamics have lower predictive accuracy, but mouse dynamics data tends to be inconsistent and error prone due to the varied hardware input devices that may work differently. It was proposed that methods which combine mouse and keyboard dynamics together would be able to alleviate their disadvantages.
+
+The method of data extraction can be done explicity by using a predefined activity, or implicity by monitoring typical activity without a specified task \cite{mouse-dynamics}. For example, Gambao and Fred \cite{mouse-features} used a simple memory game in order to extract mouse movement data. This method allows for well-defined actions for data extraction, leading to higher consistency due to the lack of uncontrolled factors. Both spatial and temporal information were used by Gambao and Fred, showing lower error rates the longer the period of interaction was observed, though no comparison was made between using only spatial and only temporal information. The narrowed approach of using a memory game gave Gambao and Fred strong results, as they were able to obtain performance comparable to other behavioural biometric techniques of signature and voice dynamics. 
+
+\imagefig{1\textwidth}{imgs/memory-game.png}{Memory game used by Gambao and Fred \cite{mouse-features} to extract mouse dynamics.}
+
+Feher et al. \cite{mouse-dynamics} went further by categorising mouse movement features into distinct hierarchies. 
 \end{document}
