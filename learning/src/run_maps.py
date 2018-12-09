@@ -41,7 +41,10 @@ def items_select(classifier, solver="lbfgs", alpha=0.001, hidden_layer_sizes=(10
     return { "SELECT_ITEMS": classifier(solver, alpha, hidden_layer_sizes, class_weight) }
 
 def items_difference(classifier, solver="lbfgs", alpha=0.001, hidden_layer_sizes=(100,), class_weight="balanced"):
-    return { "ITEMS_DIFFERENCE": classifier(solver, alpha, hidden_layer_sizes, class_weight) }
+    return {
+        "START_ITEMS_DIFF": classifier(solver, alpha, hidden_layer_sizes, class_weight),
+        "END_ITEMS_DIFF": classifier(solver, alpha, hidden_layer_sizes, class_weight)
+    }
 
 
 lr_move_map = move_map(lr)

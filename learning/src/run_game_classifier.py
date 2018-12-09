@@ -35,10 +35,10 @@ with open("15-game-cv.csv", "w") as f:
     f.write("accuracy,precision,recall,model,features\n")
     f.flush()
 
-    for model_name,model_map,features in models:
+    for model_name,model_map,features,network_size in models:
         print("Running {} on {} features".format(model_name, features))
 
-        classifier = classifiers.GameClassifier(filter_id, model_map, (3,))
+        classifier = classifiers.GameClassifier(filter_id, model_map, network_size)
         score_map = classifiers.cross_validate(games, cv, classifier, classifier.contains_player)
 
         for feature,score in score_map.items():
