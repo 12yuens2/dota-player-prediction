@@ -23,12 +23,18 @@ There are many other Dota 2 statistics platforms such as Dotabuff \cite{dotabuff
 
 
 \subsection{Technologies used}
-Rather than keep the whole project using the same language or technology, a mix of different technologies were used for different parts of the project. The languages and technologies were chosen for their suitability in each area, with the trade-off being the need to interface between them. 
+Rather than using the same language for the whole project, a mix of different languages and technologies were used for different portion of the project. The different languages were chosen for their suitability in each area. The trade-off is the need to interface between them. 
 \subsubsection{Replay downloading}
-The OpenDota API is an HTTP API which returns JSON objects. This made web based technologies such as Javascript a strong candidate to be used. 
+The OpenDota API is a web API which returns JSON objects as responses. This made web based technologies such as Javascript a strong choice, as they can easily make HTTP requests and natively parse the responses. 
+
+The use of the API required several requests - detailed in section \ref{sec:data-collection} - in order to download a single replay, which needed to be scaled to make thousands of calls to download a large dataset of replays. The asynchronous nature of Javascript HTTP requests simplified and streamlined the downloading process without loss of extensibility. For example, the OpenDota API has a rate limit for free API calls (60 calls per minute) and it was trivial to wrap each request function with a limiter to adhere to the rate limit. Moreover, receiving native JSON responses from the API made filtering trivial in Javascript, as the response attributes could be directly accessed. Finally, the problem with interfacing the Javascript code with the rest of the project was a non-issue. The replays had to be saved locally as a cache to prevent the need to fetch them over and over again, so no additional step or interface was required between replay downloading and replay parsing. 
+
+% TODO why not other languages don't have the advantages that javascript offers
+
+For these advantages that Javascript offers with no drawbacks, it was the chosen language to download the Dota 2 match replays. 
 
 \subsubsection{Replay parsing}
-With \texttt{clarity} only available for Java, it was the chosen language for parsing match replays. This was not a disadvantageous restriction, as Java was very suitable in this aspect. The static type system in Java 
+With \texttt{clarity} only available for Java, it was the chosen language for parsing match replays. Of course, the other parsers could also be used, but as stated above, they were relatively incomplete compared to \texttt{clarity}. Further, using Java was not a disadvantageous restriction, as it was very suitable for this task. The static type system in Java forced the data extracted from match replays to conform to 
 
 % types in java
 % OOP for extensibility of parser and generics
@@ -43,5 +49,12 @@ Python was therefore the language used in the machine learning section of this p
 TODO disadvantages
 
 \subsection{Testing and continuous integration}
+The project contained a few different moving parts which could break at different places. In order to ensure the pipeline from parsing to machine learning went smoothly as additional features were added, Jenkins, a continuous integration framework was set up. 
 
+% ci goes through parsing, preprocessing and ml
+% especially useful for python ml, know when data is missing/things go wrong
+% difficult to unit test
+% ci triggers on git commit
+
+\imagefig{1.0\textwidth}{imgs/travis.png}{Builds failing and succeeding in Jenkins, which help catch and fix issues when adding new features to the code.}
 \end{document}

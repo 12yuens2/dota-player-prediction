@@ -3,80 +3,12 @@
 \begin{document}
 
 \section{Methodology}
-This section describes the methodology of each part of the project, explaining the design decisions and illustrating their details. Most notably, the process for data collection and processing is explained, and the reasoning behind choosing different subsets of features and how they are extracted from match replays is detailed. 
-
-
-\subsection{Data collection}
-To download the replays, a combination of the OpenDota \cite{opendota} API and Valve's official API was used. The OpenDota API is used to fetch a list of players and their games given a number of conditions. This allows the replays downloaded to be controlled in a very specific way. For example, the game mode and hero id can be specified to ensure all games returned by the API are from the same player, in the same game mode and playing the same hero. This control is important to isolate additional variables that may affect player behaviour. 
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[>=stealth']
-% Locations
-\def\ClientToServer{++(6,0)}
-\def\ServerToClient{++(-7,0)}
-\def\ValveToClient{++(-12,0)}
-\def\Lifeline{++(0,-10)}
-
-% Lifelines
-\path (0,0) node[draw] (Client) {Client}
-      (7,0) node[draw] (Server) {OpenDota API}
-      (12,0) node[draw] (Valve)  {Valve API};
-\draw (Client) -- \Lifeline (Server) -- \Lifeline (Valve) -- \Lifeline;
-
-% Blocks
-\path (Server)
-      ++(0,-1) node (BeginHeroes) {} node[below right] {\texttt{\ /heroes}}
-      ++(0,-1) node (EndHeroes)   {};
-\filldraw[fill=blue!30] (BeginHeroes.west) rectangle (EndHeroes.east);
-
-\path (Server)
-      ++(0,-3.25) node (BeginPlayer) {} node[below right] {\texttt{\ /players}}
-      ++(0,-1) node (EndPlayer) {};
-\filldraw[fill=red!30] (BeginPlayer.west) rectangle (EndPlayer.east);
-
-\path (Server)
-      ++(0,-5.5) node (BeginMatches) {} node[below right] {\texttt{\ /matches}}
-      ++(0,-1) node (EndMatches) {};
-\filldraw[fill=green!30] (BeginMatches.west) rectangle (EndMatches.east);
-
-\path (Valve)
-      ++(0,-7.75) node (BeginReplays) {} node[below right] {\ Replay cluster}
-      ++(0,-1) node (EndReplays) {};
-\filldraw[fill=black!30] (BeginReplays.west) rectangle (EndReplays.east);
-
-
-% Calls
-\draw[->] (BeginHeroes)\ServerToClient -- node[above] {\texttt{hero\_id}} (BeginHeroes);
-\draw[->] (EndHeroes) -- node[above] {List of player ids} \ServerToClient;
-
-\draw[->] (BeginPlayer)\ServerToClient -- node[above] {\texttt{player\_id, gamemode, hero\_id}} (BeginPlayer);
-\draw[->] (EndPlayer) -- node[above] {List of match ids} \ServerToClient;
-
-\draw[->] (BeginMatches)\ServerToClient -- node[above] {\texttt{match\_id}} (BeginMatches);
-\draw[->] (EndMatches) -- node[above] {Replay cluster and salt} \ServerToClient;
-
-\draw[->] (BeginReplays)\ValveToClient -- node[above] {\texttt{cluster\_id, salt}} (BeginReplays);
-\draw[->] (EndReplays) -- node[above] {\texttt{.dem} replay file} \ValveToClient;
-
-\end{tikzpicture}
-\caption{Sequence of API calls to download  replay files}
-\label{fig:api-calls}
-\end{figure}
-
-Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API are required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Other parameters such as the game mode are defined in the script as they were kept constant for all the datasets. Occasionally, the replay files are not found as they may have been deleted, or the cluster unreachable. This is not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
-
-\subsection{Data processing}
-
-\subsubsection{Replay parsing}
-The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands of level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game.
-
-\subsubsection{Further preprocessing}
+This section describes the methodology of each part of the project, explaining the design decisions and illustrating their details. Most notably, the reasoning behind the different subsets of features, how they are extracted from match replays and the process for data collection are discussed.
 
 \subsection{Mouse movement features}\label{sec:mm-features}
 The mouse movement features extracted from the Dota 2 replays followed the approach by Feher et al \cite{mouse-dynamics} on user identification via mouse dynamics. Their methodology was to split the mouse movements into different types of actions, such as mouse movement followed by left click, mouse movement followed by drag etc. The concept of lower and higher level actions are also used to differentiate between atomic actions such as a left click or mouse move and more complex actions made up of atomic actions such as mouse drag, which consists of left click down, mouse movement and left click up actions in order. This approach was adapted to the data available from the Dota 2 replays, which is less precise than what could be normally measured as user input. 
 
-There is a significant lack of precision in the data retrieved using the parser on a replay, especially when compared to direct recording of user mouse movements. For example, with live recording of mouse movements, multiple events and features can be extracted from a single mouse click: left click up event, left click down event, click time (the time between click up and click down events) and distanced travelled during the click. From the replay, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to directly recording mouse events.
+There was a significant lack of precision in the data retrieved using the parser on a replay, especially when compared to direct recording of user mouse movements. For example, with live recording of mouse movements, multiple events and features can be extracted from a single mouse click: left click up event, left click down event, click time (the time between click up and click down events) and distanced travelled during the click. From the replay, the clicks themselves are not registered, only the positions of the cursor and the time the commands are received by the user. This limits the number of features that can be generated compared to directly recording mouse events.
 
 While multiple levels of mouse actions are defined by Feher et al \cite{mouse-dynamics}, only two are defined in this project: \textbf{Level 1 actions} and \textbf{Level 3 actions}.
 
@@ -135,37 +67,36 @@ where $\delta x_i = x_{i+1} - x_i$ and $\delta y_i = y_{i+1} - y_i$
 \end{itemize}
 
 The total features of each level 3 action is shown in table \ref{tbl-level3features}, giving the total number of features as 38. 
-\newcommand{\fourfeatures}[1]{#1 & Minimum, maximum, mean, standard deviation & 4 \\ \hline}
 \begin{table}[H]
 \renewcommand*{\arraystretch}{1.5}
 \centering
 \begin{tabular}{| c | c | c |}
 \hline
 \textbf{Property} & \textbf{Features} & \textbf{Number of features} \\ \hline
-\fourfeatures{Angle of movement}
-\fourfeatures{Curvature}
-\fourfeatures{Rate of change of curvature}
-\fourfeatures{Horizontal velocity}
-\fourfeatures{Vertical velocity}
-\fourfeatures{Velocity}
-\fourfeatures{Acceleration}
-\fourfeatures{Jerk}
-\fourfeatures{Angular velocity}
-Game ticks to command & Single value & 1 \\ \hline
-Distance to command & Single value & 1 \\ \hline
+Angle of movement & \multirow{9}{6cm}{Minimum, maximum, mean, standard deviation} & \multirow{9}{*}{$4 \times 9  = 36$} \\ \cline{1-1}
+Curvature & & \\ \cline{1-1}
+Rate of change of curvature & & \\ \cline{1-1}
+Horizontal velocity & & \\ \cline{1-1}
+Vertical velocity & & \\ \cline{1-1}
+Velocity & & \\ \cline{1-1}
+Acceleration & & \\ \cline{1-1}
+Jerk & & \\ \cline{1-1}
+Angular velocity & & \\ \hline
+Game ticks to command & \multirow{2}{*}{Single value} & \multirow{2}{*}{2} \\ \cline{1-1}
+Distance to command & & \\ \hline
 \end{tabular}
 \caption{Final processed features for each level 3 action}
 \label{tbl-level3features}
 \end{table}
 
 \subsection{Game statistic features}
-Another feature that was added for the machine learning models are game-specific statistics, which generally indicate the performance of the player, rather than purely their behaviour. 
+Another feature that was added for the machine learning models are game-specific statistics, which generally indicate the performance of a player, rather than purely their behaviour. 
 
 The statistics are:
 \begin{itemize}
 \item Gold per minute
 \item XP per minute
-\item CS per minute
+\item CS (creep score) per minute
 \item Denies
 \item Actions per minute
 \item No. of move commands on target per minute
@@ -177,7 +108,9 @@ The statistics are:
 \item No. of spell cast commands with no target per minute
 \item No. of hold position commands per minute
 \end{itemize}
-Most of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies is not taken as per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of them game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
+Most of these statistics are taken as per minute because the numbers can vary greatly depending on the length of the game. The number of denies is not taken per minute as denies typically only happen during the laning portion of a game, which always happens regardless of the length of the game. Further, the absolute number of denies is relatively low, with some players getting 0 denies often depending on their role in the team.
+
+The gold, XP and creep score statistics are mainly a measure of performance. They are typically strong indicators for match outcome, as previous studies have shown \cite{dota-mixed-rank-win, dota-kinkade, dota-pu-yang, dota-yang} as winning teams have high gold and XP compared to losing teams. In this regard, they are likely less useful compared to other statistics, but can still provide behavioural information. The reason many Dota 2 statistics platform exist is for players to track their performance via numbers such as gold per minute and creep score per minute. Experienced players can typically reach higher numbers and players often have very similar performance across multiple matches. As such, it would be interesting to see how useful these statistics are compared to the other statistics. The other statistics are likely to be more reflective of player behaviour, as they are a measure how a player would control their hero during a match. As mentioned in section \ref{sec:dota-control}, there are multiple methods a player can use to accomplish the same actions in the game. The action statistics such as attack commands on target and attack commands on position are an indication of the different methods of control. TODO
 
 There are some obvious statistics that were omitted from this feature set. The most obvious is the number of kills, deaths and assists (KDA) for the player. This was omitted because the KDA stats varies for the same player depending on their personal performance, and the performance of their team for a single game. Further, it is not uncommon for different players to have similar KDA statistics as there is not a large range of values for the number of kills, deaths and assists, making the stats unlikely to be very useful in player prediction. However, it is still interesting to see and prove that the KDA is not useful by evaluating models that use it, compared to models that don't. For this reason, this statistic is still kept accessible for the future. 
 
@@ -194,26 +127,129 @@ The problem of encoding the item data is more complicated, the information of wh
 One method for encoding categorical features is to hash the features into a number of new features \cite{feature-hashing}. This provides a unique numeric value for each possible category, spread over a controllable number of features. This method is better than a simple numeric conversion in that TODO. However, it still suffers from the same issue of the hashed values not well representing categorical values. 
 
 \subsubsection{One-hot encoding}
-One-hot encoding is a well known and widely used approach to encode categorical values. It works by encoding each possible category as a separate binary feature, with 1 representing the existence of the original value. There is no concern with the numeric values misrepresenting the categorical values because each value creates its own feature. The issue with this encoding is that there are too many values to encode. Ideally, each combination of item and inventory position is encoded as unique value, which gives about 1800 binary features (\textasciitilde{}300 items $\times$ 6 inventory locations). 
+One-hot encoding is a well known and widely used approach to encode categorical values. It works by encoding each possible category as a separate binary feature, with a value of 0 or 1 representing the existence of the original value. There is no concern with the numeric values misrepresenting the categorical values because each value creates its own feature. The issue with this encoding method is the number of values to encode. Ideally, each combination of item and inventory position is encoded as unique value, which gives about 1800 binary features (\textasciitilde{}300 items $\times$ 6 inventory locations). 
 
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \begin{figure}[H]
+\centering
+\begin{subfigure}{1\textwidth}
+\centering
 \begin{tabular}{| c | c | c | c | c | c |}
 \hline
-Inventory slot 1 & Slot 2 & Slot 3 & Slot 4 & Slot 5 & Slot 6 \\ \hline
+Slot 1 & Slot 2 & Slot 3 & Slot 4 & Slot 5 & Slot 6 \\ \hline
 item\_tango & item\_blink & item\_empty & item\_empty & item\_phase\_boots & item\_manta \\ \hline
 \end{tabular}
+\caption{Raw item slots and names extracted from a match replay.}
+\end{subfigure}
+
+\vspace*{1cm}
+
+\begin{subfigure}{1\textwidth}
+\begin{tabular}{| L{2cm} | L{2cm} | L{2cm} | c | L{2cm} | L{2cm} | L{2cm} | c |}
+\hline
+Slot 1 item\_tango & Slot 2 item\_tango & Slot 3 item\_tango & ... & Slot 1 item\_blink & Slot 2 item\_blink & ... \\ \hline
+1 & 0 & 0 & ... & 0 & 1 & ... \\ \hline
+\end{tabular}
+\caption{One-hot encoded items}
+\end{subfigure}
 \caption{Example of one-hot encoding inventory items.}
 \end{figure}
 
+Depending on the type of machine learning model used, the large number of features created from using one-hot encoding may not negatively affect the accuracy those models. However, it will be computationally expensive, both for storing the pre-processed data and for training the models. 
+
+
+\subsubsection{Selective one-hot encoding}
+To alleviate the issues of one-hot encoding generating too many features, the number of items used as features were restricted heuristically based on domain-specific knowledge of how Dota 2 plays as a game. The restrictions do not cause large loss of information. On the contrary, more information may be gained as the restrictions are chosen based on game knowledge. The two restrictions are as follows:
+\begin{enumerate}
+\item \textbf{Starting items only} - Every player starts a match of Dota 2 with the same amount of starting gold. This small amount of gold severely limits the number of items that can be purchased at the start of every match, bringing the number of items down from over 300 to about 30. Further, items that players buy at other points of a match are influenced to a greater extent by factors other than behaviour, such as whether a team is winning or losing. These factors are less influential (though they still exist) at the start of a match. The characteristic of different players placing items in different inventory slots still apply to starting items as a player's keyboard shortcuts for each inventory slot do not change. By restricting the items to only starting items, less features are created which reduce the computational load and there is less external influence, while still retaining the characteristic of player behaviour based on item selection. 
+\item \textbf{Boots only} - Another telling aspect of the player identity is the inventory slot they place their boots in. In Dota 2, almost all players and heroes will buy a boots item, as it increases their movement speed. There are 5 types of advanced boots and 1 base boots item, making only 6 items (or 36 features) when only using boots. 
+\end{enumerate}
+
+
+% Heuristic for which items we think are most useful and only encode those
 
 
 \subsubsection{Item differences}
-A simple solution to encoding the items is instead to look at the differences in the items between the two matches being compared. 
+A simple solution without the need to use an encoding scheme is to look at the differences in the items between the two matches being compared. This feature is very simple to encode, creating exactly one feature for each inventory slot. The idea here is if the player inventory of two matches contain the same items on the same slots, it is likely that the two matches belong to the same player. This approach is good and straightforward, encoding the exact information about item differences between players. However, there is significant loss of information as well. Any details about which items are in the inventory is lost. TODO
+ 
 % advantage: simple to encode, shows difference information
 % disadvantage: lose information on exact item
 
-\subsubsection{Selective items}
-% Heuristic for which items we think are most useful and only encode those
+\subsection{Data collection}\label{sec:data-collection}
+To download the replays, a combination of the OpenDota \cite{opendota} API and Valve's official API was used. The OpenDota API was used to fetch a list of players and their match history given a number of conditions. This allowed the replays downloaded to be controlled in a very specific way. For example, the game mode and hero id were specified to ensure all matches returned by the API are from the same player, in the same game mode and playing the same hero. This control is important to isolate additional variables that may affect player behaviour. The game mode and hero played are especially important. Different game modes have slightly different rules, for example turbo mode where gold and experience gain is doubled. Keeping the hero chosen the same is also very important, as heroes themselves represent different playstyles, which would have a large impact on item choices and possibly on player mouse dynamics. Different heroes would also be more likely to play in a different role, which affects statistics such as gold gained and last hits on creeps. 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=stealth']
+% Locations
+\def\ClientToServer{++(6,0)}
+\def\ServerToClient{++(-7,0)}
+\def\ValveToClient{++(-12,0)}
+\def\Lifeline{++(0,-10)}
+
+% Lifelines
+\path (0,0) node[draw] (Client) {Client}
+      (7,0) node[draw] (Server) {OpenDota API}
+      (12,0) node[draw] (Valve)  {Valve API};
+\draw (Client) -- \Lifeline (Server) -- \Lifeline (Valve) -- \Lifeline;
+
+% Blocks
+\path (Server)
+      ++(0,-1) node (BeginHeroes) {} node[below right] {\texttt{\ /heroes}}
+      ++(0,-1) node (EndHeroes)   {};
+\filldraw[fill=blue!30] (BeginHeroes.west) rectangle (EndHeroes.east);
+
+\path (Server)
+      ++(0,-3.25) node (BeginPlayer) {} node[below right] {\texttt{\ /players}}
+      ++(0,-1) node (EndPlayer) {};
+\filldraw[fill=red!30] (BeginPlayer.west) rectangle (EndPlayer.east);
+
+\path (Server)
+      ++(0,-5.5) node (BeginMatches) {} node[below right] {\texttt{\ /matches}}
+      ++(0,-1) node (EndMatches) {};
+\filldraw[fill=green!30] (BeginMatches.west) rectangle (EndMatches.east);
+
+\path (Valve)
+      ++(0,-7.75) node (BeginReplays) {} node[below right] {\ Replay cluster}
+      ++(0,-1) node (EndReplays) {};
+\filldraw[fill=black!30] (BeginReplays.west) rectangle (EndReplays.east);
+
+
+% Calls
+\draw[->] (BeginHeroes)\ServerToClient -- node[above] {\texttt{hero\_id}} (BeginHeroes);
+\draw[->] (EndHeroes) -- node[above] {List of player ids} \ServerToClient;
+
+\draw[->] (BeginPlayer)\ServerToClient -- node[above] {\texttt{player\_id, gamemode, hero\_id}} (BeginPlayer);
+\draw[->] (EndPlayer) -- node[above] {List of match ids} \ServerToClient;
+
+\draw[->] (BeginMatches)\ServerToClient -- node[above] {\texttt{match\_id}} (BeginMatches);
+\draw[->] (EndMatches) -- node[above] {Replay cluster and salt} \ServerToClient;
+
+\draw[->] (BeginReplays)\ValveToClient -- node[above] {\texttt{cluster\_id, salt}} (BeginReplays);
+\draw[->] (EndReplays) -- node[above] {\texttt{.dem} replay file} \ValveToClient;
+
+\end{tikzpicture}
+\caption{Sequence of API calls to download  replay files}
+\label{fig:api-calls}
+\end{figure}
+
+Figure \ref{fig:api-calls} shows the sequence of API calls that lead to acquiring the replay file from Valve servers. Multiple calls to the OpenDota API are required as each call returns the data needed for the next. This whole process is streamlined as a Node.js script, which takes three parameters: hero id, number of players and number of games per player. Other parameters such as the game mode are defined in the script as they were kept constant for all the datasets. The list of constant parameters are as follows:
+\begin{itemize}
+\item Game mode - This was kept constant as the \textit{All Pick} game mode for all the datasets collected.
+\item Team - Kept constant as \textit{Radiant}
+\item Hero id - This was different for each dataset. In fact, the hero id defined the dataset as all other parameters were the same. 
+\item Date - An addition added later in the project due to a large game changing patch. All matches downloaded were filtered to before the 18th of November 2018, to avoid changes from patch 7.20 affecting the existing work done. 
+\end{itemize}
+Occasionally, the replay files were not found as they may have been deleted, or the cluster where they are stored was unreachable. This was not an issue, as there is a large number of other players and replays that can be downloaded instead. The only implication is the number of replays downloaded may not be the exact number of replays specified (number of players $\times$ number of games per player).
+
+\subsection{Data processing}
+
+\subsubsection{Replay parsing}
+The data processing is done using the parser \texttt{clarity} \cite{clarity}. It is an open source tool developed by Martin Schrodt that parses and extracts in game data from a replay file. The overwhelming amount of data available in a single game means the parser acts as an interface to access any entity or combat log. In some cases, the data is provided as an original protobuf object. The data gathered is output as a csv. For the forensic mouse movements, each row represents a level 3 action, giving thousands of level 3 actions for every game. On the other hand, there is only one set of game-specific features for each game, so there is only one row of game-specific features for each game.
+
+\subsubsection{Further preprocessing}
+
+
 
 \subsection{Machine learning approaches}
 Having extracted a few different subsets of features from match replays, the next step is framing a machine learning problem to solve using the data. As the main goal of the project was to predict players in a match, this naturally led to a classification problem of classifying who the player was. However, there were small nuances to framing the problem correctly. The most important is what question is being asked, and understand what the input and output to the problem should be.

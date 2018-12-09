@@ -61,6 +61,9 @@
 \RequirePackage{sectsty}
 \sectionfont{\Huge\clearpage}
 
+% Merge columns and rows
+\RequirePackage{multirow}
+
 
 %---------------------%
 % Bibliography styles %
