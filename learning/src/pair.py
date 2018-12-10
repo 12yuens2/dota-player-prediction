@@ -172,7 +172,7 @@ class Pair:
             return self.select_items_df
         elif df_type == "START_ITEMS_DIFF":
             return self.start_items_diff_df
-        elif df_type == "END_ITEMS_DFF":
+        elif df_type == "END_ITEMS_DIFF":
             return self.end_items_diff_df
 
 
