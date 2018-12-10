@@ -2,7 +2,7 @@
 
 \begin{document}
 
-\section{Methodology}
+\section{Methodology}\label{sec:methodology}
 This section describes the methodology of each part of the project, explaining the design decisions and illustrating their details. Most notably, the reasoning behind the different subsets of features, how they are extracted from match replays and the process for data collection are discussed.
 
 \subsection{Mouse movement features}\label{sec:mm-features}
@@ -251,122 +251,19 @@ The data processing is done using the parser \texttt{clarity} \cite{clarity}. It
 
 
 
-\subsection{Machine learning approaches}
-Having extracted a few different subsets of features from match replays, the next step is framing a machine learning problem to solve using the data. As the main goal of the project was to predict players in a match, this naturally led to a classification problem of classifying who the player was. However, there were small nuances to framing the problem correctly. The most important is what question is being asked, and understand what the input and output to the problem should be.
+\subsection{Machine learning overview}
+The main goal of this project was to predict who the player is in a match of Dota 2. Naturally, this can be viewed as a classification problem to determine the player. However, there are small nuances in framing the problem, which leads to two different questions asked:
 
-Two main approaches were tried in this project, which differ in both their inputs and outputs, but are similar in the question they try to answer.
 \begin{enumerate}
-\item Binary classification on a single match
-\item Binary classification on a pair of matches
+\item \textit{Given a match of Dota 2, who is the player playing this hero?}
+\item \textit{Given two matches of Dota 2, is it the same player playing on this hero?}
 \end{enumerate}
 
-In both approaches, the hero was fixed to be the same hero, in addition to a few other variables:
+As mentioned earlier, the chosen hero was kept constant to avoid additional variables affecting the extracted features. The two questions ask subtly different things, and it is important to understand their differences, especially when it comes to what the input and output to the machine learning problem should be. 
 
-\subsubsection{Classification on a single match}
-This first approach took the view of looking at each match as a binary classification problem. This asked the question: \textit{Given a match of Dota 2, is it player X playing this hero?} The approach came out as a natural way to look at the problem, and also as a natural progression in order to initially test the features extracted for their usefulness.
+For the first question, the input is a single match of Dota 2 and the output is the identity of the player. This can be viewed as either a binary classification task by focussing on the identity of a single player, or a multi-class classification task by looking at a pool of players. This is an interesting problem, as it can show whether certain features, or combination of features are able to identify one player's behaviour against other different players. It is the same problem that Liu et al. \cite{starcraft-identification} posed for the identification of Starcraft 2 players. Nevertheless, there is a fundamental limitation with this approach, and that is the generalisability of such a trained model on unseen players. In particular, a model trained to answer this question must be re-trained to identify a different player in the binary classification case, or re-trained on a different pool of players in the multi-class classification case. Either way, it cannot generalise to the broad playerbase of Dota 2 and predict on any player without re-training. This is what the second question attempts to answer. Instead of being restricted to work only on known players, a successful model that answers this question should be able to predict on any two matches. In theory, the models learn on the features of both matches and any pattern that may differentiate two different players. This can still be viewed as a binary classification task, with two matches from the same player in one class, and two matches from different players in the other. 
 
-In the very first iteration of this approach, only the mouse movement features had been implemented. Before working on additional features, the mouse movements extracted were first tested with this approach in order to give crude results on their effectiveness in player prediction (the results are analysed in section \ref{sec:move-results}). Furthermore, each type of level 3 mouse action was investigated individually. The creation of the dataset for this experiment was rudimentary and as such gave misleading results, but they were a good starting point for guidance on the next steps of the project. The reason is because each individual level 3 action was taken as a single data point for training, rather than all actions of a single match. This meant there was no concept of what a match was, as every level 3 action was put together into a dataset. Each action was then tagged as one of two groups - is the player or is not the player. In this binary classification problem, only a single player is trained as one group and all other players as the other group. In this sense, the question being asked becomes \textit{given a level 3 action, is the player who performed this action player X?} Moreover, by encoding the data this way, a large number of training and testing samples are created from just a small number of games, as each game contained thousands of level 3 actions.
+Further explanation on the details and results of each question are detailed in their respective sections (sections \ref{sec:game-classification} and \ref{sec:pair-classification}), along with discussion and analysis of why some features and models performed better than others 
 
-The models therefore are training on each row and predicted whether a single action belonged to the player or not.
-
-In the second iteration, the mouse movement features are grouped together for each match. This gave the models each match as a data point, which is more representative of the problem of classifying a match of Dota 2.
-
-\begin{figure}[H]
-\pgfdeclarelayer{background}
-\pgfdeclarelayer{foreground}
-\pgfsetlayers{background,main,foreground}
-
-% Block styles
-\tikzstyle{data}=[draw, fill=blue!20, text width=5em, 
-    text centered, minimum height=2.5em]
-\tikzstyle{model} = [data, text width=5em, fill=red!20, 
-    minimum height=3em, rounded corners]
-
-\def\blockdist{3}
-\newcommand{\newMoveModel}[3]{
-    \node (#2-model) at (2,#3) [model] {#1 Model};
-    \path (#2-model.west)+(-\blockdist,0) node (#2) [data] {#1 actions}; 
-   
-    \path (#2-model.east)+(\blockdist,0) node (#2-output) [data] {Predictions};
-    
-    \path [draw, ->] (#2.east) -- node {} (#2-model);
-    \path [draw, ->] (#2-model.east) -- node{} (#2-output);
-}
-
-\newcommand{\newGameModel}[4]{
-    \node (#2-model) at (2,#3) [model] {#1 Model};
-    \path (#2-model.west)+(-\blockdist,0) node (#2) [data] {#4}; 
-   
-    \path [draw, ->] (#2.east) -- node {} (#2-model);
-}
-\begin{subfigure}{1\textwidth}
-\centering
-\begin{tikzpicture}
-\newMoveModel{AC}{ac}{4}
-\newMoveModel{MC}{mc}{2.5}
-\newMoveModel{SC}{sc}{1}
-\end{tikzpicture}
-\caption{Move classifier}
-\vspace{\baselineskip}
-\end{subfigure}
-
-\hspace{\fill}
-
-\begin{subfigure}{1\textwidth}
-\centering
-\def\blockdist{2}
-\begin{tikzpicture}
-\newGameModel{AC}{ac}{4}{AC actions}
-\newGameModel{MC}{mc}{2.5}{MC actions}
-\newGameModel{SC}{sc}{1}{SC actions}
-\newGameModel{Stats}{stats}{-0.5}{Game statistics}
-\newGameModel{Items}{items}{-2.0}{Game items}
-
-\path (sc-model.west)+(-6,0) node (game) [data] {Game};
-\path (sc-model.east)+(2.5,0) node (combine) [model] {MLP};
-\path (combine.east)+(2.5,0) node (output) [data] {Prediction};
-
-\path [draw, ->] (game.20) -- node [above] {} (ac.180);
-\path [draw, ->] (game.10) -- node [above] {} (mc.180);
-\path [draw, ->] (game.0) -- node [above] {} (sc.180);
-\path [draw, ->] (game.350) -- node [above] {} (stats.180);
-\path [draw, ->] (game.340) -- node [above] {} (items.180);
-
-\path [draw, ->] (ac-model.east) -- node [above] {} (combine.160);
-\path [draw, ->] (mc-model.east) -- node [above] {} (combine.170);
-\path [draw, ->] (sc-model.east) -- node [above] {} (combine.180);
-\path [draw, ->] (stats-model.east) -- node [above] {} (combine.190);
-\path [draw, ->] (items-model.east) -- node [above] {} (combine.200);
-
-\path [draw, ->] (combine.east) -- node [above] {} (output);
-
-\begin{pgfonlayer}{background}
-  \path (ac.west |- ac.north)+(-0.5,0.5) node (a) {};
-  \path (ac-model.south -| combine.east)+(+0.5,-0.5) node (b) {};
-  \path (combine.east |- items-model.east)+(+0.5,-1) node (c) {};        
-  \path[fill=yellow!20,rounded corners, draw=black!50, dashed] (a) rectangle (c);           
-  \path (ac.north west)+(-0.2,0.2) node (a) {};        
-\end{pgfonlayer}
-\end{tikzpicture}
-\caption{Game classifier}
-\end{subfigure}
-\caption{Difference between classifying each level 3 action and classifying each game. For the game classifier, each type of level 3 action is split per game and evaluated with separate models. This also allows new features to be easily added to the classifier. The probability of the separate models are then used for the combining model (MLP).}
-\end{figure}
-
-To do this, a separate model is used to evaluated each of the different types of level 3 action, similar to the first iteration. The results of the separate models are then combined by a simple multi-layer perceptron which takes the probability output of the models. The idea of using a simple network for the combination step is to be able to learn the relative weights for each type of level 3 action, rather than use them all equally in a voting scheme, or set arbitrary weights to them. This does mean the network has to be trained in addition to training the separate models, but this is a small cost. Further, this approach is modular, as the implementation of new features can be easily added as a separate model and input into the combining network.
-
-%The MLP model is kept very simple in order to avoid complications with large hidden layers and activation functions. It uses a TODO activation function and only contains one hidden layer with 3 nodes.
-
-As this approach uses individual matches, the training and testing datasets were split carefully to ensure the testing set contains players and matches which do not appear in the training set, in order to eliminate potential data leakage. 
-
-There was a subtle issue with the way the binary classification problem was framed in regards to classifying individual games. This led to high accuracies even with only using mouse movement features, as seen in section \ref{sbsec:game-classification}. The issue had to do with the generality of the model. The models were only trained on a relatively small, fixed set of players, making the problem easier to solve as the models only have to learn the behaviour from the players in the set, which does not apply(TODO) to the general Dota 2 playerbase. Furthermore, the classification is only trained on one particular playing and requires the model to be retrained to be able to predict behaviour of another player. This could be extended into a multi-class problem, but it would still be fixed to the small set of players used in training. This leads to the next machine learning approach of \textit{pair} classification.
-%In the next and final approach, deals with this issue by framing the player prediction problem in a different way. Rather than ask \textit{Given a game, which player does it belong to?} the problem is framed as \textit{Given a pair of games, do both games belong to the same player?}
-% TODO this leads to low testing accuracies?
-% TODO results on a lot more players leads to worse accuracy
-
-\subsubsection{Classification on a pair of games}
-The goal of this approach is to be able to train on a large mix of players and games, to learn on the features of both games, and predict if it is the same player or not even if many of the players have never been seen before. The idea is to learn the pattern that differentiates between two players. 
-
-To be able to train on pairs of games together, the features had to be altered to fit as single data points. Before, each game was evaluated separately, so every level 3 action in a game could be used. However, in this pair approach, two games must be used together as inputs to the model. Games in general are of different lengths, which causes the number of level 3 actions to be different for every game. Further, the method of generating level 3 actions (section \ref{sec:mm-features}) means even games of the exact same length will not have the same number of these mouse movement actions. The varying number of level 3 actions prevents a straightforward use of them as input to the machine learning model. Instead, statistics such as the mean, standard deviation and range must be used again. The statistics are calculated for each level 3 action feature over the entire game. This causes a lot of data to be lost, as the hundreds or thousands of level 3 actions are reduced to a small number of statistics. Furthermore, recall a majority of features in a level 3 action are already means and standard deviations, so this method is taking an average of a list of averages. To alleviate this issue as much as possible, the games are split into a few portions where each portion has its own statistics. For example, each game can be split into thirds where each third has its own mean, standard deviation and range for each type of level 3 action. Splitting a game this way not only decreases the data loss due to averaging, but enables each portion to be evaluated individually, to see whether any section of a game is more indicative and predictive of player behaviour compared to another section.
 
 \end{document}

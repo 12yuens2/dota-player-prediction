@@ -7,7 +7,7 @@ function add_words {
 
 ((words=0))
 
-subfiles=("introduction.tex" "context-survey.tex" "software-engineering.tex" "methodology.tex" "results.tex" "evaluation.tex")
+subfiles=("introduction.tex" "context-survey.tex" "software-engineering.tex" "methodology.tex" "results-game.tex" "results-pair.tex" "evaluation.tex")
 for subfile in ${subfiles[@]}; do
     add_words $subfile "words"
 done
