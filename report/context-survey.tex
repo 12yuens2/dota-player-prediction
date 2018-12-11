@@ -37,6 +37,17 @@ Spells and abilities are used as a combination of mouse and keyboard. The four u
 % This means the mouse movements of a player are based off experience, hero chosen and individual behaviour.
 
 \subsubsection{Gameplay flow}
+A match of Dota 2 can be roughly split into three distinct phases, the laning phase, mid game and end game \cite{dota-phases}. Every match varies in length, so there is no set time for when phase transitions occur. In each phase, players play slightly differently and employ different strategies, which can be influential when studying their behaviour. 
+
+\textbf{Laning phase} \\
+The laning phase is the early stage of a match where player heroes have not fully developed their levels and items. As such, the game is slower paced and heroes generally stay in their assigned lanes to gain gold and XP. Hero kills and fights do happen - especially when players move or roam to different lanes in a flank, giving their team a numbers advantage - but are less common. The laning phase is important to give teams an advantage going into the later stages of a match. 
+
+\textbf{Mid game} \\
+At some point, when each player has amassed an amount of items and hero level, teams begin to move around the map together in order to complete objectives such as pushing down towers of particular lanes. Destroying opponent towers gives a team an advantage in gold, but also allow more map control, as players can more safely traverse the opponent's side of the map. 
+
+\textbf{Late game} \\
+The late game of a match is mostly dominated by coordinated teamfights. At this point, teams are trying to break through into the opponent's base to destroy their barracks, which make their own creeps stronger. TODO destroying base
+
 %Terms to explain:
 % - Winning conditions
 % - Real time game (strategy + skill are both important)
@@ -49,15 +60,12 @@ Spells and abilities are used as a combination of mouse and keyboard. The four u
 % - Gameplay flow (laning, farming, teamfights...)
 % - Game length is variable based on time
 
-
-Dota 2
-
 \subsection{Related work}
 
 \subsubsection{Starcraft 2 Player Identification}
-The problem of player identification based on play style has been explored in the game of Starcraft 2. Liu et al. \cite{starcraft-identification} first looked at using machine learning algorithms to identify a Starcraft 2 player from features extracted from match replays and followed up with further research \cite{starcraft-actions} on predicting a player's next actions based on their previous actions in the match. 
+The problem of player identification based on play style and behaviour has been explored before in the game of Starcraft 2. Liu et al. \cite{starcraft-identification} first looked at using machine learning algorithms to identify a Starcraft 2 player from features extracted from match replays and followed up with further research \cite{starcraft-actions} on predicting a player's next actions based on their previous actions in the match. 
 
-Starcraft 2 is classified as a Real Time Strategy (RTS) game, which differs in some places to Dota 2. In Starcraft, players have to manage the generation of resources, production of buildings and units in additional to the control of a large number of units which make up the player's army. This differs vastly from Dota 2's gameplay of controlling only a single unit (except for a few particular heroes with more complex mechanics) and more simplified economy. Furthermore, Dota 2 is played as a team game with five players on each side, whereas competitive games in Starcraft are mostly played as one versus one. However, there are also many similarities between the two games. Firstly, both games are real time, unlike many other adversarial games. This means that players must both think and act quickly as both strategy and precision of control are important factors to victory. Secondly, the mechanic in which a player controls units in both games is virtually identical - movement is controlled using mouse clicks by clicking on the position the player wishes to move to and any attack or ability commands are done by pressing the associated hotkey and aiming at the desired location with the mouse. Finally, TODO.
+Starcraft 2 is classified as a Real Time Strategy (RTS) game, which differs in some places to Dota 2. In Starcraft, players have to manage the generation of resources, production of buildings and units in additional to the control of a large number of units which make up the player's army. This differs vastly from Dota 2's gameplay of controlling only a single unit (except for a few particular heroes with more complex mechanics) and more simplified economy. Furthermore, Dota 2 is played as a team game with five players on each side, whereas competitive games in Starcraft are mostly played as one versus one. However, there are also many similarities between the two games. Firstly, both games are real time, unlike many other adversarial games. This means that players must both think and act quickly as both strategy and precision of control are important factors to victory. Secondly, the mechanic in which a player controls units in both games is virtually identical - movement is controlled using mouse clicks by clicking on the position the player wishes to move to and any attack or ability commands are done by pressing the associated key and aiming at the desired location with the mouse. Finally, TODO. %first moba is mod of first starcraft
 
 Liu et al. used a binary classification approach, focusing on a specific player in their dataset, with half the matches in their dataset coming from the same player, and the other half from other players. This method is less general, as the trained model will only be able to predict on the single player it is trained on, but boosts the accuracy of the model. Their later work \cite{starcraft-actions} extends on this binary classification to a multi-class classification, predicting out of 41 different players. Though the methodology for this extension is interesting and useful, it is still not a general model, as the model only recognises matches from the 41 players, which is a small subset compared to all possible Starcraft 2 players. Multiple machine learning models were used for evaluation, which gives a good indication of what models may perform well for player prediction and allows for comparison of the performance of the models for Starcraft and Dota, to see if any similarities can be drawn. The models they used were:
 \begin{itemize}
@@ -82,8 +90,8 @@ It is also interesting to see the type of features that were used. Liu et el. ca
 
 Their results show the performance of each machine learning model is dependent on the features used. For example, the ANN performed better using all features while the other models performed better using a smaller set of best features. This indicates that the model being trained should be taken into account during feature selection, as features that work well for one model do not necessarily work well for other ones. 
 
-\subsubsection{Win prediction}
-There has been much work in using data extracted from Dota 2 matches to predict the outcome of matches. This involves both gameplay data and pre-game data such as the draft phase. Hodge et al. \cite{dota-mixed-rank-win} used a mix of pre-match data for the heroes picked and teams each hero is on, and in-game data of game states at different sliding window intervals as time-series data to predict the outcome of the match. The in-game data collected included the following features:
+\subsubsection{Dota 2 win prediction}
+In Dota 2, there has been much work in using data extracted from matches to predict the outcome of future or unseen matches. This involves both gameplay data and pre-game data such as the draft phase or history of a player's performance. Hodge et al. \cite{dota-mixed-rank-win} used a mix of pre-match data for the heroes picked and teams each hero is on, and in-game data of game states at different sliding window intervals as time-series data to predict the outcome of a match. The in-game data collected included the following features:
 \begin{itemize}
 \item Team damage dealt
 \item Team kills
@@ -94,7 +102,7 @@ There has been much work in using data extracted from Dota 2 matches to predict 
 \end{itemize}
 The two types of data were compared with two different models - Logistic Regression and Random Forest - and showed that in-game data was by far a stronger predictor, giving over 70\% accuracy in amateur and professional games whereas the pre-game data only achieved about 50\% accuracy. There was not a significant different between logistic regression and random forest, as they differed in performance, both able to outperform each other depending on the type of match (amateur or professional). 
 
-Taking match prediction further, Yang, Qin and Lei \cite{dota-yang} were able to run match outcome prediction in real-time to get the probability of winning at each minute of the match. They also drew comparisons between prior data and real-time data. For prior data, three categories of features were used:
+Taking match outcome prediction further, Yang, Qin and Lei \cite{dota-yang} were able to run match outcome prediction in real-time to get the probability of winning at each minute of a match. They also drew comparisons between prior data and real-time data. For prior data, three categories of features were used:
 \begin{enumerate}
 \item Hero features - This category contained three parts: hero selection, hero attributes and hero win rate. The hero selection feature simply identifies the hero while the attributes and win rates contain statistics such as in-game hero abilities like strength, agility, intelligence and win rates specifically for one hero against another hero.
 \item Player features - The player features contain data outside of the match about the player, such as their MMR (matchmaking ranking) scores and percentiles.

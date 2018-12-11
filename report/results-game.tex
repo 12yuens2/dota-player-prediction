@@ -32,7 +32,7 @@ The different experiments conducted are also detailed with the discussion and an
 
 
 
-\subsection{Approach}
+\subsection{Approach}\label{sec:game-approach}
 To simplify the process and results, this approach took the view of looking at the question as a binary classification problem. This rephrases the question as: \textit{Given a match of Dota 2, is it player X playing this hero?} where player X is the single player to be matched on. All other players are simply considered as not player X. 
 
 Particular attention is drawn to the exploration of the mouse movement features. While the game statistic and itemisation features output once for each match, for example total gold gained per minute, or the hashed encoding of inventory items is only output as one sample each, the mouse movement features create samples for every defined level 3 mouse action that a player makes, generating thousands of actions in a single match. As such, the exploration of mouse movement features was done in two different approaches. 
@@ -134,7 +134,7 @@ In order to combine the separate mouse actions from a match together, separate m
 The combining neural network was kept very simple in order to avoid complications with large hidden layers and activation functions, as its purpose was to learn and balance weights between the different features to give the best performance. %It uses a TODO activation function and only contains one hidden layer with 3 nodes.
 
 
-\subsection{Experimental design}
+\subsection{Experimental design}\label{sec:game-experimental}
 The features discussed in section \ref{sec:methodology} were initially explored individually to examine their performance. Where the features contained multiple approach or subtypes, such as the itemisation encoding and types of mouse actions, each was also explored individually to ascertain which approach performed better. As this approach used individual matches, the training and testing datasets were split carefully to ensure the testing set contained players and matches which do not appear in the training set, in order to eliminate potential data leakage. The one player used as the positive sample class was the only player which appeared in both training and testing sets. All the experiments used a two-step evaluation method to obtain metrics for training and testing.
 \begin{enumerate}
 \item During training, evaluation metrics were gathered using a 5-fold cross evaluation. This gives an idea on how well the models and feature perform, but the performance is likely inflated as the same players may appear in both the training and evaluation data. A 5-fold cross evaluation was chosen to give a balance between the amount of data used for training and evaluation (80\% and 20\% respectively for each fold) and performing enough runs to get a strong average. 
@@ -164,11 +164,10 @@ Precision and recall are complementary metrics that measure the relevance of pre
 In other words, precision helps identify the accuracy of positive predictions and recall helps identify the accuracy of predicting positive samples. These measures are useful to help narrow down why certain features or models may be behaving in a certain way. For example, a high recall but low precision suggests the model or feature is biased towards positive samples, as there are low false negatives but high false positives. 
 \subsection{Results}
 
-\subsubsection{Mouse movement features}\label{sec:mm-features-results}
-The three types of level 3 mouse actions (MMAC, MMMC and MMSC) described in section \ref{sec:mm-features} are first evaluated separately with the different models.
+\subsection{Mouse movement features}\label{sec:mm-features-results}
 
 \subsubsection{Individual mouse actions}
- 
+When looking at the types of mouse movement features individually, a clear pattern can be seen in the performance of each type, and to a lesser extent the model used. models.
 \begin{figure}[H]
 \begin{subfigure}{1\textwidth}
 \centering
@@ -211,8 +210,18 @@ The three types of level 3 mouse actions (MMAC, MMMC and MMSC) described in sect
 \label{fig:move-results}
 \end{figure}
 
-\subsubsection{Movements in each game}\label{sbsec:game-classification}
+Generally, it can be seen from figure \ref{fig:move-results} that each type of mouse movement action (attack actions, move actions and spell cast actions) had differing performance irrespective of the model or metric used. The mouse movement following an attack action performed the best in every circumstance, while the mouse movement following a spell cast performed the worst. It must be noted that the number of each type of mouse action were not in proportion to the other types in each match. An average distribution of TODO \% attack, move, cast actions was found in the dataset used. This directly affects the number of data points for training and testing of each type of mouse action, making move command actions the most well founded and spell cast command actions the least. 
 
+Even after taking this into account, mouse movement features from attack commands still made a strong case for being the most effective at predicting player behaviour. This can be seen especially in the case of precision rate for all models, and recall for the random forest and multi-layer perceptron. This demonstrates a low false positive and false negative rate. 
+
+There is a good explanation for these results and why the mouse dynamics of a player are more unique from attack commands compared to the other two. Firstly, the number of movement commands are the highest, as they are the most common command for players to send in a match, typically in the order of a few thousand move commands. This is partly because movement and position is the most fundamental part of Dota 2, and as a progression to this, most players move (or right-click) their heroes constantly, multiple times a second. There are many reasons for this behaviour, but this constant moving can lead difficulty in distinguishing between different players, as the mouse movement between each move command is very short. 
+
+Secondly TODO cast commands
+
+Finally, mouse movements following attack commands gain the best of both worlds. They happen frequently, both during laning phase for hitting neutral creeps, and during later stages of a match during teamfights. 
+
+\subsubsection{Movements in each game}\label{sbsec:game-classification}
+When all three types of mouse action are grouped together, a different pattern emerges. 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
