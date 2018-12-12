@@ -1,6 +1,6 @@
 \documentclass[Report.tex]{subfiles}
 
-\newcommand{\newaxis}[7]{
+\newcommand{\baraxis}[7]{
 \begin{axis}[
     ybar,
     title={#1},
@@ -16,10 +16,6 @@
     ylabel={#2}
 ]
 }
-
-
-\begin{document}
-
 % #1 - Number of splits
 % #2 - Split number
 % #3 - Feature name
@@ -30,9 +26,46 @@
 	discard if not={numSplits}{#1},
 	discard if not={split}{#2},
 	discard if not={features}{#3},
-] table [x=model, y=#4,col sep=comma] {data/15-pair-cv.csv};
+] table [x=model, y=#4,col sep=comma] {data/20-pair-cv.csv};
 \addlegendentry{#5}
 }
+
+
+% #1 - Title
+% #2 - Y axis label
+% #3 - Legend position
+\newcommand{\lineaxis}[5]{
+\begin{axis}[
+    title={#1},
+    width=#3,
+    height=#4,
+%    ymin=#3, ymax=#4,
+%    bar width=1em,
+    legend style={at={#5},anchor=north,legend columns=-1},
+    enlarge x limits=0.4,
+	xlabel={Portion of match},
+    ylabel={#2},
+]
+}
+
+
+% #1 - ML model
+% #2 - Feature name
+% #3 - Metric name
+% #4 - Legend name
+\newcommand{\plotline}[4]{
+\addplot+[
+	discard if not={numSplits}{5},
+	discard if not={model}{#1},
+	discard if not={features}{#2}
+] table [x=split, y=#3, col sep=comma] {data/20-pair-cv.csv};
+\addlegendentry{#4}
+}
+
+
+\begin{document}
+
+
 
 \section{Same player identification}\label{sec:pair-classification}
 This sections describes the experiments and analysis of the second question: \textit{Given two matches of Dota 2, is it the same player playing on this hero?}
@@ -55,8 +88,13 @@ Clearly, this approach has many drawbacks. The most obvious is the loss of data 
 The experimental design for these experiments follow largely from the design described in section \ref{sec:game-experimental} with a few key differences:
 \begin{itemize}
 \item For mouse movement and game statistic features, each pair of matches could be split into different slices. This creates more features when used together, as a match split into two slices will have double the features, one set for each half of the match. This also allows for comparisons to be made for each slice, to see if any portion of a match is more predictive than another. 
-\item 
+\item A modified dataset was created for this set of experiments, compared to just the dataset in the previous set of experiments. The dataset was created in order to prevent data leakage, as the original contained one player which appeared in both the training and testing sets, which made sense in the previous problem, but faces issues here. The number of data points in the new modified dataset changed due to the nature of the inputs for each problem. Here, the new dataset was created by taking a combination of every pair of matches, so many more samples can be created with fewer matches. Moreover, single player belonged to a majority of matches, to prevent models becoming biased towards learning only a particular player's behaviour.  
+
+\textbf{Dataset 1} (same as in section \ref{sec:game-classification}) TODO games (hero id 15) \\
+\textbf{Dataset 2}: m games
 \end{itemize}
+
+In additional to the second dataset, more datasets using different heroes were created in order to give a strong comparison of the best model and features found and testing them on new datasets of different heroes. TODO. 
 
 \subsection{Mouse movement features}
 %\newcommand{\plotbarmouse11}[2]{
@@ -68,7 +106,7 @@ TODO mouse movement with different num split
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-\newaxis{\textbf{Metrics for classifying pairs of games with mouse movement features}}{Metric rate}{0.6}{1.03}{9cm}{5cm}{(0.5,-0.45)}
+\baraxis{\textbf{Classification with mouse movement features}}{Metric rate}{0.3}{1.03}{9cm}{5cm}{(0.5,-0.45)}
 
 \plotbar{1}{1}{mouse}{accuracy}{Accuracy}
 \plotbar{1}{1}{mouse}{precision}{Precision}
@@ -76,15 +114,80 @@ TODO mouse movement with different num split
 
 \end{axis}
 \end{tikzpicture}
+\caption{Accuracy, precision and recall of using mouse movement features only when classifying a pair of matches.}
 \end{figure}
 
-\subsection{Game statistic features}
-TODO stats with different num splits
+Looking at mouse movement features only, it can be seen the the logistic regression model performs poorly compared to the other two models. There are two likely explanations for this. The first, is because logistic regression typically assumes some form of linear relationship between the input and output. As the mouse movement features were not transformed in such a way to better uncover a linear relationship to the output, the non-linear based algorithms of random forest and multi-layer perceptron were better able to distinguish and predict whether the two input matches were from the same player. The second reason why logistic regression may have performed poorly is due to the increased number of features relative to the number of data points available in training. In a comparison of logistic regression to other classifiers, Yoo et al. \cite{lr-vs-rf} demonstrated that logistic regression performed poorly when the number of features was greater than the number of sample data points. TODO number of faetures and number of data points. It is difficult to pinpoint the exact reason, and although further analysis of the other features hints more towards the first reason, there are many variables in play which make direct comparisons difficult. 
+
+
+\begin{figure}[H]
+\begin{subfigure}{1\textwidth}
+\centering
+\begin{tikzpicture}
+\baraxis{Accuracy of different splits}{Accuracy rate}{0.3}{1}{9cm}{5cm}{(0.5,-0.45)}
+
+\plotbar{1}{1}{mouse}{accuracy}{1 split}
+\plotbar{2}{2}{mouse}{accuracy}{2 splits}
+\plotbar{3}{3}{mouse}{accuracy}{3 splits}
+\plotbar{5}{5}{mouse}{accuracy}{5 splits}
+
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}
+
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75]
+\baraxis{Precision of different splits}{Precision rate}{0.3}{1}{9cm}{5cm}{(0.5,-0.45)}
+
+\plotbar{1}{1}{mouse}{precision}{1 split}
+\plotbar{2}{2}{mouse}{precision}{2 splits}
+\plotbar{3}{3}{mouse}{precision}{3 splits}
+\plotbar{5}{5}{mouse}{precision}{5 splits}
+
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}
+\hspace{\fill}
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75]
+\baraxis{Recall of different splits}{Recall rate}{0.3}{1}{9cm}{5cm}{(0.5,-0.45)}
+
+\plotbar{1}{1}{mouse}{recall}{1 split}
+\plotbar{2}{2}{mouse}{recall}{2 splits}
+\plotbar{3}{3}{mouse}{recall}{3 splits}
+\plotbar{5}{5}{mouse}{recall}{5 splits}
+
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}
+\caption{Metric scores with mouse movement features when a match is split into a different number of portions.}
+\end{figure}
+
+When splitting a match into multiple portions and using all portions together in training, the poor performance of logistic regression can again be seen clearly. However, a key point of interest is how there is no significant decline in accuracy as the number of splits increases, which one would expect if Yoo et al.'s \cite{lr-vs-rf} findings were to be confirmed, as the difference between 1 split and 5 splits is five times the number of features. The accuracy does fall, except for the case when a match is split in half, where the accuracy increases, even when the other two models show a decrease in accuracy. This suggests a more complicated reason than simply logistic regression performing poorly because the number of features was too large. 
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-\newaxis{\textbf{Metrics for classifying pairs of games with game statistic features}}{Metric rate}{0.3}{1.03}{9cm}{6cm}{(0.5,-0.35)}
+\lineaxis{Accuracy for different portions of a match}{Accuracy rate}{12cm}{6cm}{(0.5,-0.25)}
+
+\plotline{Logistic Regression}{mouse}{accuracy}{Logistic Regression}
+\plotline{Random Forest}{mouse}{accuracy}{Random Forest}
+\plotline{Multi-layer Perceptron}{mouse}{accuracy}{Multi-layer Perceptron}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Metric scores with mouse movement features on individual portions of a match. }
+\end{figure}
+
+\subsection{Game statistic features}
+Next are the game statistic features. Logistic regression continues to perform poorly, but random forest and multi-layer perceptron are also unable to predict as well compared to using just mouse movement features. 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\baraxis{\textbf{Metrics for classifying pairs of games with game statistic features}}{Metric rate}{0.3}{1.03}{9cm}{6cm}{(0.5,-0.35)}
 
 \plotbar{1}{1}{stats}{accuracy}{Accuracy}
 \plotbar{1}{1}{stats}{precision}{Precision}
@@ -92,9 +195,74 @@ TODO stats with different num splits
 
 \end{axis}
 \end{tikzpicture}
+\caption{Accuracy, precision and recall rates using only game statistics such as gold and XP per minute when classifying a pair of matches.}
 \end{figure}
+
+The random forest classifier gave the best results at TODO accuracy. 
+
+
+\begin{figure}[H]
+\begin{subfigure}{1\textwidth}
+\centering
+\begin{tikzpicture}
+\baraxis{Accuracy of different splits}{Accuracy rate}{0.3}{1}{9cm}{5cm}{(0.5,-0.45)}
+
+\plotbar{1}{1}{stats}{accuracy}{1 split}
+\plotbar{2}{2}{stats}{accuracy}{2 splits}
+\plotbar{3}{3}{stats}{accuracy}{3 splits}
+\plotbar{5}{5}{stats}{accuracy}{5 splits}
+
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}
+
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75]
+\baraxis{Precision of different splits}{Precision rate}{0.3}{1}{9cm}{5cm}{(0.5,-0.45)}
+
+\plotbar{1}{1}{stats}{precision}{1 split}
+\plotbar{2}{2}{stats}{precision}{2 splits}
+\plotbar{3}{3}{stats}{precision}{3 splits}
+\plotbar{5}{5}{stats}{precision}{5 splits}
+
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}
+\hspace{\fill}
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75]
+\baraxis{Recall of different splits}{Recall rate}{0.3}{1}{9cm}{5cm}{(0.5,-0.45)}
+
+\plotbar{1}{1}{stats}{recall}{1 split}
+\plotbar{2}{2}{stats}{recall}{2 splits}
+\plotbar{3}{3}{stats}{recall}{3 splits}
+\plotbar{5}{5}{stats}{recall}{5 splits}
+
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}
+\caption{Metric scores with mouse movement features when a match is split into a different number of portions.}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\lineaxis{Accuracy for different portions of a match}{Accuracy rate}{12cm}{6cm}{(0.5,-0.25)}
+
+\plotline{Logistic Regression}{stats}{accuracy}{Logistic Regression}
+\plotline{Random Forest}{stats}{accuracy}{Random Forest}
+\plotline{Multi-layer Perceptron}{stats}{accuracy}{Multi-layer Perceptron}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Metric scores with game statistic features on individual portions of a match. }
+\end{figure}
+
 \subsection{Itemisation features}
-TODO itemisation difference between starting items and end game items for hashed vs one-hot
+
 
 
 \begin{figure}[H]
@@ -102,7 +270,7 @@ TODO itemisation difference between starting items and end game items for hashed
 \begin{subfigure}{1\textwidth}
 \centering
 \begin{tikzpicture}
-\newaxis{\textbf{Accuracy with game itemisation features}}{Metric rate}{0.75}{1}{12cm}{4cm}{(0.5,-0.65)}
+\baraxis{\textbf{Accuracy with game itemisation features}}{Accuracy rate}{0.3}{1.03}{9cm}{6cm}{(0.5,-0.35)}
 
 \plotbar{1}{1}{items-hashed}{accuracy}{Hashed items}
 \plotbar{1}{1}{items-onehot}{accuracy}{One-hot}
@@ -116,7 +284,7 @@ TODO itemisation difference between starting items and end game items for hashed
 \vspace*{1em}
 \begin{subfigure}{0.4\textwidth}
 \begin{tikzpicture}[scale=0.85]
-\newaxis{\textbf{Precision with game itemisation features}}{Precision rate}{0.75}{1}{9cm}{6cm}{(0.5,-0.25)}
+\baraxis{\textbf{Precision with game itemisation features}}{Precision rate}{0.3}{1.03}{9cm}{6cm}{(0.5,-0.35)}
 
 \plotbar{1}{1}{items-hashed}{precision}{Hashed items}
 \plotbar{1}{1}{items-onehot}{precision}{One-hot}
@@ -130,7 +298,7 @@ TODO itemisation difference between starting items and end game items for hashed
 \hspace*{\fill}
 \begin{subfigure}{0.4\textwidth}
 \begin{tikzpicture}[scale=0.85]
-\newaxis{\textbf{Recall with game itemisation features}}{Recall rate}{0.75}{1}{9cm}{6cm}{(0.5,-0.25)}
+\baraxis{\textbf{Recall with game itemisation features}}{Recall rate}{0.3}{1}{9cm}{6cm}{(0.5,-0.25)}
 
 \plotbar{1}{1}{items-hashed}{recall}{Hashed items}
 \plotbar{1}{1}{items-onehot}{recall}{One-hot}
@@ -143,6 +311,7 @@ TODO itemisation difference between starting items and end game items for hashed
 \end{subfigure}
 \caption{Accuracy, precision and recall for different game itemisation encoding methods.}
 \end{figure}
+
 \subsection{Combined features}
 
 \subsubsection{Comparison of feature individually}
@@ -170,9 +339,13 @@ TODO itemisation difference between starting items and end game items for hashed
 \end{tikzpicture}
 \caption{Accuracy for pair classification with different features and models.}
 \end{figure}
+
+
 \subsubsection{Combining best features together}
 
 
-
+\subsection{Different heroes TODO}
+% Use same model and features (best ones) , with only hero differ
+% hero id 20, 19 and 15
 \end{document}
 
