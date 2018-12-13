@@ -14,30 +14,31 @@
     ylabel={#2}
 ]
 }
-% Read data
-%\newcommand{\accprerecbarplot} {
-%  \addplot+[
-%    discard if not={feature}{#1},
-%] table [x expr=\coordindex, y={accuracy}] {};
-%}
+
+% #1 - Feature name
+% #2 - Metric name
+\newcommand{\plotbar}[3] {
+\addplot+[
+	discard if not={features}{#1},
+] table [x=model, y=#2, col sep=comma] {data/15-game-cv.csv};
+\addlegendentry{#3}
+}
 
 %\pgfplotstableread[col sep=comma]{data/15-pair-cv.csv}\fifteenPairCV
 
 \begin{document}
 
 \section{Player identification}\label{sec:game-classification}
-This section describes the methodology behind the classification problem to answer the question: \textit{Given a match of Dota 2, who is the player playing this hero?} TODO 
-
-The different experiments conducted are also detailed with the discussion and analysis of their results. 
+This section describes the methodology behind the first classification problem: \textit{Given a match of Dota 2, who is the player playing this hero?} The different experiments conducted are also detailed with discussion and analysis of their results. 
 
 
 
 \subsection{Approach}\label{sec:game-approach}
-To simplify the process and results, this approach took the view of looking at the question as a binary classification problem. This rephrases the question as: \textit{Given a match of Dota 2, is it player X playing this hero?} where player X is the single player to be matched on. All other players are simply considered as not player X. 
+To simplify the process and results, this approach took the view of looking at the question as a binary classification problem. This rephrases the question as: \textit{Given a match of Dota 2, is it player X playing this hero?} where player X is the chosen player to be matched on. All other players are simply considered as not player X. 
 
-Particular attention is drawn to the exploration of the mouse movement features. While the game statistic and itemisation features output once for each match, for example total gold gained per minute, or the hashed encoding of inventory items is only output as one sample each, the mouse movement features create samples for every defined level 3 mouse action that a player makes, generating thousands of actions in a single match. As such, the exploration of mouse movement features was done in two different approaches. 
+Particular attention is drawn to the exploration of the mouse movement features. While the game statistic and itemisation features output once for each match, for example total gold gained per minute, or the hashed encoding of inventory items is only output as one sample each, the mouse movement features created samples for every defined level 3 mouse action that a player makes, generating thousands of actions in a single match. As such, the exploration of mouse movement features was done in two different approaches. 
 
-The first looked at using each action as a data point for training and testing. This means the context of what is a match is lost and it becomes a classification problem of individual mouse actions rather than a classification of matches. By encoding the data this way, a large number of training and testing samples were created, as all the actions were concatenated together. The results of this approach give an indication to how useful individual actions are, and whether they can be used, or if further processing, such as grouping the actions into time slices was required or not. The second approach grouped all mouse movement features of a single match together, which is representative of the classification problem of Dota 2 matches. 
+The first looked at using each individual action as a data point for training and testing. This means the context of what is a match is lost and it becomes a classification problem of individual mouse actions rather than a classification of matches. By encoding the data this way, a large number of training and testing samples were created, as all the actions were concatenated together. The results of this approach gave an indication to how useful individual actions are, and whether they can be used, or if further processing, such as grouping the actions into time slices was required or not. The second approach grouped all three types of mouse movement features in a single match together, which is representative of the classification problem of Dota 2 matches. 
 
 % Each action was then tagged as one of two groups - is the player or is not the player. In this binary classification problem, only a single player is trained as one group and all other players as the other group. In this sense, the question being asked becomes \textit{given a level 3 action, is the player who performed this action player X?} Moreover, by encoding the data this way, a large number of training and testing samples are created from just a small number of games, as each game contained thousands of level 3 actions.
 
@@ -129,9 +130,9 @@ The first looked at using each action as a data point for training and testing. 
 \label{fig:game-classifier-difference}
 \end{figure}
 
-In order to combine the separate mouse actions from a match together, separate models were used to evaluate each type of level 3 action using the first approach. The results of the separate models are then combined by a simple multi-layer perceptron which takes the probability output of the models. The probability was chosen over the prediction to give the combining neural network a better range of values, rather than a binary output of the predicted class. The idea of using a simple network for the combination step is to be able to learn the relative weights for each type of mouse action, rather than use them all equally in a voting scheme, or set arbitrary weights to them. This does mean the network has to be trained in addition to training the separate models, but this is simply a small computational cost. Further, this approach is modular, as the addition of more features for combination can be easily added as a separate model and input into the combining network.
+In order to combine the separate mouse actions from a match together, separate models were used to evaluate each type of level 3 action using the first approach. The results of the separate models are then combined by a simple multi-layer perceptron which takes the probability output of the models. The probability was chosen over the prediction to give the combining neural network a better range of values, rather than a binary output of the predicted class. The idea of using a simple network for the combination step is to be able to learn the relative weights for each type of mouse action, rather than use them all equally in a voting scheme, or set arbitrary weights to them. This does mean the network had to be trained in addition to training the separate models, but this is simply a small computational cost. Further, this approach is modular. Another approach would have been to simply concatenate all three types of mouse action together into one featureset, but it would not be scalable to the addition of more features. Further, features that have a greater number of features in proportion to others may dominate, for example the one hot encoding of items creates over 1800 binary features when there are only 114 mouse movement features in total. As such using a combination step allowed for better scalability and the addition of more features to be easily added as a separate model and input into the combining network.
 
-The combining neural network was kept very simple in order to avoid complications with large hidden layers and activation functions, as its purpose was to learn and balance weights between the different features to give the best performance. %It uses a TODO activation function and only contains one hidden layer with 3 nodes.
+The combining neural network was kept very simple in order to avoid complications with large hidden layers and activation functions, as its purpose was to learn and balance weights between the different features to give the best performance. It used a relu activation function and only contained one hidden layer with 3 neurons.
 
 
 \subsection{Experimental design}\label{sec:game-experimental}
@@ -141,12 +142,12 @@ The features discussed in section \ref{sec:methodology} were initially explored 
 \item After the 5-fold cross evaluation, the final model is trained using all the training data, and evaluated against the testing data. This is the best indication of how the models perform against unseen data, as the testing data is untouched until this point of the experiment. 
 \end{enumerate}
 %Four
-Three different models were used for evaluation. These models were chosen based on what was used in related work \cite{TODO} and to cover a range of different approaches. The three models are logistic regression, random forest and a neural network (in the form of a multi-layer perceptron). \cite{TODO} used logistic regression and neural networks, while \cite{TODO} use logistic regression and random forests.  TODO. 
+Three different models were used for evaluation. These models were chosen based on what was used in related work \cite{starcraft-identification, dota-gao, dota-eggert, mouse-dynamics} and to cover a range of different approaches. The three models are logistic regression, random forest and a neural network (in the form of a multi-layer perceptron).
 
-Three performance metrics were used to evaluate the features and the machine learning models: accuracy, precision and recall. Each metric measures a different aspect of performance. 
+Three performance metrics were used to evaluate the features and the machine learning models: accuracy, precision and recall. Each metric measured a different aspect of performance. 
 
 \textbf{Accuracy} \\
-Accuracy measures the overall performance of the model and feature by computing the total number of correct predictions over the total number of predictions.
+Accuracy measured the overall performance of the model and feature by computing the total number of correct predictions over the total number of predictions.
 \begin{equation*}
 \text{accuracy} = \frac{\text{correct predictions}}{\text{total predictions}}
 \end{equation*}
@@ -162,12 +163,14 @@ Precision and recall are complementary metrics that measure the relevance of pre
 \text{recall} = \frac{\text{true positives}}{\text{true positives} + \text{false negatives}}
 \end{equation*}
 In other words, precision helps identify the accuracy of positive predictions and recall helps identify the accuracy of predicting positive samples. These measures are useful to help narrow down why certain features or models may be behaving in a certain way. For example, a high recall but low precision suggests the model or feature is biased towards positive samples, as there are low false negatives but high false positives. 
-\subsection{Results}
+
 
 \subsection{Mouse movement features}\label{sec:mm-features-results}
 
 \subsubsection{Individual mouse actions}
-When looking at the types of mouse movement features individually, a clear pattern can be seen in the performance of each type, and to a lesser extent the model used. models.
+When looking at the types of mouse movement features individually, a clear pattern can be seen in the performance of each type, and to a lesser extent the model used.
+
+Generally, it can be seen from figure \ref{fig:move-results} that each type of mouse movement action (attack actions, move actions and spell cast actions) had differing performance irrespective of the model or metric used. The mouse movement following an attack action performed the best in every circumstance, while the mouse movement following a spell cast performed the worst. It must be noted that the number of each type of mouse action were not in proportion to the other types in each match. An average distribution of TODO \% attack, move, cast actions was found in the dataset used. This directly affects the number of data points for training and testing of each type of mouse action, making move command actions the most well founded and spell cast command actions the least. 
 \begin{figure}[H]
 \begin{subfigure}{1\textwidth}
 \centering
@@ -190,7 +193,7 @@ When looking at the types of mouse movement features individually, a clear patte
 \addplot coordinates {(Logistic Regression,0.759) (Random Forest,0.747) (Multi-layer Perceptron,0.7719)};
 \addplot coordinates {(Logistic Regression,0.65524) (Random Forest,0.6618) (Multi-layer Perceptron,0.7165)};
 \addplot coordinates {(Logistic Regression,0.6683) (Random Forest,0.6582) (Multi-layer Perceptron,0.6633)};
-\legend{Attack,Move,Cast}
+%\legend{Attack,Move,Cast}
 
 \end{axis}
 \end{tikzpicture}
@@ -202,15 +205,13 @@ When looking at the types of mouse movement features individually, a clear patte
 \addplot coordinates {(Logistic Regression,0.6747) (Random Forest,0.7754) (Multi-layer Perceptron,0.8243)};
 \addplot coordinates {(Logistic Regression,0.672) (Random Forest,0.6975) (Multi-layer Perceptron,0.7239)};
 \addplot coordinates {(Logistic Regression,0.6665) (Random Forest,0.6301) (Multi-layer Perceptron,0.6909)};
-\legend{Attack,Move,Cast}
+%\legend{Attack,Move,Cast}
 \end{axis}
 \end{tikzpicture}
 \end{subfigure}
 \caption{Classification rates using only mouse movement features.}
 \label{fig:move-results}
 \end{figure}
-
-Generally, it can be seen from figure \ref{fig:move-results} that each type of mouse movement action (attack actions, move actions and spell cast actions) had differing performance irrespective of the model or metric used. The mouse movement following an attack action performed the best in every circumstance, while the mouse movement following a spell cast performed the worst. It must be noted that the number of each type of mouse action were not in proportion to the other types in each match. An average distribution of TODO \% attack, move, cast actions was found in the dataset used. This directly affects the number of data points for training and testing of each type of mouse action, making move command actions the most well founded and spell cast command actions the least. 
 
 Even after taking this into account, mouse movement features from attack commands still made a strong case for being the most effective at predicting player behaviour. This can be seen especially in the case of precision rate for all models, and recall for the random forest and multi-layer perceptron. This demonstrates a low false positive and false negative rate. 
 
@@ -220,26 +221,34 @@ Secondly TODO cast commands
 
 Finally, mouse movements following attack commands gain the best of both worlds. They happen frequently, both during laning phase for hitting neutral creeps, and during later stages of a match during teamfights. 
 
-\subsubsection{Movements in each game}\label{sbsec:game-classification}
-When all three types of mouse action are grouped together, a different pattern emerges. 
+
+\begin{figure}[H]
+\caption{confusion matrix of attack mouse movements with mlp}
+\end{figure}
+
+The classification rate itself was also strong, with attack mouse movements using a neural network achieving 73\% accuracy and high precision and recall. (TODO numbers of confusion matrix) With these positive results, no additional pre-processing or fine grained parsing was necessary to progress with investigating the use of different mouse movement types together to classify a match.
+
+
+\subsubsection{Mouse movements for each match}\label{sbsec:game-classification}
+When all three types of mouse action are grouped together, %a different pattern emerges. 
+
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-\newaxis{\textbf{Classifying matches with all mouse movements combined}}{Metric rate}{0.25}{1.03}
+\newaxis{\textbf{Classifying matches with mouse movements combined}}{Metric rate}{0.1}{1.03}
 
-\addplot coordinates {(Logistic Regression,0.8589) (Random Forest,0.6347) (Multi-layer Perceptron,0.93947)};
-\addplot coordinates {(Logistic Regression,0.8651) (Random Forest,1.0) (Multi-layer Perceptron,0.95256)};
-\addplot coordinates {(Logistic Regression,0.909) (Random Forest,0.34545) (Multi-layer Perceptron,0.94545)};
-\legend{Accuracy,Precision,Recall}
+\plotbar{mouse}{accuracy}{Accuracy}
+\plotbar{mouse}{precision}{Precision}
+\plotbar{mouse}{recall}{Recall}
 
 \end{axis}
 \end{tikzpicture}
-\caption{Training results of classifying each game. Note that the size of the dataset is reduced significantly compared to the previous classification approach because there are only a small number of games.}
+\caption{Training results of classifying each match with all three types of mouse actions combined. Note that the size of the dataset is reduced significantly compared to the approach where mouse actions were used individually.}
 \end{figure}
 
 Recall that from \ref{fig:game-classifier-difference} that the three models are used only each type of mouse action, not the combination step, which remains the same. 
 
-It can be seen that the logistic regression and multi-layer perceptron perform similarly well. 
+It can be seen that the logistic regression and multi-layer perceptron perform similarly well, while random forest performed poorly in comparison. Most notably, the recall rate for the random forest classifier is only about 12\%. This is a sign that it predicted a large proportion of false negatives compared to the number of true positives and false positives, so the model was predicting that matches were not from the chosen player wrong. 
 
 % Logistic regression is a linear model, suggesting linear relation between the player and the mouse movement data
 
@@ -249,6 +258,28 @@ It can be seen that the logistic regression and multi-layer perceptron perform s
 
 
 \subsection{Game statistic features}
+When looking at game statistics features only, a different trend arises. The logistic regression and random forest models perform exceptionally well while the neural network doesn't. In fact, the random forest gets perfect accuracy, precision and recall and the multi-layer perceptron, though getting low accuracy and precision, also achieves perfect recall. 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\newaxis{\textbf{Classifying matches with game statistics}}{Metric rate}{0.5}{1.03}
+
+\plotbar{stats}{accuracy}{Accuracy}
+\plotbar{stats}{precision}{Precision}
+\plotbar{stats}{recall}{Recall}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Training results of classifying each match with game statistics.}
+\end{figure}
+
+This result is very suspicious, as so deserves a more in-depth look. First, the result of perfect recall while still having low accuracy suggests the model did not predict any false negatives. The low precision meant false positives did exist and point to the model not predicting any negative predictions at all. 
+
+\begin{figure}[H]
+TODO diagram/graph of number of positive/negative predictions (confusion matrix)
+\caption{Confusion matrix of prediction samples for the multi-layer perceptron using only game statistic features.}
+\end{figure}
 
 \subsection{Itemisation features}
 

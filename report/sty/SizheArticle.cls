@@ -45,7 +45,7 @@
 % Useful packages (Uncomment if needed) %
 %---------------------------------------%
 % sizhecode.sty : Styles for code listings
-%\RequirePackage{sizhecode}
+\RequirePackage{sty/sizhecode}
 
 % sizheplots.sty : Styles for plotting graphs
 \RequirePackage{sty/sizheplots}
@@ -63,6 +63,9 @@
 
 % Merge columns and rows
 \RequirePackage{multirow}
+
+% URL
+\RequirePackage[hyphens]{url}
 
 
 %---------------------%

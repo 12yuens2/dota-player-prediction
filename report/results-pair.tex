@@ -70,7 +70,7 @@
 \section{Same player identification}\label{sec:pair-classification}
 This sections describes the experiments and analysis of the second question: \textit{Given two matches of Dota 2, is it the same player playing on this hero?}
 
-As the question has changed, some parts of the approach for player identification have changed to adapt to the new question while other parts remained the same. Most notably the input contains features for both matches and the mouse movement features were transformed in order to satisfy this change. 
+As the question has changed, some parts of the approach for player identification have changed to adapt to the new question while other parts remained the same. Most notably the the mouse movement features were transformed in order to satisfy the need to have two matches as input instead of just one. 
 
 \subsection{Approach}
 %There was a subtle issue with the way the binary classification problem was framed in regards to classifying individual games. This led to high accuracies even with only using mouse movement features, as seen in section \ref{sbsec:game-classification}. The issue had to do with the generality of the model. The models were only trained on a relatively small, fixed set of players, making the problem easier to solve as the models only have to learn the behaviour from the players in the set, which does not apply(TODO) to the general Dota 2 playerbase. Furthermore, the classification is only trained on one particular playing and requires the model to be retrained to be able to predict behaviour of another player. This could be extended into a multi-class problem, but it would still be fixed to the small set of players used in training. This leads to the next machine learning approach of \textit{pair} classification.
@@ -78,9 +78,29 @@ As the question has changed, some parts of the approach for player identificatio
 % TODO this leads to low testing accuracies?
 % TODO results on a lot more players leads to worse accuracy
 
-The goal of this approach was to be able to train on a large mix of players and games, to learn on features of both matches, and predict if it is the same player, especially if none of the players have been seen by the model before. Instead of learning to match behaviour to specific players, the idea becomes learning the pattern or differences in behaviour between two players. 
+The goal of this approach was to be able to train on a large mix of players and games, to learn on features of both matches, and predict if it is the same player, especially if none of the players have been seen by the model before. Instead of learning to match behaviour to specific players, the idea becomes learning the pattern or differences in behaviour between two different players. 
 
 In order to train on pairs of matches together, the input features had to be altered to fit as single data points. In the previous experiment, each match was evaluated separately, so every single mouse action in a game could be used and combined, as explained in section \ref{sec:game-approach}. However, in this pair approach, two matches must be used together as the input to a model. Matches in general are of different lengths, which causes the number of mouse actions to be different for every game. Further, the method of generating each mouse movement means even games of the exact same length will not have the same number of actions. The varying number of mouse actions prevents a straightforward use of them as input to a machine learning model. Instead, statistics such as the mean, standard deviation and range must be used. The statistics are calculated for each mouse movement feature over the entire match. For example, the horizontal velocity of a mouse action creates four features, the mean, standard deviation, minimum and maximum horizontal velocity of each \textit{individual} mouse action. There are numerous mouse actions in every match so further statistics of the four statistical features were created, giving new features such as the mean of the mean horizontal velocities. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{| c | c | c | c |}
+\hline
+\textbf{Original property} & \textbf{Original features} & \textbf{New features} & \textbf{Number of features} \\ \hline
+Angle of movement & \multirow{9}{3cm}{Minimum, maximum, mean, standard deviation} & \multirow{11}{3cm}{Minimum, 25\%, 50\%, 75\%, maximum, mean, standard deviation} & \multirow{9}{*}{$ 9 \times 4 \times 7 = 252 $} \\ \cline{1-1}
+Curvature &  &  &  \\ \cline{1-1}
+Rate of change of curvature &  &  &  \\ \cline{1-1}
+Horizontal velocity &  &  &  \\ \cline{1-1}
+Vertical velocity &  &  &  \\ \cline{1-1}
+Velocity &  &  &  \\ \cline{1-1}
+Acceleration &  &  &  \\ \cline{1-1}
+Jerk &  &  &  \\\cline{1-1}
+Angular velocity & & & \\ \cline{1-2} \cline{4-4}
+Game ticks to command & \multirow{2}{*}{Single value} & & \multirow{2}{*}{$ 2  \times 7 = 14 $} \\ \cline{1-1}
+Distance to command & & & \\ \hline
+\end{tabular}
+\caption{New features created after pre-processing mouse movement features for pair classification.}
+\end{table}
 
 Clearly, this approach has many drawbacks. The most obvious is the loss of data from taking averages of averages, as the thousands of mouse actions are reduced to only a small number of statistics. To alleviate this issue as much as possible, the matches can be split into a few portions where each portion has its own statistics. For example, a match can be split into thirds where each third has its own mean, standard deviation and range for each mouse movement feature. Splitting a game this way not only decreases the data loss due to averaging, but enables each portion to be evaluated individually, to see whether any section of a game is more indicative and predictive of player behaviour compared to another section. The drawback with splitting matches like this was the large number of features that end of being created, leading to the curse of dimensionality and excessive computational requirements in extreme cases. Continuing with the horizontal velocity example, TODO
 
@@ -88,8 +108,9 @@ Clearly, this approach has many drawbacks. The most obvious is the loss of data 
 The experimental design for these experiments follow largely from the design described in section \ref{sec:game-experimental} with a few key differences:
 \begin{itemize}
 \item For mouse movement and game statistic features, each pair of matches could be split into different slices. This creates more features when used together, as a match split into two slices will have double the features, one set for each half of the match. This also allows for comparisons to be made for each slice, to see if any portion of a match is more predictive than another. 
-\item A modified dataset was created for this set of experiments, compared to just the dataset in the previous set of experiments. The dataset was created in order to prevent data leakage, as the original contained one player which appeared in both the training and testing sets, which made sense in the previous problem, but faces issues here. The number of data points in the new modified dataset changed due to the nature of the inputs for each problem. Here, the new dataset was created by taking a combination of every pair of matches, so many more samples can be created with fewer matches. Moreover, single player belonged to a majority of matches, to prevent models becoming biased towards learning only a particular player's behaviour.  
+\item A modified dataset was created for this set of experiments, compared to just the dataset in the previous set of experiments. The dataset was created in order to prevent data leakage, as the original contained one player which appeared in both the training and testing sets, which made sense in the previous problem, but faces issues here. The number of data points in the new modified dataset changed due to the nature of the inputs for each problem. Here, the new dataset was created by taking a combination of every pair of matches, so many more samples can be created with fewer matches. Moreover, single player belonged to a majority of matches, to prevent models becoming biased towards learning only a particular player's behaviour.
 
+%TODO data changed, not two datasets
 \textbf{Dataset 1} (same as in section \ref{sec:game-classification}) TODO games (hero id 15) \\
 \textbf{Dataset 2}: m games
 \end{itemize}

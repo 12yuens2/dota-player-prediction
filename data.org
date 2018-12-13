@@ -61,3 +61,18 @@
 *** testing
 - Games
 - Players:
+
+
+
+* Experiment information
+
+** Game classification
+Main: 15-game-cv.csv
+
+
+** Pair classification
+Main: 19-pair-cv.csv
+
+Extra for different hero comparison: (only for best model/features)
+- 15-pair-cv.csv
+- 20-pair-cv.csv
