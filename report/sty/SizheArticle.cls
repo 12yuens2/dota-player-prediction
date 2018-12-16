@@ -21,6 +21,9 @@
 % color : Defining colours
 \RequirePackage{color}
 
+% xcolor : Text colours
+\RequirePackage{xcolor}
+
 % enumitem : Customise itemize/enumerate and reduce space with \begin{itemize}[nolistsep]
 \RequirePackage{enumitem}
 
@@ -66,6 +69,9 @@
 
 % URL
 \RequirePackage[hyphens]{url}
+
+% Break lines in table cells
+\RequirePackage{makecell}
 
 
 %---------------------%

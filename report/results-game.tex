@@ -1,14 +1,16 @@
 \documentclass[Report.tex]{subfiles}
 
-\newcommand{\newaxis}[4]{
+\newcommand{\newaxis}[7]{
 \begin{axis}[
     ybar,
     title={#1},
     ymin=#3, ymax=#4,
     bar width=1em,
-    legend style={at={(0.5,-0.25)},anchor=north,legend columns=-1},
+    width={#5},
+    height={#6},
+    legend style={at={#7},anchor=north,legend columns=-1},
     enlarge x limits=0.4,
-    x tick label style={align=center,text width=1.7cm},
+    x tick label style={align=center,text width=2cm},
     symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
     xtick=data,
     ylabel={#2}
@@ -170,25 +172,25 @@ In other words, precision helps identify the accuracy of positive predictions an
 \subsubsection{Individual mouse actions}
 When looking at the types of mouse movement features individually, a clear pattern can be seen in the performance of each type, and to a lesser extent the model used.
 
-Generally, it can be seen from figure \ref{fig:move-results} that each type of mouse movement action (attack actions, move actions and spell cast actions) had differing performance irrespective of the model or metric used. The mouse movement following an attack action performed the best in every circumstance, while the mouse movement following a spell cast performed the worst. It must be noted that the number of each type of mouse action were not in proportion to the other types in each match. An average distribution of TODO \% attack, move, cast actions was found in the dataset used. This directly affects the number of data points for training and testing of each type of mouse action, making move command actions the most well founded and spell cast command actions the least. 
+Generally, it can be seen from figure \ref{fig:move-results} that each type of mouse movement action (attack actions, move actions and spell cast actions) had differing performance irrespective of the model or metric used. The mouse movement following an attack action performed the best in every circumstance, while the mouse movement following a spell cast performed the worst. It must be noted that the number of each type of mouse action were not in proportion to the other types in each match. The average distribution of attacks, move, cast mouse actions in the dataset was 20\%, 78\% and 2\% respectively. This directly affects the number of data points for training and testing of each type of mouse action, making move command actions the most common and spell cast command actions the least. 
 \begin{figure}[H]
+%TODO replot this data with csv
 \begin{subfigure}{1\textwidth}
 \centering
 \begin{tikzpicture}
-\newaxis{Accuracy rate for level 3 MM actions}{Accuracy rate}{0.6}{0.85}
-
+\newaxis{Accuracy of mouse actions}{Accuracy rate}{0.6}{0.85}{9cm}{5cm}{(0.5,-0.35)}
 \addplot coordinates {(Logistic Regression,0.6586) (Random Forest,0.6915) (Multi-layer Perceptron,0.7355)};
 \addplot coordinates {(Logistic Regression,0.6457) (Random Forest,0.6609) (Multi-layer Perceptron,0.7094)};
 \addplot coordinates {(Logistic Regression,0.6339) (Random Forest,0.6173) (Multi-layer Perceptron,0.6248)};
-\legend{Attack,Move,Cast}
+\legend{Attack actions, Move actions, Cast actions}
 
 \end{axis}
 \end{tikzpicture}
 \end{subfigure}
-\hspace{\fill}
+
 \begin{subfigure}{0.45\textwidth}
 \begin{tikzpicture}[scale=0.8]
-\newaxis{Precision rate for level 3 MM actions}{Precision rate}{0.6}{0.85}
+\newaxis{Precision of mouse actions}{Precision rate}{0.6}{0.85}{8cm}{6cm}{(0.5,-0.25)}
 
 \addplot coordinates {(Logistic Regression,0.759) (Random Forest,0.747) (Multi-layer Perceptron,0.7719)};
 \addplot coordinates {(Logistic Regression,0.65524) (Random Forest,0.6618) (Multi-layer Perceptron,0.7165)};
@@ -201,7 +203,7 @@ Generally, it can be seen from figure \ref{fig:move-results} that each type of m
 \hspace{\fill}
 \begin{subfigure}{0.45\textwidth}
 \begin{tikzpicture}[scale=0.8]
-\newaxis{Recall rate for level 3 MM actions}{Recall rate}{0.6}{0.85}
+\newaxis{Recall of mouse actions}{Recall rate}{0.6}{0.85}{8cm}{6cm}{(0.5,-0.25)}
 \addplot coordinates {(Logistic Regression,0.6747) (Random Forest,0.7754) (Multi-layer Perceptron,0.8243)};
 \addplot coordinates {(Logistic Regression,0.672) (Random Forest,0.6975) (Multi-layer Perceptron,0.7239)};
 \addplot coordinates {(Logistic Regression,0.6665) (Random Forest,0.6301) (Multi-layer Perceptron,0.6909)};
@@ -213,14 +215,11 @@ Generally, it can be seen from figure \ref{fig:move-results} that each type of m
 \label{fig:move-results}
 \end{figure}
 
-Even after taking this into account, mouse movement features from attack commands still made a strong case for being the most effective at predicting player behaviour. This can be seen especially in the case of precision rate for all models, and recall for the random forest and multi-layer perceptron. This demonstrates a low false positive and false negative rate. 
+Taking this into account, mouse movement features from attack commands make a strong case for being the most effective at predicting player behaviour. This can be seen especially in the case of precision and recall rate. This demonstrates a low false positive and false negative rate and shows that every individual mouse action that a player takes contains some unique behaviour that help differentiate it from another player's mouse actions. 
 
 There is a good explanation for these results and why the mouse dynamics of a player are more unique from attack commands compared to the other two. Firstly, the number of movement commands are the highest, as they are the most common command for players to send in a match, typically in the order of a few thousand move commands. This is partly because movement and position is the most fundamental part of Dota 2, and as a progression to this, most players move (or right-click) their heroes constantly, multiple times a second. There are many reasons for this behaviour, but this constant moving can lead difficulty in distinguishing between different players, as the mouse movement between each move command is very short. 
 
-Secondly TODO cast commands
-
-Finally, mouse movements following attack commands gain the best of both worlds. They happen frequently, both during laning phase for hitting neutral creeps, and during later stages of a match during teamfights. 
-
+Secondly the chosen hero in the dataset is a hero called Razor, which was not a good example for a spell casting hero, as only one of his four spells is targeted, meaning the mouse movements captured during spell cast are likely to contain a lot of noise, as two of his other abilities activate without a target. Despite this oversight, it is good to see that for such a hero, spell cast movements are less useful while attack movements are more useful. Finally, mouse movements following attack commands happen frequently, both during laning phase for hitting neutral creeps, and during later stages of a match during teamfights while not being over saturated like move commands, which allows a lot of data points that are more unique compared to the move commands. 
 
 \begin{figure}[H]
 \caption{confusion matrix of attack mouse movements with mlp}
@@ -230,12 +229,12 @@ The classification rate itself was also strong, with attack mouse movements usin
 
 
 \subsubsection{Mouse movements for each match}\label{sbsec:game-classification}
-When all three types of mouse action are grouped together, %a different pattern emerges. 
+When all three types of mouse action are grouped together, a different pattern emerges. 
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-\newaxis{\textbf{Classifying matches with mouse movements combined}}{Metric rate}{0.1}{1.03}
+\newaxis{\textbf{Classifying matches with mouse movements combined}}{Metric rate}{0.1}{1.03}{9cm}{6cm}{(0.5,-0.27)}
 
 \plotbar{mouse}{accuracy}{Accuracy}
 \plotbar{mouse}{precision}{Precision}
@@ -246,24 +245,38 @@ When all three types of mouse action are grouped together, %a different pattern 
 \caption{Training results of classifying each match with all three types of mouse actions combined. Note that the size of the dataset is reduced significantly compared to the approach where mouse actions were used individually.}
 \end{figure}
 
-Recall that from \ref{fig:game-classifier-difference} that the three models are used only each type of mouse action, not the combination step, which remains the same. 
 
-It can be seen that the logistic regression and multi-layer perceptron perform similarly well, while random forest performed poorly in comparison. Most notably, the recall rate for the random forest classifier is only about 12\%. This is a sign that it predicted a large proportion of false negatives compared to the number of true positives and false positives, so the model was predicting that matches were not from the chosen player wrong. 
+The accuracy of the random forest classifier drops while it gets perfect precision. This is indicative of an issue in the predictions, as perfect precision means no false positives while the low recall suggests a lot of false negatives. The picture becomes clearer by looking at the confusion matrix of predictions. Table \ref{tbl:rf-mouse-confusion-matrix} shows 0 false positives predicted and a very large proportion of false negatives. This shows there is an issue with the random forest classifier, as it predicts negative values very often. Moreover, there are still a few true positive predictions, which means the model is not predicting only negatives. This seems to show a specific player's (the positive sample) behaviour is difficult to differentiate from another player in many cases, but when it can be detected it is very obviously from the specific player. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{| c | c |}
+\hline
+\makecell{True positives \\ 16} & \makecell{False positives \\ 0} \\ \hline
+\makecell{False negatives \\ 39} & \makecell{True negatives \\ 44} \\ \hline
+\end{tabular}
+\caption{Confusion matrix of prediction samples from testing data for the random forest using only mouse movement features.}
+\label{tbl:rf-mouse-confusion-matrix}
+\end{table}
+
+Aside from the random forest results, the performance of logistic regression was quite noteworthy, as it matches the neural network in all three performance metrics. This is an improvement compared to training on mouse movements individually, as logistic regression had lower recall which hurt its accuracy. Keep in mind that the models are used only when training each individual mouse action as before, and the combination step is another neural network (see figure \ref{fig:game-classifier-difference}). This means that despite the lower accuracy of logistic regression when classifying individual mouse movements, the combining network was able to learn the weights to apply to each of the three logistic regression models used to predict individual mouse movements. 
+
+The difference in accuracy from each individual mouse actions and all mouse actions in a match demonstrate that there is a mixture of mouse actions that correlates to player behaviour. The usage of all mouse actions in a match allow the prediction of who the player is to be better refined. However, given the number of actions that occur in a match, it is interesting that the accuracy is not significantly higher, as the difference is only about 10\% more accuracy. This shows a limitation to predicting a player's behaviour using purely their mouse movement, likely a result of a lot of noise or certain mouse movement sequences that are less useful that others. More work into fine-grained data of each mouse action and the surrounding context of the match at the point where the actions are captured would be required to get a better picture of which exact actions are useful for prediction, and which actions are only adding noise to the prediction model. 
+
+
+
+while random forest performed poorly in comparison. Most notably, the recall rate for the random forest classifier is only about 12\%. This is a sign that it predicted a large proportion of false negatives compared to the number of true positives and false positives, so the model was predicting that matches were not from the chosen player wrong. 
 
 % Logistic regression is a linear model, suggesting linear relation between the player and the mouse movement data
 
-% Random forest gets perfect precision but low recall, hence likely predicting a very few positive results (shown by low recall), but always get the positive prediction correct (perfect precision)
-
-
-
 
 \subsection{Game statistic features}
-When looking at game statistics features only, a different trend arises. The logistic regression and random forest models perform exceptionally well while the neural network doesn't. In fact, the random forest gets perfect accuracy, precision and recall and the multi-layer perceptron, though getting low accuracy and precision, also achieves perfect recall. 
+When looking at game statistics features only, a different trend arises. The logistic regression and random forest models perform exceptionally well while the neural network doesn't. In fact, the random forest gets close to perfect accuracy, precision and recall. 
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-\newaxis{\textbf{Classifying matches with game statistics}}{Metric rate}{0.5}{1.03}
+\newaxis{\textbf{Classifying matches with game statistics}}{Metric rate}{0.2}{1.03}{9cm}{6cm}{(0.5,-0.27)}
 
 \plotbar{stats}{accuracy}{Accuracy}
 \plotbar{stats}{precision}{Precision}
@@ -274,32 +287,161 @@ When looking at game statistics features only, a different trend arises. The log
 \caption{Training results of classifying each match with game statistics.}
 \end{figure}
 
-This result is very suspicious, as so deserves a more in-depth look. First, the result of perfect recall while still having low accuracy suggests the model did not predict any false negatives. The low precision meant false positives did exist and point to the model not predicting any negative predictions at all. 
+This result is very suspicious, and so deserves a more in-depth look into why random forest was able to predict perfectly, and why the neural network performed so poorly. First, the cross validation of the random forest classifier was run with a higher and lower value of $k$. A higher number of $k$ allows for more trials to confirm if the result can be repeated for additional trials and the lower number of $k$ uses less training data, to see if it can continue to achieve good results using less data. 
 
+\newcommand{\rfplotbar}[2] {
+\addplot+[mark=none] table [x=cv, y=#1, col sep=comma] {data/15-game-rf.csv};
+\addlegendentry{#2}
+}
 \begin{figure}[H]
-TODO diagram/graph of number of positive/negative predictions (confusion matrix)
-\caption{Confusion matrix of prediction samples for the multi-layer perceptron using only game statistic features.}
+\begin{tikzpicture}
+\begin{axis}[
+    %ybar,
+    title={\textbf{$k$-fold cross validation on the random forest classifier using only game statistics}},
+    %ymin=#3, ymax=#4,
+    %bar width=1em,
+    width={15cm},
+    height={7cm},
+    legend style={at={(0.5,-0.2)},anchor=north,legend columns=-1},
+    enlarge x limits=0.1,
+    x tick label style={
+        /pgf/number format/1000 sep=
+    },
+    %symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
+    xtick=data,
+    ylabel={Metric rate},
+    xlabel={$k$-fold cross validation}
+]
+
+\rfplotbar{accuracy}{Accuracy}
+\rfplotbar{precision}{Precision}
+\rfplotbar{recall}{Recall}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Varying degrees of $k$-fold cross validation was run to determine if the random forest continues to obtain such good results.}
 \end{figure}
+
+Even when using a range of $k$ values for cross-validation, the performance metrics of the random forest classifier did not fall by much, which gives the perfect prediction result merit. The lowest accuracy obtained was 95\% with a 2-fold cross validation, meaning half the data was used for training and half the data for testing. 
+
+%TODO look at testing data
+
+%TODO why mlp is so bad for this
+
 
 \subsection{Itemisation features}
 
-\subsubsection{Hashed encoding}
+All itemisation encoding methods performed similarly well with a few small differences. Many patterns are repeated across the three different models, which is a strong sign of the common strengths and weaknesses of each encoding method. 
 
-\subsubsection{One-hot encoding}
+Firstly, encoding boots only data had the lowest accuracy compared to the other methods in all three models. This shows the loss of data from only using boots have an impact on the ability to predict who the player is. That is not to say it is necessarily an inferior method as it loses some accuracy in exchange for using a lot less features. For comparison, the one-hot encoding of only starting items gets 4\%, 6\% and 7\% more accuracy for each model respectively, but uses 186 features compared to the 42 features of only encoding boots data. 
 
-\subsubsection{Starting items only}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\newaxis{\textbf{Accuracy of itemisation features}}{Accuracy rate}{0.7}{1.03}{12cm}{5cm}{(0.5,-0.27)}
 
-\subsubsection{Boots only}
+\plotbar{items-hashed}{accuracy}{Items hashed}
+\plotbar{items-onehot}{accuracy}{One-hot encoding}
+\plotbar{items-starting}{accuracy}{Starting items}
+\plotbar{items-select}{accuracy}{Boots only}
+\legend{};
+\end{axis}
+\end{tikzpicture}
 
+\begin{tikzpicture}
+\newaxis{\textbf{Precision of itemisation features}}{Precision rate}{0.7}{1.03}{12cm}{5cm}{(0.5,-0.27)}
+
+\plotbar{items-hashed}{precision}{Items hashed}
+\plotbar{items-onehot}{precision}{One-hot encoding}
+\plotbar{items-starting}{precision}{Starting items}
+\plotbar{items-select}{precision}{Boots only}
+\legend{};
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\newaxis{\textbf{Recall of itemisation features}}{Recall rate}{0.7}{1.03}{12cm}{5cm}{(0.5,-0.35)}
+
+\plotbar{items-hashed}{recall}{Items hashed}
+\plotbar{items-onehot}{recall}{One-hot encoding}
+\plotbar{items-starting}{recall}{Starting items}
+\plotbar{items-select}{recall}{Boots only}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Accuracy, precision and recall for the different itemisation encoding methods.}
+\end{figure}
+
+The one-hot encoding of all items and just starting items had very similar performance, with starting items only getting better accuracy with the random forest and multi-layer perceptron models while all items had better accuracy on logistic regression. Recall that the encoding of all items is sampled twice in a match, once at the beginning and once at the end. In other words, the sample at the beginning of a match gives almost the same data as encoding starting items only, the difference being over a thousand binary features with a 0 value. The close performance of the two encoding methods suggests a few things. First is that the massive increase in binary features does not heavily impact performance. The encoding of all items contains about 9 times the number of features (281 items vs 31 items) but the accuracy deviates by less than 5\%. Next, the items in the inventory at the end of the match is the additional data that encoding starting items loses, yet only using starting items still does better in two of the three models. This shows the slot locations of starting items is more useful in player prediction than the items at the end of a match. The better performance may come from the narrower scope that starting items cover, which prevents noise that may affect prediction performance. This also makes sense from the game's perspective, as the items a player buys is often dependent on the strategy and composition of their own team and the opponent team. Further, many matches end before a player finishes buying all items they need, so the item locations recorded at the end of a match could be temporary and different from other matches by the same player, depending on the context of the match. 
+
+Another point of interest is the performance of the hashed encoding method, which was surprisingly good and unexpected. In a way, hashing the items is the best method of encoding, as it precisely records which item was at which inventory slot with a smaller impact of the implied ordinal relation between the items as the hash is split into multiple features. However, it does not remove this implied relationship which in theory would result in poor performance. Nonetheless, it is not the case here, as the hashed encoding outperformed the one-hot encoding in every model even as both methods encoding the exact same information. 
+
+%TODO recall has same pattern for all three models, but not precision
 
 \subsection{Combining features}
 
-% mouse and stats
+A quick overview of all the featuresets individually with the three models shows how some features and models work better in different combinations, and some are more consistent. 
 
-% mouse and items
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\newaxis{\textbf{Accuracy of individual featuresets}}{Accuracy rate}{0.3}{1.03}{12cm}{5cm}{(0.5,-0.35)}
 
-% stats and items
+\plotbar{mouse}{accuracy}{Mouse movement}
+\plotbar{stats}{accuracy}{Game statistics}
+\plotbar{items-hashed}{accuracy}{Items hashed}
+\plotbar{items-starting}{accuracy}{Starting items}
 
-% mouse and stats and items
+\end{axis}
+\end{tikzpicture}
+\caption{A comparison of the featuresets used individually to show which was able to predict the identity of the player in the dataset. }
+\end{figure}
+
+The itemisation data is the most consistent overall among the three models, as the mouse movement and statistics data obtain different accuracy depending on the model. The logistic regression model is also the most consistent for all the featuresets as the random forest and multi-layer perceptron have varied performance for mouse movement and game statistics. 
+
+%This may come from player identification being a linear and relatively simple problem that the complicated models overfit/underfit. 
+
+When combining the featuresets together in different combinations, a few interesting results are produced. 
+
+\begin{table}[H]
+\begin{tabular}{ c | c | c | c }
+& \multicolumn{3}{c}{\textbf{Models}} \\ \hline
+\textbf{Features} & Logistic Regression & Random Forest & Multi-layer Perceptron \\ \hline
+Mouse & 0.859 & 0.595 & 0.848 \\ \hline
+Stats & 0.959 & 1.0 & 0.484 \\ \hline
+Items hashed & 0.929 & 0.888 & 0.929 \\ \hline
+Items one-hot & 0.909 & 0.877 & 0.899 \\ \hline
+Starting items & 0.899 & 0.919 & 0.939 \\ \hline
+Boots only & 0.859 & 0.859 & 0.869 \\ \hline
+Mouse + Stats & 0.959 & 0.597 & \textcolor{red}{0.738} \\ \hline
+Mouse + Items hashed & 0.919 & 0.646 & 0.909 \\ \hline
+Mouse + Items one-hot & 0.888 & 0.606 & 0.939 \\ \hline
+Mouse + Starting items & 0.918 & 0.617 & 0.919 \\ \hline
+Mouse + Boots only & 0.9109 & 0.857 & 0.908 \\ \hline
+Stats + Items hashed & 0.969 & \textcolor{red}{0.990} & \textcolor{red}{0.868} \\ \hline
+Stats + Items one-hot & 0.969 & \textcolor{red}{0.979} & \textcolor{red}{0.939} \\ \hline
+Stats + Starting items & 0.959 & \textcolor{red}{1.0} & \textcolor{red}{0.929} \\ \hline
+Stats + Boots only & 0.99 & \textcolor{red}{0.959} & \textcolor{red}{0.859} \\ \hline
+Mouse + Stats + Items hashed & 0.949 & 0.636 & 0.808 \\ \hline
+Mouse + Stats + Items one-hot & \textcolor{red}{0.726} & 0.769 & 0.919 \\ \hline
+Mouse + Stats + Starting items & 0.959 & 0.586 & 0.929 \\ \hline
+Mouse + Stats + Boots only & 0.959 & 0.615 & 0.928 \\
+\end{tabular}
+\caption{Accuracy of each model on each feature combination. The accuracies highlighted in red are particularly interesting as they break from a general trend in model performance.}
+\end{table}
+
+Logistic regression continued to perform well when the features are combined, but none are significantly better compared to using each featureset individually. Using game statistics and boots only encoding allowed the logistic regression model to achieve 99\% accuracy, which is odd as the boots only encoding had the lowest accuracy of all item encoding methods for logistic regression. Furthermore, using mouse movement, game statistics and one-hot encoding of all items led to a drastic reduction in accuracy in an odd anomaly.  
+
+The random forest results are also very interesting, and show reduced results in most combinations compared to the individual features. For example, the mouse movement feature had a 60\% accuracy while the various itemisation encoding methods had about 85-90\% accuracy. When the movement feature was combined together with the itemisation features, 3 combinations only achieved 60-65\% accuracy while the boots only combination with mouse movement achieved about the same accuracy as the boots feature by itself. A similar pattern is observed when all three featuresets are combined together, as the accuracy stays quite low with all the additional features. The case is also true for the combination of game statistics and itemisation, though it is a difficult comparison as the game statistics alone had perfect predictions. In general for random forests, the addition of the mouse movement features was a big factor in the poor performance when combining features. This is likely related to the perfect precision but low recall described earlier for mouse movement features on the random forest classifier. What is interesting, is the addition of game statistics, which did not hinder predictions when combined with itemisation data, could not help raise accuracies higher when combined with mouse movement features. In fact the itemisation features helped raise accuracies much more than the statistic features did. This helps to suggest itemisation is one of the stronger indicators and can be combined with other features without introducing noise. %Something about RF properties makes it bad?
+
+Finally, the simple neural network model had little issues when combining features together, but gained little advantages as well. As it performed poorly when using only statistics, the addition of mouse movement and itemisation was able to help boost accuracies. 
+
+
+%TODO cite starcraft, feature + model matters, but items able to be good regardless
+
+%TODO lr also most consistent for performance, shows maybe its a linear problem that the non-linear models over complicate, leading to over/underfitting
+
+
+\subsection{Findings (conclusion)}
 
 \end{document}
