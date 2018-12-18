@@ -322,9 +322,43 @@ This result is very suspicious, and so deserves a more in-depth look into why ra
 \caption{Varying degrees of $k$-fold cross validation was run to determine if the random forest continues to obtain such good results.}
 \end{figure}
 
-Even when using a range of $k$ values for cross-validation, the performance metrics of the random forest classifier did not fall by much, which gives the perfect prediction result merit. The lowest accuracy obtained was 95\% with a 2-fold cross validation, meaning half the data was used for training and half the data for testing. 
+Even when using a range of $k$ values for cross-validation, the performance metrics of the random forest classifier did not fall by much, which gives the perfect prediction result merit. The lowest accuracy obtained was 95\% with a 2-fold cross validation, meaning half the data was used for training and half the data for testing. This shows the results are unlikely caused by overfitting and some combination of rules in a decision tree are able to uniquely identify a player from a pool of players. To once more make sure these results are valid, another dataset was assembled using a different player as the positive sample to the binary classification. This makes sure it is not because the particular player being trained on has quirks that make them more identifiable compared to other players. 
 
-%TODO look at testing data
+%TODO try on another dataset/player
+\renewcommand{\rfplotbar}[2] {
+\addplot+[mark=none] table [x=cv, y=#1, col sep=comma] {data/14-game-rf.csv};
+\addlegendentry{#2}
+}
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{axis}[
+    %ybar,
+    title={\textbf{$k$-fold cross validation on the random forest classifier using only game statistics}},
+    %ymin=#3, ymax=#4,
+    %bar width=1em,
+    width={15cm},
+    height={7cm},
+    legend style={at={(0.5,-0.2)},anchor=north,legend columns=-1},
+    enlarge x limits=0.1,
+    x tick label style={
+        /pgf/number format/1000 sep=
+    },
+    %symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
+    xtick=data,
+    ylabel={Metric rate},
+    xlabel={$k$-fold cross validation}
+]
+
+\rfplotbar{accuracy}{Accuracy}
+\rfplotbar{precision}{Precision}
+\rfplotbar{recall}{Recall}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Varying degrees of $k$-fold cross validation was run to determine if the random forest continues to obtain such good results.}
+\end{figure}
+
+Using the other player, high accuracies can still be seen, but it no longer gets 100\%. This shows the particular player used earlier had a relatively unique playstyle that made it easier to differentiate. Note that the accuracies are still very high, mostly above 95\% for many different levels of $k$-fold cross validation. The recall is lower than usual, while the accuracy is still high, which indicates there are more negative samples compared to positive samples in the altered dataset. Fundamentally, from the additional data gathered, it can be shown that game statistics are a very good feature for decision tree machine learning methods in identifying a particular player in Dota 2 matches. 
 
 %TODO why mlp is so bad for this
 
@@ -414,30 +448,75 @@ Items one-hot & 0.909 & 0.877 & 0.899 \\ \hline
 Starting items & 0.899 & 0.919 & 0.939 \\ \hline
 Boots only & 0.859 & 0.859 & 0.869 \\ \hline
 Mouse + Stats & 0.959 & 0.597 & \textcolor{red}{0.738} \\ \hline
-Mouse + Items hashed & 0.919 & 0.646 & 0.909 \\ \hline
-Mouse + Items one-hot & 0.888 & 0.606 & 0.939 \\ \hline
-Mouse + Starting items & 0.918 & 0.617 & 0.919 \\ \hline
-Mouse + Boots only & 0.9109 & 0.857 & 0.908 \\ \hline
-Stats + Items hashed & 0.969 & \textcolor{red}{0.990} & \textcolor{red}{0.868} \\ \hline
-Stats + Items one-hot & 0.969 & \textcolor{red}{0.979} & \textcolor{red}{0.939} \\ \hline
-Stats + Starting items & 0.959 & \textcolor{red}{1.0} & \textcolor{red}{0.929} \\ \hline
-Stats + Boots only & 0.99 & \textcolor{red}{0.959} & \textcolor{red}{0.859} \\ \hline
-Mouse + Stats + Items hashed & 0.949 & 0.636 & 0.808 \\ \hline
-Mouse + Stats + Items one-hot & \textcolor{red}{0.726} & 0.769 & 0.919 \\ \hline
-Mouse + Stats + Starting items & 0.959 & 0.586 & 0.929 \\ \hline
-Mouse + Stats + Boots only & 0.959 & 0.615 & 0.928 \\
+Mouse + Items hashed & 0.919 & 0.646 & \textcolor{red}{0.909} \\ \hline
+Mouse + Items one-hot & 0.888 & 0.606 & \textcolor{red}{0.939} \\ \hline
+Mouse + Starting items & 0.918 & 0.617 & \textcolor{red}{0.919} \\ \hline
+Mouse + Boots only & 0.9109 & 0.857 & \textcolor{red}{0.908} \\ \hline
+Stats + Items hashed & 0.969 & \textcolor{red}{0.990} & 0.868 \\ \hline
+Stats + Items one-hot & 0.969 & \textcolor{red}{0.979} & 0.939 \\ \hline
+Stats + Starting items & 0.959 & \textcolor{red}{1.0} & 0.929 \\ \hline
+Stats + Boots only & 0.99 & \textcolor{red}{0.959} & 0.859 \\ \hline
+Mouse + Stats + Items hashed & 0.949 & 0.636 & \textcolor{red}{0.808} \\ \hline
+Mouse + Stats + Items one-hot & \textcolor{red}{0.726} & 0.769 & \textcolor{red}{0.919} \\ \hline
+Mouse + Stats + Starting items & 0.959 & 0.586 & \textcolor{red}{0.929} \\ \hline
+Mouse + Stats + Boots only & 0.959 & 0.615 & \textcolor{red}{0.928} \\
 \end{tabular}
-\caption{Accuracy of each model on each feature combination. The accuracies highlighted in red are particularly interesting as they break from a general trend in model performance.}
+\caption{Accuracy of each model on each feature combination. The accuracies highlighted in red are of particular interest for discussion.}
 \end{table}
 
 Logistic regression continued to perform well when the features are combined, but none are significantly better compared to using each featureset individually. Using game statistics and boots only encoding allowed the logistic regression model to achieve 99\% accuracy, which is odd as the boots only encoding had the lowest accuracy of all item encoding methods for logistic regression. Furthermore, using mouse movement, game statistics and one-hot encoding of all items led to a drastic reduction in accuracy in an odd anomaly.  
 
 The random forest results are also very interesting, and show reduced results in most combinations compared to the individual features. For example, the mouse movement feature had a 60\% accuracy while the various itemisation encoding methods had about 85-90\% accuracy. When the movement feature was combined together with the itemisation features, 3 combinations only achieved 60-65\% accuracy while the boots only combination with mouse movement achieved about the same accuracy as the boots feature by itself. A similar pattern is observed when all three featuresets are combined together, as the accuracy stays quite low with all the additional features. The case is also true for the combination of game statistics and itemisation, though it is a difficult comparison as the game statistics alone had perfect predictions. In general for random forests, the addition of the mouse movement features was a big factor in the poor performance when combining features. This is likely related to the perfect precision but low recall described earlier for mouse movement features on the random forest classifier. What is interesting, is the addition of game statistics, which did not hinder predictions when combined with itemisation data, could not help raise accuracies higher when combined with mouse movement features. In fact the itemisation features helped raise accuracies much more than the statistic features did. This helps to suggest itemisation is one of the stronger indicators and can be combined with other features without introducing noise. %Something about RF properties makes it bad?
 
-Finally, the simple neural network model had little issues when combining features together, but gained little advantages as well. As it performed poorly when using only statistics, the addition of mouse movement and itemisation was able to help boost accuracies. 
+Finally, the simple neural network model had little issues when combining features together, but gained little advantages as well. As it performed poorly when using only statistics, the addition of mouse movement and itemisation was able to help boost accuracies. For example using mouse features and statistics features gives a 74\% accuracy rate and the addition of items pushes the accuracy to 90\% or more. The best individually performing item encoding methods were not always the best when combined with other features, using mouse features with the items hashed and mouse features with boots only data gave very similar accuracy, even though the hashed encoding was more accurate when using alone compared to boots only data.
 
+\newcommand{\diffbarplot}[5]{
+\addplot+[bar shift={#5}] coordinates { (Logistic Regression, #1) (Random Forest, #2) (Multi-layer Perceptron, #3) };
+\addlegendentry{#4}
+}
+\makeatletter
+\newcommand\resetstackedplots{
+\makeatletter
+\pgfplots@stacked@isfirstplottrue
+\makeatother
+\addplot [forget plot,draw=none] coordinates{(Logistic Regression,0) (Random Forest,0) (Multi-layer Perceptron,0)};
+}
+\makeatother
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{axis}[
+title={\textbf{Difference in accuracy between itemisation features and itemisation features combined with mouse movement features}},
+title style={align=center,text width={11cm}},
+bar width=1em,
+width=15cm,height=7cm,
+legend style={at={(0.85,0.5)},anchor=north},
+x tick label style={align=center,text width=2cm},
+symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
+xtick=data,
+enlarge x limits=0.4,
+ybar stacked,
+set layers,
+ylabel={Difference in accuracy},
+extra y ticks=0,
+extra y tick labels={},
+extra y tick style={grid=major,major grid style={dashed,draw=black}}
+]
 
-%TODO cite starcraft, feature + model matters, but items able to be good regardless
+\diffbarplot{-0.01}{-0.242}{-0.0205}{Items hashed}{-.75cm}
+\resetstackedplots
+\diffbarplot{-0.021}{-0.272}{0.0399}{Items onehot}{-.25cm}
+\resetstackedplots
+\diffbarplot{0.0194}{-0.30263}{-0.02052}{Items starting}{.25cm}
+\resetstackedplots
+\diffbarplot{0.04947}{-0.002}{0.0394}{Items boots}{.75cm}
+\resetstackedplots
+\end{axis}
+\end{tikzpicture}
+\caption{The difference in accuracy between the itemisation encoding methods used alone and with mouse movement features was plot to discern any pattern as to which itemisation method is helpful, and which adds noise. Negative values here represent a loss in accuracy when the features are combined.}
+\label{fig:itemisation-mouse-diff}
+\end{figure}
+
+There is no clear picture from each itemisation method combined with mouse movement features if there is noise or improvement as it differs among the three models. Figure \ref{fig:itemisation-mouse-diff} shows the difference in accuracy of combining mouse movement features with itemisation features varies based on the itemisation method and model used. The hashing method looks to always give a decrease in accuracy when combined with mouse movement, but the difference is very small in logistic regression and the neural network. Encoding only boots is the only method which gives a consistent boost to accuracy. In the case of random forest, the boots method was able to almost negate the poor accuracy of identifying mouse movements. This shows a deeper level of complexity that these results do not penetrate regarding the combination of features as there is sometimes noise, but sometimes improvement. Ultimately, these findings are in a similar vein to the ones Liu et al. \cite{starcraft-identification} found, that performance varies among the different feature and model combinations. 
 
 %TODO lr also most consistent for performance, shows maybe its a linear problem that the non-linear models over complicate, leading to over/underfitting
 

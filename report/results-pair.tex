@@ -37,14 +37,16 @@
 \newcommand{\lineaxis}[5]{
 \begin{axis}[
     title={#1},
+    grid=major,
+    xmax=5, xmin=1,
     width=#3,
     height=#4,
-%    ymin=#3, ymax=#4,
+%    ymin=0, ymax=1,
 %    bar width=1em,
     legend style={at={#5},anchor=north,legend columns=-1},
     enlarge x limits=0.4,
 	xlabel={Portion of match},
-    ylabel={#2},
+    ylabel={#2}
 ]
 }
 
@@ -102,7 +104,7 @@ Distance to command & & & \\ \hline
 \caption{New features created after pre-processing mouse movement features for pair classification.}
 \end{table}
 
-Clearly, this approach has many drawbacks. The most obvious is the loss of data from taking averages of averages, as the thousands of mouse actions are reduced to only a small number of statistics. To alleviate this issue as much as possible, the matches can be split into a few portions where each portion has its own statistics. For example, a match can be split into thirds where each third has its own mean and standard deviation for each mouse movement feature. Splitting a game this way not only decreases the data loss due to averaging, but enables each portion to be evaluated individually, to see whether any section of a game is more indicative and predictive of player behaviour compared to another section. The drawback with splitting matches like this was the large number of features that were created, leading to the curse of dimensionality and excessive computational requirements in extreme cases. Continuing with the horizontal velocity example, TODO
+Clearly, this approach has many drawbacks. The most obvious is the loss of data from taking averages of averages, as the thousands of mouse actions are reduced to only a small number of statistics. To alleviate this issue as much as possible, the matches can be split into a few portions where each portion has its own statistics. For example, a match can be split into thirds where each third has its own mean and standard deviation for each mouse movement feature. Splitting a game this way not only decreases the data loss due to averaging, but enables each portion to be evaluated individually, to see whether any section of a game is more indicative and predictive of player behaviour compared to another section. The drawback with splitting matches like this was the large number of features that were created, leading to the curse of dimensionality and excessive computational requirements in extreme cases. Continuing with the horizontal velocity example, the original 4 features of minimum, maximum, mean and standard deviation are already transformed into 28 features. If a match is split in half and the features calculated for each half, then 56 features are created. Splitting a match into fifths will create 140 features for each property in the mouse movement actions. This disadvantage represents an interesting trade off between getting more fine-grained data and the curse of dimensionality. 
 
 \subsection{Experimental design}
 The experimental design for these experiments follow largely from the design described in section \ref{sec:game-experimental} with a few key differences:
@@ -118,11 +120,6 @@ The experimental design for these experiments follow largely from the design des
 %In additional to the second dataset, more datasets using different heroes were created in order to give a strong comparison of the best model and features found and testing them on new datasets of different heroes. TODO. 
 
 \subsection{Mouse movement features}
-%\newcommand{\plotbarmouse11}[2]{
-%\plotbar{1}{1}{mouse}{#1}{#2}
-%}
-
-TODO mouse movement with different num split
 
 \begin{figure}[H]
 \centering
@@ -188,11 +185,11 @@ In a rudimentary comparison to the previous experiment, the results were weaker 
 \caption{Metric scores with mouse movement features when a match is split into a different number of portions and they are used together. Note that more slices means a greater number of features, as the featureset is repeated for each slice.}
 \end{figure}
 
-When splitting a match into multiple portions and using all portions together in training, the poor performance of logistic regression can again be seen clearly underperforming compared to the other two models. However, a key point of interest is how there is no significant decline in accuracy as the number of splits increases, which one would expect if Yoo et al.'s \cite{lr-vs-rf} findings were to be confirmed, as the difference between 1 split and 5 splits is five times the number of features. The accuracy does fall for 2 splits, but grows again for 3 and 5 splits. This suggests a more complicated reason than simply logistic regression performing poorly because the number of features was too large, likely showing the linear model reaching it's limitations. 
+When splitting a match into multiple portions and using all portions together in training, the poor performance of logistic regression can again be seen clearly underperforming compared to the other two models. However, a key point of interest is how there is no significant decline in accuracy as the number of splits increases, which one would expect if Yoo et al.'s \cite{lr-vs-rf} findings were to be confirmed, as the difference between 1 split and 5 splits is five times the number of features. The accuracy does fall for 2 splits, but grows again for 3 and 5 splits. This suggests a more complicated reason than simply logistic regression performing poorly because the number of features was too large, likely showing the linear model reaching it's limitations. Nevertheless, the random forest and multi-layer perceptron shows loss of accuracy as more slices are used together, with the random forest showing the highest loss, from 85\% to 76\%. This shows the additional slices likely add too many features and introduce noise as uncorrelated patterns are drawn, for example mouse movement data from the first slice of one game with the mouse movement data from the third slice of the other game. 
 
 % random forest getting less accuracy with more splits, too many features adds too much noise?
 
-Finally, each individual slice of a match was tested TODO
+Finally, instead of concatenating the sections of a match together, each individual slice was tested.
 
 \begin{figure}[H]
 \centering
@@ -208,8 +205,12 @@ Finally, each individual slice of a match was tested TODO
 \caption{Metric scores with mouse movement features on individual portions of a match. }
 \end{figure}
 
+There were no significant results from using slices of a match individually, only small deviations from the accuracy when no slicing was done at all. This result is rather unexpected, as the strategy and gameplay in different phases of a Dota 2 game change and naturally, one would assume the mouse movement behaviour of players change as well. A point to consider is that though the strategy and behaviour may change between the phases of a game, many players' behaviour change in the same way, so there is little change in the difference of behaviour \textit{between} two players. Further, the phases changes in a Dota 2 match usually happen at different times, depending on how much of an advantage one team is able to amass. 
+
+%TODO 
+
 \subsection{Game statistic features}
-Next are the game statistic features. A slightly different trend can be seen compared to the mouse movement features. Logistic regression continues to perform poorly, but the multi-layer perceptron model interestingly has very high recall but low accuracy and precision. This was exactly the same pattern observed when looking at single matches in section \ref{sbsec:game-classification}. This is very interesting as this pattern does not occur in any other combination of features or models. 
+Next are the game statistic features. A slightly different trend can be seen compared to the mouse movement features. Logistic regression continues to perform poorly, but the multi-layer perceptron model interestingly has very high recall but low accuracy and precision. This was the inverse of the pattern observed when looking at single matches in section \ref{sbsec:game-classification}, where the random forest classifier obtained high precision but low recall. The two patterns are likely unrelated, as they occurred on different classification problems, featuresets and models.
 
 % More on same pattern TODO
 
@@ -254,8 +255,9 @@ Due to the way the \texttt{clarity} parser functions by running through matches 
 
 \subsection{Itemisation features}
 
-For itemisation features, each encoding method can be compared. On the whole, using only boots by themselves was the best indicator for random forest and multi-layer perceptron, while the item differences were best for the logistic regression model. Once again, logistic regression did not have good results compared to the random forest and multi-class perceptron models. The only exception is the item difference method of encoding, where it was able to get higher accuracies than the random forest and multi-layer perceptron models. This is a bit of an anomaly, as the trend so far suggests logistic regression is not suitable for this classification task.  
+For itemisation features, each encoding method is compared. On the whole, using only boots by themselves was the best indicator for random forest and multi-layer perceptron, while the item differences were best for the logistic regression model. Once again, logistic regression did not have good results compared to the random forest and multi-class perceptron models. The only exception is the item difference method of encoding, where it was able to get higher accuracies than the random forest and multi-layer perceptron models using the same feature. This is a bit of an anomaly, as the trend so far suggests logistic regression is not suitable for this classification task. 
 
+The difference between the item difference feature and all other features used, include the game statistics and mouse movement features is that the features are not duplicated for the pair of matches. For all other features, the features for both matches are used together, as it may be interesting to see if different features across the two matches may be correlated. However for the item difference, the presence or absence of the same item on an inventory slot is encoded and so there is no duplication of features. This contrast is likely the reason for a reduction in complexity that allowed the logistic regression model to perform comparably to the other two models where all other features could not.
 
 \begin{figure}[H]
 \centering
@@ -294,15 +296,16 @@ For itemisation features, each encoding method can be compared. On the whole, us
 \plotbar{1}{1}{items-select}{recall}{Boots only}
 \plotbar{1}{1}{items-diff}{recall}{Item differences}
 
-
 \end{axis}
 \end{tikzpicture}
 \caption{Accuracy, precision and recall for different game itemisation encoding methods.}
 \end{figure}
 
-There are a few surprising results for the different encoding methods. Firstly, the one-hot encoding of all items performed very similarly to the one-hot encoding of only starting items. This was surprising because the one-hot encoding of all items contained 250 more items than the starting items, which translates to 1500 more binary features. Furthermore, the one-hot encoding of all items sampled the hero inventory twice, once at the start and once at the end of a match. This would again double the number of features compared to looking at only the starting items. 
+There are a few other notable results for the item encoding methods. Firstly, the hashed items was able to obtain accuracies higher than the one-hot encoded items for random forest, but not for the neural network. Moreover, the recall was relatively lower while the precision was higher in the random forest. 
 
-%TODO check end items being used properly
+%TODO all start items vs all end items onehot encoding
+
+Secondly, the one-hot encoding of all items performed very similarly to the one-hot encoding of only starting items. This was surprising because the one-hot encoding of all items contained 250 more items than the starting items, which translates to 1500 more binary features. Furthermore, the one-hot encoding of all items sampled the hero inventory twice, once at the start and once at the end of a match. This was also the case in the previous classification task and it continues to be the case here, that the increased number of binary features had little effect on the performance of the models. The gap between the two methods is smaller than previously, which means just using starting items to differentiate between two players is more difficult than identifying a single player. This may be because a more diverse pool of players here leads to more similarity in starting items between any two players. 
 
 \subsection{Combined features}
 
@@ -331,8 +334,8 @@ There are a few surprising results for the different encoding methods. Firstly, 
 
 \plotbar{1}{1}{mouse}{accuracy}{Mouse movement only}
 \plotbar{1}{1}{stats}{accuracy}{Game statistics only}
-\plotbar{1}{1}{items-onehot}{accuracy}{All items with one-hot encoding}
-\plotbar{1}{1}{items-starting}{accuracy}{Starting items only}
+\plotbar{1}{1}{items-select}{accuracy}{Boots only}
+\plotbar{1}{1}{items-diff}{accuracy}{Item difference}
 \legend{};
 \end{axis}
 \end{tikzpicture}
@@ -342,8 +345,8 @@ There are a few surprising results for the different encoding methods. Firstly, 
 
 \plotbar{1}{1}{mouse}{precision}{Mouse movement only}
 \plotbar{1}{1}{stats}{precision}{Game statistics only}
-\plotbar{1}{1}{items-onehot}{precision}{All items with one-hot encoding}
-\plotbar{1}{1}{items-starting}{precision}{Starting items only}
+\plotbar{1}{1}{items-select}{precision}{Boots only}
+\plotbar{1}{1}{items-diff}{precision}{Item difference}
 \legend{};
 \end{axis}
 \end{tikzpicture}
@@ -353,8 +356,8 @@ There are a few surprising results for the different encoding methods. Firstly, 
 
 \plotbar{1}{1}{mouse}{recall}{Mouse movement only}
 \plotbar{1}{1}{stats}{recall}{Game statistics only}
-\plotbar{1}{1}{items-onehot}{recall}{All items with one-hot encoding}
-\plotbar{1}{1}{items-starting}{recall}{Starting items only}
+\plotbar{1}{1}{items-select}{recall}{Boots only}
+\plotbar{1}{1}{items-diff}{recall}{Item difference}
 
 \end{axis}
 \end{tikzpicture}
@@ -362,53 +365,246 @@ There are a few surprising results for the different encoding methods. Firstly, 
 \end{figure}
 
 
-It can be concluded quite definitively from analysing the features individually that logistic regression was not well suited to this classification problem. In every feature, logistic regression struggled to get a 50\% classification rate, with only the boots only feature getting a 59\% correct classification. As such, there is a clear difference in the complexity of the classification problem compared to the previous experiment, where logistic regression was able to obtain strong results. It is also unlikely that Yoo et al.'s explanation of poor logistic regression performance with a large number of features \cite{lr-vs-rf} applies here, as the game statistic features had a small number of features while mouse movement had a large number of features. 
+It can be concluded quite definitively from analysing the features individually that logistic regression was not well suited to this classification problem. In every feature, logistic regression struggled to get a 50\% classification rate, with only the boots only feature getting a 59\% correct classification. The only exception is the item difference feature, which was able to transform the complexity of the problem by calculating the difference and not duplicating the features. As such, there is a clear difference in the complexity of the classification problem compared to the previous experiment, where logistic regression was able to obtain strong results. It is also unlikely that Yoo et al.'s explanation of poor logistic regression performance with a large number of features \cite{lr-vs-rf} applies here, as the game statistic features had a small number of features while mouse movement had a large number of features. 
+
+%TODO it would be interesting to see if other features, like game stats difference could also be calculated, and if lr would continue to work for that
 
 There are a few model and feature combinations that stand out with the best individual performance. Random forest in general was able to obtain high accuracies with all different features. The neural network had comparable results for the itemsation features, but not for the mouse movement or statistic features. This is interesting because the mouse movement and statistic features were the best performing features for the random forest classifier. This suggests there is no stand out best feature to determine if two matches come from the same player, but rather, different models are able to apply the different features with varying degrees of success. A similar conclusion was reached by Liu et al. \cite{starcraft-identification} for player identification in Starcraft 2. 
 
-\subsubsection{Combining best features together}
-Finally, the individual featuresets are combined together to see if any combination of them may give improved predictive performance. Data for logistic regression regression is not presented as there was next to no performance change for all the different combinations of featuresets, further confirming the linear model as unsuitable for this task. 
+\subsubsection{Logistic regression}
+As mentioned, logistic regression performed poorly overall in this classification task, with only the item difference feature working well due to its reduced complexity. The large majority of feature combinations without this feature did not achieve better predictions, so attention is drawn on the combinations of item difference and other features. 
 
 \begin{figure}[H]
-\newcommand{\combinedbar}[5]{
-\addplot+[
-	discard if not={numSplits}{#1},
-	discard if not={split}{#2},
-	discard if not={features}{#3},
-	%discard if={model}{Logistic Regression}
-] table [x=model, y=#4,col sep=comma] {data/19-pair-cv.csv};
-\addlegendentry{#5}
-}
 \centering
 \begin{tikzpicture}
 \begin{axis}[
     ybar,
-    title={\textbf{Accuracy with combined features}},
-    width=15cm,
+    title={\textbf{Items difference combined with other features for logistic regression}},
+    width=14cm,
     height=5cm,
-    ymin=0.4, ymax=1,
-    bar width=1.5em,
+    %ymin=0.4, ymax=1,
+    bar width=0.75em,
     legend style={at={(0.5,-0.35)},anchor=north,legend columns=-1},
-    enlarge x limits=0.4,
-    x tick label style={align=center,text width=2cm},
-    symbolic x coords={Logistic Regression, Random Forest, Multi-layer Perceptron},
+    enlarge x limits=0.2,
+    x tick label style={align=center,text width=3cm},
+    symbolic x coords={Items only, Mouse + items, Stats + items, Mouse + stats + items},
     xtick=data,
-    ylabel={Accuracy rate},
-    cycle list name=exotic,
-    every axis plot/.append style={fill,draw=none,no markers}% <- added
+    ylabel={Metric rate},
+    %cycle list name=exotic,
+    %every axis plot/.append style={fill,draw=none,no markers}% <- added
 ]
-%\baraxis{\textbf{Accuracy with combined features}}{Accuracy rate}{0.3}{1.03}{15cm}{6cm}{(0.5,-0.35)}
+\addplot table [x=features, y=accuracy, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.7437536518359378,0.7362784744668971,0.7684284784024311,Logistic Regression,Items only
+1,1,0.7672500046753832,0.762021495693811,0.7987112003472976,Logistic Regression,Mouse + items
+1,1,0.8614543841197742,0.8633472815673985,0.862122856522683,Logistic Regression,Stats + items
+1,1,0.8033406413964528,0.8157132392501388,0.8001220968092033,Logistic Regression,Mouse + stats + items
+};
+\addlegendentry{Accuracy}
 
-\combinedbar{1}{1}{mouse-stats}{accuracy}{Mouse-stats}
-\combinedbar{1}{1}{mouse-items-onehot}{accuracy}{Mouse-items-onehot}
-\combinedbar{1}{1}{mouse-items-select}{accuracy}{Mouse-items-select}
-\combinedbar{1}{1}{mouse-stats-items-diff}{accuracy}{Mouse-stats-items-diff}
+\addplot table [x=features, y=precision, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.7437536518359378,0.7362784744668971,0.7684284784024311,Logistic Regression,Items only
+1,1,0.7672500046753832,0.762021495693811,0.7987112003472976,Logistic Regression,Mouse + items
+1,1,0.8614543841197742,0.8633472815673985,0.862122856522683,Logistic Regression,Stats + items
+1,1,0.8033406413964528,0.8157132392501388,0.8001220968092033,Logistic Regression,Mouse + stats + items
+};
+\addlegendentry{Precision}
+
+\addplot table [x=features, y=recall, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.7437536518359378,0.7362784744668971,0.7684284784024311,Logistic Regression,Items only
+1,1,0.7672500046753832,0.762021495693811,0.7987112003472976,Logistic Regression,Mouse + items
+1,1,0.8614543841197742,0.8633472815673985,0.862122856522683,Logistic Regression,Stats + items
+1,1,0.8033406413964528,0.8157132392501388,0.8001220968092033,Logistic Regression,Mouse + stats + items
+};
+\addlegendentry{Recall}
 
 \end{axis}
 \end{tikzpicture}
+\caption{The item difference encoding method combined with other features yielded good results for logistic regression, even when all other combinations of features did not. }
 \end{figure}
 
-\subsection{Different heroes TODO}
+The combination of other features with the item difference encoding was able to clearly boost the prediction rate of the logistic regression model. Recall that mouse movement and game statistic data alone could not even achieve a 50\% classification rate. The combination of other itemisation methods with mouse movement and game statistics also do not go above this 50\% classification rate except when using the game statistics and boots features together, which only gives 52\% accuracy. This may be related, as the combination of game statistics and the item difference is the best performing set of features for logistic regression. Further, there is a large difference between using mouse movements or using game statistics with the itemisation features, which is surprising given there was little difference between the two featuresets when they were evaluated individually. 
+
+% All other mouse + stats + item combinedations also only about <50% classification
+
+% No other combinations of features achieved anywhere near significant gains in performance
+
+\subsubsection{Random forest}
+
+The random forest classifier performed very consistently overall when using any of the featuresets by themselves. The combination of features was also able to further boost performance. Two noteworthy examples are presented. The first takes a look at how the performance of using boots data is altered as more features are added and the second looks into the improved performance as more features are added with starting items features. These results help shed light into the improvements in accuracy that can be made by using multiple features together.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    title={\textbf{Boots only performance with additional features}},
+    width=15cm,
+    height=5cm,
+    %ymin=0.4, ymax=1,
+    bar width=0.75em,
+    legend style={at={(0.5,-0.35)},anchor=north,legend columns=-1},
+    enlarge x limits=0.2,
+    x tick label style={align=center,text width=2.5cm},
+    symbolic x coords={Boots only, Mouse + boots, Stats + boots, Mouse + stats, Mouse + stats + boots},
+    xtick=data,
+    ylabel={Metric rate},
+    %cycle list name=exotic,
+    %every axis plot/.append style={fill,draw=none,no markers}% <- added
+]
+\addplot table [x=features, y=accuracy, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.879328056504667,0.8700523463632187,0.8938056218797481,Random Forest,Boots only
+1,1,0.868903225353162,0.9590398493485237,0.7743026915563274,Random Forest,Mouse + boots
+1,1,0.8830309936062454,0.9520265857015682,0.8082021923160407,Random Forest,Stats + boots
+1,1,0.9415068228048351,0.9504757706851802,0.9335874755806381,Random Forest,Mouse + stats + boots
+1,1,0.9322103786068515,0.9219059921138925,0.9469068808335143,Random Forest,Mouse + stats
+
+};
+
+\addplot table [x=features, y=precision, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.879328056504667,0.8700523463632187,0.8938056218797481,Random Forest,Boots only
+1,1,0.868903225353162,0.9590398493485237,0.7743026915563274,Random Forest,Mouse + boots
+1,1,0.8830309936062454,0.9520265857015682,0.8082021923160407,Random Forest,Stats + boots
+1,1,0.9415068228048351,0.9504757706851802,0.9335874755806381,Random Forest,Mouse + stats + boots
+1,1,0.9322103786068515,0.9219059921138925,0.9469068808335143,Random Forest,Mouse + stats
+};
+
+\addplot table [x=features, y=recall, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.879328056504667,0.8700523463632187,0.8938056218797481,Random Forest,Boots only
+1,1,0.868903225353162,0.9590398493485237,0.7743026915563274,Random Forest,Mouse + boots
+1,1,0.8830309936062454,0.9520265857015682,0.8082021923160407,Random Forest,Stats + boots
+1,1,0.9415068228048351,0.9504757706851802,0.9335874755806381,Random Forest,Mouse + stats + boots
+1,1,0.9322103786068515,0.9219059921138925,0.9469068808335143,Random Forest,Mouse + stats
+};
+
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    title={\textbf{Starting items performance with additional features}},
+    width=15cm,
+    height=5cm,
+    %ymin=0.4, ymax=1,
+    bar width=0.75em,
+    legend style={at={(0.5,-0.35)},anchor=north,legend columns=-1},
+    enlarge x limits=0.2,
+    x tick label style={align=center,text width=2.5cm},
+    symbolic x coords={Starting items only, Mouse + starting items, Stats + starting items, Mouse + stats, Mouse + stats + starting items},
+    xtick=data,
+    ylabel={Metric rate},
+    %cycle list name=exotic,
+    %every axis plot/.append style={fill,draw=none,no markers}% <- added
+]
+\addplot table [x=features, y=accuracy, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.811532212460573,0.8271052919831957,0.7941936184067723,Random Forest,Starting items only
+1,1,0.9135779793479282,0.9102883801009354,0.9225173648795313,Random Forest,Mouse + starting items
+1,1,0.9102086605455826,0.9537679752573119,0.8635228999348816,Random Forest,Stats + starting items
+1,1,0.950077781845275,0.9502363396489525,0.9520675059691772,Random Forest,Mouse + stats + starting items
+1,1,0.9322103786068515,0.9219059921138925,0.9469068808335143,Random Forest,Mouse + stats
+
+};
+\addlegendentry{Accuracy}
+
+\addplot table [x=features, y=precision, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.811532212460573,0.8271052919831957,0.7941936184067723,Random Forest,Starting items only
+1,1,0.9135779793479282,0.9102883801009354,0.9225173648795313,Random Forest,Mouse + starting items
+1,1,0.9102086605455826,0.9537679752573119,0.8635228999348816,Random Forest,Stats + starting items
+1,1,0.950077781845275,0.9502363396489525,0.9520675059691772,Random Forest,Mouse + stats + starting items
+1,1,0.9322103786068515,0.9219059921138925,0.9469068808335143,Random Forest,Mouse + stats
+};
+\addlegendentry{Precision}
+
+\addplot table [x=features, y=recall, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.811532212460573,0.8271052919831957,0.7941936184067723,Random Forest,Starting items only
+1,1,0.9135779793479282,0.9102883801009354,0.9225173648795313,Random Forest,Mouse + starting items
+1,1,0.9102086605455826,0.9537679752573119,0.8635228999348816,Random Forest,Stats + starting items
+1,1,0.950077781845275,0.9502363396489525,0.9520675059691772,Random Forest,Mouse + stats + starting items
+1,1,0.9322103786068515,0.9219059921138925,0.9469068808335143,Random Forest,Mouse + stats
+};
+\addlegendentry{Recall}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Performance changes as different features are combined for the random forest classifier.}
+\end{figure}
+
+In the first example, an interesting trend occurs when the mouse movement or game statistic features are added to the boots only features for evaluation. The accuracy for the three combinations of features (boots only, mouse movement + boots and game statistics + boots) remain relatively similar, but the precision and recall scores do not. The addition of either mouse movement or game statistics improves the precision of the model while losing recall. There is a shift in predictions, with more false negatives predicted and less false positives. This suggests the model predicts negatives more often, so the addition of mouse movement or statistic data makes two matches look more like they are from different players than without the additional data. This is a form of noise that can be beneficial in some cases. Because the precision is much higher, one can be more confident that when the model predicts two matches are from the same player. If put into a real system, the low false positives would mean players are more unlikely to be falsely accused, but more offenders would go undetected due to the higher number of false negatives. Finally, the combination of all three featuresets together gave the best results, as the recall improved greatly, which improved the accuracy. This contrasts with the results from the previous classification task, where combinations of features generally led to worse performance by adding noise. 
+
+The second example shows a slightly different pattern, where only the combination of statistics and the itemisation features led to high precision and low recall. The combination of mouse movement and itemisation gained a straightforward 10\% increase in prediction performance, which shows the difference between the two itemisation methods, even though using starting items alone performed worse than using boots items alone. The trend of improvement with more features continues and it is also interesting to see that the two encoding methods performed differently alone, but similarly when combined with the other features. Neither improved the model by much when compared to using mouse movements and game statistics, but there were minor improvements, which show the features do not introduce other noise. This leads to the possibility that continually adding more features, though there are diminishing returns can continue to improve prediction rates. 
+
+\subsubsection{Multi-layer perceptron}
+
+Lastly, the combination of features of the neural network model is explored. The combination of the hashed method of encoding for items and other features is highlighted, as it exhibits a similar behaviour to the one observed in the random forest examples, even though it is a different model and item encoding method.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    title={\textbf{Performance of items hashed encoding combined with other features}},
+    width=14cm,
+    height=5cm,
+    %ymin=0.4, ymax=1,
+    bar width=0.75em,
+    legend style={at={(0.5,-0.35)},anchor=north,legend columns=-1},
+    enlarge x limits=0.2,
+    x tick label style={align=center,text width=3cm},
+    symbolic x coords={Items hashed, Mouse + items hashed, Stats + items hashed, Mouse + stats + items hashed},
+    xtick=data,
+    ylabel={Metric rate},
+    %cycle list name=exotic,
+    %every axis plot/.append style={fill,draw=none,no markers}% <- added
+]
+\addplot table [x=features, y=accuracy, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.7236627009084502,0.7208728218636624,0.75156555242023,Multi-layer Perceptron,Items hashed
+1,1,0.7888022530904284,0.8715604737666227,0.6813626003907098,Multi-layer Perceptron,Mouse + items hashed
+1,1,0.7281298901021465,0.8308107761588446,0.6031202517907532,Multi-layer Perceptron,Stats + items hashed
+1,1,0.7806148252941022,0.909545040685867,0.6334111135228999,Multi-layer Perceptron,Mouse + stats + items hashed
+
+};
+\addlegendentry{Accuracy}
+
+\addplot table [x=features, y=precision, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.7236627009084502,0.7208728218636624,0.75156555242023,Multi-layer Perceptron,Items hashed
+1,1,0.7888022530904284,0.8715604737666227,0.6813626003907098,Multi-layer Perceptron,Mouse + items hashed
+1,1,0.7281298901021465,0.8308107761588446,0.6031202517907532,Multi-layer Perceptron,Stats + items hashed
+1,1,0.7806148252941022,0.909545040685867,0.6334111135228999,Multi-layer Perceptron,Mouse + stats + items hashed
+};
+\addlegendentry{Precision}
+
+\addplot table [x=features, y=recall, col sep=comma] {
+numSplits,split,accuracy,precision,recall,model,features
+1,1,0.7236627009084502,0.7208728218636624,0.75156555242023,Multi-layer Perceptron,Items hashed
+1,1,0.7888022530904284,0.8715604737666227,0.6813626003907098,Multi-layer Perceptron,Mouse + items hashed
+1,1,0.7281298901021465,0.8308107761588446,0.6031202517907532,Multi-layer Perceptron,Stats + items hashed
+1,1,0.7806148252941022,0.909545040685867,0.6334111135228999,Multi-layer Perceptron,Mouse + stats + items hashed
+};
+\addlegendentry{Recall}
+
+\end{axis}
+\end{tikzpicture}
+\caption{asd}
+\label{fig:mlp-pair-combined}
+\end{figure}
+
+In figure \ref{fig:mlp-pair-combined}, any combination of features with the hashed items feature results in higher precision and lower recall. As before, this means the model is predicting positive results more accurately and negative results less accurately. It is interesting because when the features were used alone, the recall was significantly higher than precision, yet the opposite is true when the features are used together. This shows that as more features are used, it becomes more certain that two games come from the same player though the difference in two players' behaviour if they are different is less obvious. The additional features add more properties that the model can use to predict if two matches come from the same player, so when it does predict a positive result, it is usually true. However, the additional features also add more variance, making it more difficult to distinguish characteristic similarities of the same player against characteristics of different players, which leads to more false negatives. 
+
+%As this trend spans multiple models and features, it is plausible say this is a property of the classification task in general. When looking at two matches to predict whether they belong to the same player or not, using more features will led to more accurate positive results at the cost of less accurate negative results. In some cases, the right combination of 
+
+
+%\subsection{Different heroes TODO}
 % Use same model and features (best ones) , with only hero differ
 % hero id 20, 19 and 15
 \end{document}
