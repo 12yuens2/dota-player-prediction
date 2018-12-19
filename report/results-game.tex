@@ -521,6 +521,9 @@ There is no clear picture from each itemisation method combined with mouse movem
 %TODO lr also most consistent for performance, shows maybe its a linear problem that the non-linear models over complicate, leading to over/underfitting
 
 
-\subsection{Findings (conclusion)}
+\subsection{Summary}
+In summary, a few different and interesting results were found for identifying a particular player in a match from a pool of players. For the different featuresets, the itemisation features gave the most consistent results across all three models, but the game statistics were able to achieve the highest accuracy with random forest. The forensic mouse movement features were also useful, but not in the case of random forests, where a lot of false negatives were predicted. Finally, the combination of multiple featuresets together did not achieve better performance in many cases. In some cases, the performance became worse due to the additional features adding noise. Overall the results were very positive, with many different feature and model combinations achieving more than 95\% accuracy. However, one must maintain a degree of scepticism as the dataset only contained a pool of 58 players and accuracies would likely fall in a more diverse dataset. 
+
+
 
 \end{document}
