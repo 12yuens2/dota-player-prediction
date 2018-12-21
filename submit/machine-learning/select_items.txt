@@ -1,0 +1,7 @@
+item_boots
+item_arcane_boots
+item_travel_boots_1
+item_travel_boots_2
+item_phase_boots
+item_tranquil_boots
+item_power_treads

@@ -122,7 +122,7 @@
 % Custom options %
 %----------------%
 % Table of contents max depth
-%\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{2}
 
 
 

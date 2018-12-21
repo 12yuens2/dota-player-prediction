@@ -2,10 +2,11 @@
 \usepackage{subfiles}
 
 \title{Player prediction in DOTA 2}
-\author{140011146}
+\author{Sizhe Yuen}
 \addbibresource{references.bib}
 
 \usepackage{sty/sizhetitle}
+\usepackage{pdfpages}
 
 \begin{document}
 
@@ -13,6 +14,27 @@
 
 \newpage
 \pagenumbering{roman}
+
+
+\section*{Abstract}
+Dota 2 is a popular, multiplayer online video game played by millions of people around the world. It is often unknown who the player behind an account is, as accounts can be shared and used by others. This presents problems with cheating in online tournaments and the unethical practice of account selling. This project explores the use of machine learning to predict who the player is through the use of behavioural features such as their mouse movements or in-game decisions. These features are extracted from match replays and two machine learning experiments were devised to understand if player identity can be detected through these behavioural features, and which features or combinations of features and machine learning models are best suited for the task. Many positive results were found for a variety of feature and model combinations, which shows the feasibility of this approach to automatically detect different players on the same account. 
+
+
+\section*{Declaration}
+I declare that the material submitted for assessment is my own work except where credit is explicitly given to others by citation or acknowledgement. This work was performed during the current academic year except where otherwise stated.
+
+The main text of this project report is 18,495 words long, including project specification and plan.
+
+In submitting this project report to the University of St Andrews, I give permission for it to be made available for use in accordance with the regulations of the University Library. I also give permission for the report to be made available on the Web, for this work to be used in research within the University of St Andrews, and for any software to be released on an open source basis. I retain the copyright in this work, and ownership of any resulting intellectual property.
+
+\section*{Ethics approval}
+\includegraphics[
+	width=\textwidth,
+	height=\textheight,
+	keepaspectratio
+]{ethics.pdf}
+
+\newpage
 \tableofcontents
 \newpage
 \pagenumbering{arabic}
@@ -27,6 +49,8 @@
 
 
 \printbibliography
+
+
 
 \end{document}
 

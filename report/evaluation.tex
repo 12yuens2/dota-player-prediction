@@ -2,8 +2,9 @@
 
 \begin{document}
 
-\section{Evaluation}
+\section{Evaluation and conclusion}
 
+\subsection{Discussion}
 It is difficult to evaluate the work done in this project to related research, as the same work of using machine learning on player identities in Dota 2 has not been done before. The same problem was studied only for Starcraft 2, which is a different game and so uses different features, making the comparison difficult. Inspiration for features was taken by existing literature in Dota 2 data analysis, but none of the existing work predicted player identity, as they were mostly focused on win prediction and draft prediction. 
 
 Two different problems were explored in this project, the identification of a particular player from a match, and the prediction of whether two matches belonged to the same player. The two problems were very different and the same features and models achieved contrasting results. In general, higher accuracy rates were achieved for the first problem, as it uses a fixed pool of players. However, combining features were not as effective and sometimes worsened the predictions. In contrast, the second problem was more difficult, especially for logistic regression, as it was more applicable to the general set of all Dota 2 players. Of course, there are limitations to this applicability. Firstly, the skill and experience of players in the dataset were not recorded, and most players will likely be experienced players, as they were drawn from the OpenDota API, which new players would not be expected to be familiar with. Secondly, the training and results presented still use a fixed (though larger) pool of players as it would not be practical to account for the millions of active players in the game. Keeping this in mind, it was found the combination of features was much more useful with the second problem, allowing for 10-15\% increases in accuracy, precision and recall. 
@@ -14,6 +15,7 @@ Three main featuresets were explored in this project: mouse movement, game stati
 \subsection{Objectives}
 
 \subsubsection{Exploration of possible featuresets that may be useful for player prediction}
+Three different featuresets were identified to be used: Mouse movement, game statistics and game itemisation. The first was inspired by behavioural biometric studies which could identify users based on their mouse movement. This was a good fit for Dota 2, as the way players controlled their heroes in the game relied heavily on using the mouse. The second and third featuresets followed features which other Dota 2 research papers identified as strong or useful, though to different machine learning problems. These were Dota-specific and so would not be usable outside of Dota 2 or similar video games. 
 
 \subsubsection{Parsing Dota 2 match replays to extract the relevant data and generate features for machine learning}
 The Dota 2 matches were parsed in Java with the help of the \texttt{clarity} library to extract raw data from the replay files. The raw data was further transformed in Python using \texttt{pandas} to fit into the two machine learning tasks explored in this project. The creation of data was relatively straightforward, with complications stemming mostly from the lack of documentation on Dota 2's replay structure. Additional features can be easily added to both the parsing and preprocessing steps, provided they can be created from the data a match replay provides.
@@ -29,17 +31,13 @@ A separate dataset with the same match configurations as the first classificatio
 The evaluation of different features was done alongside both classification tasks from analysing the performance of each model and feature. It was found that each featureset performed well individually. When identifying matches that belong to a particular player, the combination of features did not result in any gains in performance, whereas when identifying if two matches belonged to the same player, the combination of features were able to boost performance. 
 
 
-\section{Conclusion}
+%This project has investigated the use of various feature extracted from Dota 2 match replays to identify the player a match belongs to, and to predict if two matches belong to the same player. The ability to predict the player behind an account name can help to more easily detect cases of account selling, account boosting and cheating in amateur tournaments. 
 
-\subsection{Discussion}
-This project has investigated the use of various feature extracted from Dota 2 match replays to identify the player a match belongs to, and to predict if two matches belong to the same player. The ability to predict the player behind an account name can help to more easily detect cases of account selling, account boosting and cheating in amateur tournaments. 
+%The various different features explored in this project showed that both general behavioural biometric data such as mouse movement and game-specific data can be used to identify player behaviour. 
 
-The various different features explored in this project showed that both general behavioural biometric data such as mouse movement and game-specific 
-data can be used to identify player behaviour. 
+%Further in depth research into each featureset and their exact impact on player prediction can fuel a better understanding of how players differ from one another, or if there are common patterns exhibited by different types of people. 
 
-Further in depth research into each featureset and their exact impact on player prediction can fuel a better understanding of how players differ from one another, or if there are common patterns exhibited by different types of people. 
-
-With additional tuning and wider exploration of different heroes and features, an automated system can be developed 
+%With additional tuning and wider exploration of different heroes and features, an automated system can be developed 
 % explored related work to find useful features
 
 % extracted various data from replays
@@ -57,12 +55,9 @@ It was found that the mouse movement features were able to predict players in Do
 To focus on the correlations between the features, models and their performance, less work was done experimenting with a variety of different heroes. Further, the features and methods produced are unlikely to perform well in a dataset which contains multiple heroes, as the difference in hero playstyle may interfere with the different in player behaviour. As such, it would be interesting to see to what extent the work done in this project can be extended to multiple heroes, and if not, what new methods must be used. 
 
 \subsubsection{Automated detection tool}
-The next step for this project
-
-
-%TODO develop a tool 
+The next step for this project would be to turn a trained model into a tool to detect changes in player behaviour. To prevent cheating in online tournaments, the replays from tournament matches can be used to determine if the players in the tournament are classified as the same player compared to their previous games by the models. 
 
 \subsection{Summary}
-
+In conclusion, this project explored various features from Dota 2 match replays that can be used to identify particular players, and to determine if two matches belong to the same player. The features were extracted from the replay files and three machine learning models were trained and tested. It was discovered that many of the features can be used can be used to both identify a particular player, and to predict if two matches are from the same player. Particular feature and model combinations were also very impactful, as some combinations performed poorly while other combinations performed very well. 
 
 \end{document}

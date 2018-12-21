@@ -1,0 +1,81 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>sizhe</groupId>
+    <artifactId>dota-parser</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+	<maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+
+    <dependencies>
+        <dependency>
+	    <groupId>com.skadistats</groupId>
+	    <artifactId>clarity</artifactId>
+	    <version>2.3</version>
+        </dependency>
+	
+	<dependency>
+	    <groupId>com.skadistats</groupId>
+	    <artifactId>clarity-protobuf</artifactId>
+	    <version>4.13</version>
+        </dependency>
+       
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-compress</artifactId>
+	    <version>1.18</version>
+        </dependency>
+	
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-math3</artifactId>
+	    <version>3.6.1</version>
+	</dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-jar-plugin</artifactId>
+		<version>3.1.0</version>
+		<configuration>
+                    <archive>
+		        <manifest>
+			    <addClasspath>true</addClasspath>	
+			    <mainClass>main.Main</mainClass>
+			    <classpathPrefix>dependency-jars/</classpathPrefix>
+			</manifest>
+		    </archive>
+		</configuration>
+	    </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-dependency-plugin</artifactId>
+	        <version>2.5.1</version>
+	        <executions>
+	            <execution>
+	    	    <id>copy-dependencies</id>
+	    	    <phase>package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <includeScope>runtime</includeScope>
+                                <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+                            </configuration>
+	    	    </execution>
+	        </executions>
+	    </plugin>
+        </plugins>
+
+    </build>
+
+</project>
