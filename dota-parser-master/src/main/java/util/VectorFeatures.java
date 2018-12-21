@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+/**
+ * Automatically calculate statistics from a vector
+ */
 public class VectorFeatures {
 
     private String name;

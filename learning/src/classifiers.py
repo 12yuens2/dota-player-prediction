@@ -6,6 +6,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
+from sklearn.metrics import confusion_matrix
 from sklearn.neural_network import MLPClassifier
 
 
@@ -45,10 +46,19 @@ class Classifier:
             return self.network.predict(probabilities)
         else:
             for feature,model in self.model_map.items():
-                return model.predict([x.get_df(feature, split_num).values.tolist()[0] for x in xs]);
+                return model.predict([
+                    self._get_prediction(x, feature, split_num) for x in xs
+                ])
 
 
 ## Private functions for classifiers ##
+
+    def _get_prediction(self, x, feature, split_num):
+        df = x.get_df(feature, split_num)
+        if "steamid" in df:
+            df = df.drop("steamid", 1)
+
+        return df.values.tolist()[0]
 
     def _concat_xs(self, xs, split_num):
         dfs = {}
@@ -147,6 +157,7 @@ class MoveClassifier(GameClassifier):
             recall = recall_score(y, predictions)
 
             print(feature)
+            print(confusion_matrix(y, predictions))
             print_scores(accuracy, precision, recall)
             score_map[feature] = (accuracy, precision, recall)
 
@@ -194,7 +205,6 @@ def cross_validate(xs, cv, classifier, get_y, split_num=-1):
     ys = [get_y(x) for x in xs]
     skf = StratifiedKFold(cv)
     metric_map = {}
-    #accs, pres, recs = [], [], []
 
     for train_index, test_index in skf.split(xs, ys):
         X_train = [xs[i] for i in train_index]
@@ -206,7 +216,6 @@ def cross_validate(xs, cv, classifier, get_y, split_num=-1):
               .format(y_train.count(1), y_train.count(0), y_test.count(1), y_test.count(0)))
 
         classifier.train(X_train, y_train, split_num)
-        #classifier.test(X_test, y_test, split_num)
         score_map = classifier.test(X_test, y_test, split_num)
         for feature,score in score_map.items():
             if not feature in metric_map:
@@ -217,12 +226,7 @@ def cross_validate(xs, cv, classifier, get_y, split_num=-1):
             metric_map[feature]["accuracy"].append(acc)
             metric_map[feature]["precision"].append(pre)
             metric_map[feature]["recall"].append(rec)
-        #accs.append(acc)
-        #pres.append(pre)
-        #recs.append(rec)
 
-    #output_file.write("{},{},{},{},{},{}\n".format(xs[0].splits, split_num, np.average(accs), np.average(pres), np.average(recs), model_name))
-    #output_file.flush()
     for feature,metrics in metric_map.items():
         metric_map[feature]["accuracy"] = np.average(metric_map[feature]["accuracy"])
         metric_map[feature]["precision"] = np.average(metric_map[feature]["precision"])

@@ -28,7 +28,8 @@ def get_df(file0, file1, splits):
     for i in range(len(dfs0)):
         df0 = dfs0[i]
         df1 = dfs1[i]
-        
+
+        # Use tmp to perge the dataframes
         df0["tmp"] = 1
         df1["tmp"] = 1
 

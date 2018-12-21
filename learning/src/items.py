@@ -77,7 +77,7 @@ def get_hashed_items(filename, period):
     for feature in features:
         items_df = _hash_transform(items_df, feature, 6)
 
-    # Drop old features
+    # Drop old features (backpack and stash)
     for feature in _get_all_features():
         items_df = items_df.drop(feature, 1)
 

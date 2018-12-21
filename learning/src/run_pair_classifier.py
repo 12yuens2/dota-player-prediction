@@ -1,5 +1,7 @@
 import classifiers
 import run_maps
+import sys
+import pickle
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
@@ -14,14 +16,15 @@ def get_y(pair):
     return pair.y
 
 
-import sys
-import pickle
-
 def run_pairs(pair_num, models, output):
     pairs = pickle.load(open("{}/pairs{}.df".format(path, pair_num), "rb"))
 
     for model_name,model_map,features,network_size in models:
-        for split_num in range(1, pair_num+1):
+        limit = pair_num + 1
+        if "mouse" not in features:
+            limit = 2
+
+        for split_num in range(1, limit):
             print("{}, {}".format(model_name, features))
 
             classifier = classifiers.PairClassifier(model_map, network_size)
@@ -37,7 +40,6 @@ def run_pairs(pair_num, models, output):
                 output.flush()
 
 
-#hero_id = sys.argv[1]
 #path = "/cs/scratch/sy35/dota-data/{}/dfs".format(hero_id)
 path = sys.argv[1]
 cv = int(sys.argv[2])
@@ -62,28 +64,9 @@ models.extend([
 ])
 
 with open(output_path, "w") as f:
-    f.write("numSplits,split,accuracy,precision,recall,model\n")
+    f.write("numSplits,split,accuracy,precision,recall,model,features\n")
     f.flush()
 
     for splits in [1,2,3,5]:
         run_pairs(splits, models, f)
-
-
-#from sklearn.pipeline import Pipeline
-#from sklearn.decomposition import PCA
-#
-#prepipe = Pipeline([
-#    ("reduce_dimension", PCA()),
-#    ("standardisation", StandardScaler())
-#])
-#
-#lr = LogisticRegression(class_weight="balanced")
-#rf = RandomForestClassifier(class_weight="balanced")
-#nn = MLPClassifier(solver="lbfgs", alpha=0.001)
-#
-#lr_std = Pipeline([
-#    ("standardisation", StandardScaler()),
-#    ("classifier", lr)
-#])
-#
 

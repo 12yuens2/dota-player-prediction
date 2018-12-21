@@ -3,7 +3,6 @@ package util;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.compress.compressors.CompressorException;
@@ -12,6 +11,9 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 import skadistats.clarity.source.InputStreamSource;
 
+/**
+ * Read Dota 2 replays from compressed `replay.dem.bz2`
+ */
 public class DotaReplayStream extends InputStreamSource {
 
     private static CompressorInputStream getStreamForCompressedFile(String fileIn) throws FileNotFoundException, CompressorException {

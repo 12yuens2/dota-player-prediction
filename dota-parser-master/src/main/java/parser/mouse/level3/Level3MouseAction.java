@@ -5,6 +5,9 @@ import parser.mouse.atomic.MousePosition;
 import parser.mouse.level1.MouseMoveSequence;
 import util.Geometry;
 
+/**
+ * Level 3 mouse actions, which contain a MouseMoveSequence and a MousePosition
+ */
 public abstract class Level3MouseAction implements MouseActivity {
 
     protected int ticksToAction;

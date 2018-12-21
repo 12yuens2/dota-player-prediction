@@ -1,6 +1,6 @@
 package parser.mouse.atomic;
 
-public class MouseAction {
+public abstract class MouseAction {
 
     public int actionType;
     public MousePosition position;

@@ -33,6 +33,7 @@ public class GameParser extends Parser {
             int playerID = pd.getPlayerID();
             int id = ClarityUtil.resolveValue(ctx, "CDOTA_PlayerResource", "m_vecPlayerTeamData.%i.m_hSelectedHero", playerID, 0, 0);
             Entity player = ctx.getProcessor(Entities.class).getByHandle(id);
+
             if (player != null) {
                 Inventory heroInventory = getHeroInventory(ctx, player, period);
                 writeInventory(heroInventory);

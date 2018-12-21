@@ -22,29 +22,29 @@ def load_games(filepath):
     return games
 
 
-filter_id = 76561198047065028
-#hero_id = int(sys.argv[1])
+
 #path = "/cs/scratch/sy35/dota-data/{}/data/mouseaction".format(hero_id)
 path = sys.argv[1]
 cv = int(sys.argv[2])
 filter_id = int(sys.argv[3])
 games = load_games(path)
 
-models = run_maps.models
-with open("15-game-cv.csv", "w") as f:
+models = [run_maps.rf_model(run_maps.rf_stats_map, "mouse", None)]
+with open("results.csv", "w") as f:
     f.write("accuracy,precision,recall,model,features\n")
     f.flush()
 
-    for model_name,model_map,features,network_size in models:
-        print("Running {} on {} features".format(model_name, features))
+    for cv in range(2, 11):
+        for model_name,model_map,features,network_size in models:
+            print("Running {} on {} features".format(model_name, features))
 
-        classifier = classifiers.GameClassifier(filter_id, model_map, network_size)
-        score_map = classifiers.cross_validate(games, cv, classifier, classifier.contains_player)
+            classifier = classifiers.GameClassifier(filter_id, model_map, network_size)
+            score_map = classifiers.cross_validate(games, cv, classifier, classifier.contains_player)
 
-        for feature,score in score_map.items():
-            accuracy = score_map[feature]["accuracy"]
-            precision = score_map[feature]["precision"]
-            recall = score_map[feature]["recall"]
+            for feature,score in score_map.items():
+                accuracy = score_map[feature]["accuracy"]
+                precision = score_map[feature]["precision"]
+                recall = score_map[feature]["recall"]
 
-            f.write("{},{},{},{},{}\n".format(accuracy,precision,recall,model_name,features))
-            f.flush()
+                f.write("{},{},{},{},{},{}\n".format(accuracy,precision,recall,model_name,features,cv))
+                f.flush()

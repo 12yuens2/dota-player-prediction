@@ -40,7 +40,6 @@ public class MouseMoveSequence implements MouseActivity {
 	}
 	
 	public void add(MousePosition newPosition) {
-//		m.tick = m.tick - tickOffset;
 	    MousePosition previousPosition = positions.get(positions.size() - 1);
 
         double deltaDistance = Geometry.euclideanDistance(newPosition, previousPosition);
@@ -66,25 +65,6 @@ public class MouseMoveSequence implements MouseActivity {
         calculateDeltas(acceleration, jerk, deltaTime);
         calculateDeltas(angles, angularVelocity, deltaTime);
 
-
-		// not small enough to have a direction yet, just add it and leave
-//		if (positions.size() < 2) {
-//			return positions.add(m);
-//		}
-//
-//		// we have enough positions we need to check if the direction works
-//		MousePosition lastLastPosition = positions.get(positions.size() - 2);
-//		MousePosition lastPosition = positions.get(positions.size() - 1);
-//
-//		double lastDirection = direction(lastLastPosition.x, lastLastPosition.y, lastPosition.x, lastPosition.y);
-//		double newDirection = direction(lastPosition.x, lastPosition.y, m.x, m.y);
-//
-//		if (directionDifference(lastDirection, newDirection) > MEMBER_ANGLE_THRESHOLD) {
-//			return positions.add(m);
-//		}
-//		else {
-//			return false;
-//		}
 	}
 
 	public void printStats() {

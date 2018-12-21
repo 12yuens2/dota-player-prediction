@@ -4,6 +4,8 @@ public class Inventory {
 
 
     public enum Period { START_GAME, MID_GAME, END_GAME }
+
+    // Offsets for property name indexing
     public static int BACKPACK_OFFSET = 6;
     public static int STASH_OFFSET = 9;
 

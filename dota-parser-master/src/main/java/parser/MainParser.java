@@ -5,11 +5,8 @@ import parser.game.GameParser;
 import parser.game.Inventory;
 import parser.mouse.MouseParser;
 import parser.stats.StatParser;
-import skadistats.clarity.Clarity;
-import skadistats.clarity.decoder.Util;
 import skadistats.clarity.event.Insert;
 import skadistats.clarity.model.Entity;
-import skadistats.clarity.model.StringTable;
 import skadistats.clarity.processor.entities.Entities;
 import skadistats.clarity.processor.entities.OnEntityCreated;
 import skadistats.clarity.processor.entities.UsesEntities;
@@ -20,8 +17,6 @@ import skadistats.clarity.processor.resources.UsesResources;
 import skadistats.clarity.processor.runner.Context;
 import skadistats.clarity.processor.runner.ControllableRunner;
 import skadistats.clarity.processor.runner.SimpleRunner;
-import skadistats.clarity.processor.stringtables.OnStringTableCreated;
-import skadistats.clarity.processor.stringtables.StringTables;
 import skadistats.clarity.processor.stringtables.UsesStringTable;
 import skadistats.clarity.wire.common.proto.DotaUserMessages;
 import skadistats.clarity.wire.s2.proto.S2DotaGcCommon;
@@ -39,11 +34,7 @@ import java.util.*;
 @UsesEntities
 public class MainParser extends Parser{
 
-	public static final int RADIANT = 2;
-	public static final int DIRE = 3;
-
 	public static final long NO_FILTER = -1;
-
 	public static final int TICK_RATE = 30;
 	
     @Insert
@@ -54,16 +45,17 @@ public class MainParser extends Parser{
 
     private String replayFile;
     private long filterSteamID;
-
     private boolean running;
 
     private File replayDir;
 
+    // Different parsers to record different data
     private ArrayList<Parser> parsers;
     private MouseParser mouseParser;
     private StatParser statParser;
     private GameParser gameParser;
 
+    // Maps to interface between different entities and metadata
     private HashMap<Long, PlayerData> steamPDMap;
     private HashMap<Integer, Long> idSteamMap;
     private HashMap<Integer, Entity> idMap;
@@ -102,6 +94,7 @@ public class MainParser extends Parser{
     }
 
     public void start() {
+        // Multiple files
         if (replayDir != null) {
             for (File replayFile : replayDir.listFiles()) {
                 try {
@@ -111,10 +104,6 @@ public class MainParser extends Parser{
                     String outputName = replayDir.getAbsolutePath() + "/../../data/" + replayFile.getName();
 
                     initParsers(outputName);
-
-//                    mouseParser.initWriter(outputName + "-mousesequence.csv", outputName + "-mouseaction.csv");
-//                    gameParser.initWriter(outputName + "-iteminfo.csv");
-
                     initProcessing();
                     run();
 
@@ -133,6 +122,8 @@ public class MainParser extends Parser{
                 }
             }
         }
+
+        // Single file
         else {
             initProcessing();
             run();
@@ -164,6 +155,8 @@ public class MainParser extends Parser{
             idMap = new HashMap<>();
 
             cRunner = new ControllableRunner(new DotaReplayStream(replayFile, true)).runWith(this);
+
+            // Skip to after draft
             for (int i = 0 ; i < 30000; i++) {
                 cRunner.tick();
             }
@@ -232,6 +225,7 @@ public class MainParser extends Parser{
             Entity grp = ClarityUtil.getEntity(ctx, "CDOTAGamerulesProxy");
             Integer gameState = ClarityUtil.getEntityProperty(grp, "m_pGameRules.m_nGameState");
 
+            // Mouse movements
             if (filterSteamID == NO_FILTER) {
                 for (Map.Entry<Long, PlayerData> entry : steamPDMap.entrySet()) {
                     PlayerData pd = entry.getValue();
@@ -273,6 +267,7 @@ public class MainParser extends Parser{
             Entity e = ctx.getProcessor(Entities.class).getByIndex(msg.getEntindex());
             if ((filterSteamID != NO_FILTER && isFilterPlayer(e)) || (filterSteamID == NO_FILTER && ClarityUtil.isGamePlayer(e))) {
                 long steamid = idSteamMap.get(ClarityUtil.getEntityProperty(e, "m_iPlayerID"));
+
                 mouseParser.parseUnitOrder(steamid, msg);
                 statParser.parseUnitOrder(steamid, msg);
             }

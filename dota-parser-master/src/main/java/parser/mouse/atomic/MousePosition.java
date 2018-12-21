@@ -22,10 +22,4 @@ public class MousePosition {
     }
 
 
-    public static MousePosition getDeltaPosition(MousePosition mp1, MousePosition mp2) {
-	    int deltaX = mp1.x - mp2.x;
-	    int deltaY = mp1.y - mp2.y;
-
-	    return new MousePosition(deltaX, deltaY, -1);
-    }
 }

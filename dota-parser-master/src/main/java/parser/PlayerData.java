@@ -14,6 +14,15 @@ public class PlayerData {
         this.id = id;
     }
 
+
+    /**
+     * Metadata of player entity
+     * @param id
+     * @param heroID
+     * @param selectedHero
+     * @param teamNum
+     * @param steamID
+     */
     public PlayerData(int id, int heroID, int selectedHero, int teamNum, long steamID) {
         this.id = id;
         this.heroID = heroID;
