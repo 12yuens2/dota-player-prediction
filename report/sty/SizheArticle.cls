@@ -21,6 +21,9 @@
 % color : Defining colours
 \RequirePackage{color}
 
+% xcolor : Text colours
+\RequirePackage{xcolor}
+
 % enumitem : Customise itemize/enumerate and reduce space with \begin{itemize}[nolistsep]
 \RequirePackage{enumitem}
 
@@ -45,7 +48,7 @@
 % Useful packages (Uncomment if needed) %
 %---------------------------------------%
 % sizhecode.sty : Styles for code listings
-%\RequirePackage{sizhecode}
+\RequirePackage{sty/sizhecode}
 
 % sizheplots.sty : Styles for plotting graphs
 \RequirePackage{sty/sizheplots}
@@ -63,6 +66,12 @@
 
 % Merge columns and rows
 \RequirePackage{multirow}
+
+% URL
+\RequirePackage[hyphens]{url}
+
+% Break lines in table cells
+\RequirePackage{makecell}
 
 
 %---------------------%
@@ -113,7 +122,7 @@
 % Custom options %
 %----------------%
 % Table of contents max depth
-%\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{2}
 
 
 
