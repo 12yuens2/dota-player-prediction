@@ -31,6 +31,57 @@
 - To lessen this, split the games into sections so less effect on average and we can also check if one section is better than another
 - We can plot graphs to see if different sections are better for accuracy or not
 
+
+
+
+** Report TODOs
+
+*** High priority
+- [] Declaration
+- [] Abstract
+- [] Add ethics to appendix
+- [] Introduction
+- [] Evaluation
+- [] Conclusion
+- [] Proof read all game results
+- [] Proof read all pair results
+
+Methodology
+- [] Further processing in pandas
+
+Game results
+- [x] Why cast commands are bad for mouse movement prediction
+- [x] Confusion matrix for RF prefect precision
+- [x] Game statistics on RF, less cv and more cv experiments, or use testing data to show overfitting
+- [x] Game stats on RF, other hero
+- [x] Fill in itemisation numbers
+- [x] Combining features, highlighted numbers why
+- [] Testing accuracy!!
+  - RF with stats and stats+items
+  - LR with stats+boots
+
+Pair results
+- [x] horizontal velocity example
+- [x] individual time slices for mouse movement data
+- [] More on itemisation
+- [] More on combination
+- [] Different hero results?
+- [] Testing accuracy!!
+
+*** Low priority
+Context survey
+- [] 2.2.4 other dota 2 studies, add one more and think of better title
+
+Software engineering
+- [] rephrase ml sentence
+
+Methodology
+- [] proofread mouse movement features
+- [] add images of scoreboard or some graph of game statistics
+- [] add histograms of action counts
+- [] Why is feature hashing better than simple numeric conversion
+
+
 * Week 1 - 18/09/18
 First meeting to discuss project. Main idea of the project is to predict who the player is in a game of DOTA based on replay data. 
 
@@ -221,7 +272,6 @@ Note many of these features should be recorded relative to the duration of the g
 
 https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scrollTo=AjQFbe9PctSR
 
-
 * Week 8
 
 ** TODO week
@@ -235,7 +285,6 @@ https://colab.research.google.com/drive/1svVS1zKTJTabhPHQKxm8sr-31w8SQh0j#scroll
 - [] Use 5 or 6 heroes (smurf specific heroes) broodmother, tinker, juggernaut
 - [] Proper testing with players never seen before in training
 - [] Start plotting graphs
-
 
 * Week 9
 ** Notes on item features
@@ -299,28 +348,33 @@ Results TODO
 
 - [] Script to grid search different models, features and preprocessing steps
 
-
 * Week 10
 ** Before meeting
 - For report objectives, how to write the objectives have changed from original?
 - Use difference in pair classification instead of concat two features together
+- How much technical detail on implementation?
+  - not need much detail because fairly dull
 
 
 ** TODO week
 - Smaller items of things, such as only boots, blink, dagger
+  - type of boots
+  - boots slot
+  - blink slot
+  - tp slot
+  - all starting items
 - Start evaluation first, then add items or features incrementally, rather than adding many new features without knowing what is good or not
-
 
 - [] Itemisation for select items (only boots slot, tp slot and boots type)
 
-- [] Create datasets split into training and test for 2-3 heroes
-  - [] Make note of properties for each data set (num players and num games, num datapoints for game/pair classification)
+- [x] Create datasets split into training and test for 2-3 heroes
+  - [x] Make note of properties for each data set (num players and num games, num datapoints for game/pair classification)
 
 - [] Analyse or at least get data for each dataset with
   - [] Just all mouse movement
-    - [] Row classification
-    - [] Game classification
-    - [] Pair classification
+    - [x] Row classification
+    - [x] Game classification
+    - [x] Pair classification
   - [] Just particular mouse movement
     - [] Game classification
     - [] Pair classification
@@ -336,3 +390,63 @@ Results TODO
   - [] Combined all
 
 - [] After all pair classification, try pair classification with difference instead of concatenation
+
+* Week 11
+
+** TODO week
+- [] use illustrative example for use case
+- [] What do the results tell us? which features can tell the difference between players
+
+- [] context survey: categorise the dota papers to compare and discuss more easily
+
+*** Weekend
+- [] Itemisation for select items (only boots slot, tp slot and boots type)
+- [] Item difference between two players
+- [] Create pairs with itemisation features
+
+*** After weekend
+- [] Analyse or at least get data for each dataset with
+  - [] Just particular mouse movement
+    - [x] Game classification
+    - [x] Pair classification
+  - [] Just statistics
+    - [x] Game classification
+    - [x] Pair classification
+  - [] Just items
+    - [x] Pair classification (one hot)
+    - [] Pair classification (similarity - early game)
+    - [] Pair classification (similarity - late game)
+    - [x] Pair classification (select items)
+  - [] Combined greedy (Take best of all, incrementally)
+  - [] Combined all
+
+- [] After all pair classification, try pair classification with difference instead of concatenation
+- [] Look at using ML preprocessing such as standardisation and feature selection (contrast with handpicked features)
+
+* Week 12
+
+** Before meeting
+- When to send draft
+- Show results/analysis
+  - features: [mouse-attack, mouse-move, mouse-cast, stats, items-hash, items-onehot, items-start, items-boots, items-difference]
+
+motivation in introduction
+- why doing it, what we want to achieve
+
+related work ('background' section)
+- things that aren't research, but tools/software
+
+section on features - why each are good or not
+separate section on each 'contribution'
+- make sure to analyse why some features individually vs combined
+- not chronological ordering of what was done
+- order of presenting not same as order of doing
+- makes sense from reader's perspective to lead to conclusion naturally
+- shows thought/consideration before presenting order
+
+See if time to run on deeper network when combining features to see if we get better accuracy or not
+- show being limited/not limited by having a simple network
+
+
+* Report questions
+- For explaining features, put in a 'methodology' section outside of results, or in the results section? As the features diff for the two results, ie some feature only exists for one results but not the other
