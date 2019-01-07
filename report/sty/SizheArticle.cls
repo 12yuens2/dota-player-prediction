@@ -103,9 +103,10 @@
 % #1 - Width of image
 % #2 - Path to image
 % #3 - Caption
-\newcommand{\imagefig}[3]{
+\newcommand{\imagefig}[4]{
 \begin{figure}[H]
-    \image{#1}{#2}{#3}
+  \image{#1}{#2}{#3}
+\label{#4}
 \end{figure}
 }
 
