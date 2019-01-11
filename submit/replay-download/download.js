@@ -7,6 +7,7 @@ const util = require('util');
 const hero_id = process.argv[2];
 const num_players = process.argv[3];
 const num_games = process.argv[4];
+const SCRATCH = process.argv[5];
 
 
 const requestPlayersUnlimited = (hero_id) => {
@@ -71,7 +72,7 @@ const downloadReplay = (details) => {
 }
 
 
-const SCRATCH = `/cs/scratch/sy35/dota-data/${hero_id}/replays/`;
+//const SCRATCH = `/cs/scratch/sy35/dota-data/${hero_id}/replays/`;
 
 
 const limiter = new Bottleneck({

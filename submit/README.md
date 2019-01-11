@@ -4,13 +4,16 @@ The code is split into 3 parts: `replay-download`, `dota-parser` and `machine-le
 
 ## `replay-download`
 
-This directory contains the Javascript code for downloading replay files from OpenDota and Valve's servers. It takes 3 arguments:
+This directory contains the Javascript code for downloading replay files from OpenDota and Valve's servers. It takes 4 arguments:
 ```
-node download.js [hero_id] [num_players] [num_games]
+node download.js [hero_id] [num_players] [num_games] [download_path]
 ```
 - `hero_id` is the id of the chosen hero for all replays
 - `num_players` is the number of players to download replays from
 - `num_games` is the number of replays _per player_ to download
+- `download_path` is the directory where the replays are downloaded to
+
+Replays downloaded which are small in size are likely to be errors from the server. Increase the number of players and games to find replays if downloads mostly results in errors.
 
 
 ## `dota-parser`
