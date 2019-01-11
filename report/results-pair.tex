@@ -112,12 +112,11 @@ The experimental design for these experiments follow largely from the design des
 \item For mouse movement features, each pair of matches could be split into different slices. This creates more features when used together, as a match split into two slices will have double the features, one set for each half of the match. This also allowed for comparisons to be made for each slice, to see if any portion of a match is more predictive than another. 
 \item A modified dataset was created for this set of experiments. The dataset was created in order to prevent data leakage, as the original contained one player which appeared in both the training and testing sets, which made sense in the previous problem. The number of data points in the new modified dataset also changed due to the nature of the inputs for each problem. Here, the new dataset was created by taking a combination of every pair of matches, so many more samples can be created with fewer matches. Moreover, no single player belonged to a majority of matches, to prevent models becoming biased towards learning only a particular player's behaviour.
 
-%TODO data changed, not two datasets
-%\textbf{Dataset 1} (same as in section \ref{sec:game-classification}) TODO %games (hero id 15) \\
-%\textbf{Dataset 2}: m games
 \end{itemize}
 
-%In additional to the second dataset, more datasets using different heroes were created in order to give a strong comparison of the best model and features found and testing them on new datasets of different heroes. TODO. 
+
+\subsubsection{Dataset information}
+For the modified dataset less players were used with more matches each to create as many positive samples (two matches from the same player) as possible. This resulted in 38 players total with 218 a total of replays, about 5-6 replays for each player. In terms of positive and negative samples after creating combinations of pairs of matches, there was a total of 2970 positive samples and 3071 negative samples. The number of negative samples was significantly reduced in order to balance the two classes. A majority number of samples in one class would affect the performance of machine learning models as a model can become biased towards the majority class, since predicting that class will give increased accuracy due to the nature of the dataset. For this reason, many negative samples were removed.
 
 \subsection{Mouse movement features}
 
@@ -249,9 +248,7 @@ There are a few key points to notice for the gold and XP per minute statistics. 
 
 Finally, it should be noted that the correlation matrix for pairs of matches by the same players is mirrored across the diagonal. This is a result of the combination step, where matches are combined into pairs of \textit{\{match0, match1\}} and \textit{\{match1, match0\}} and should not be taken as a meaningful result.
 
-
 Due to the way the \texttt{clarity} parser functions by running through matches chronologically, and a bug which prevents the library from seeking directly to a time or tick in a match, splitting up a match into equally sized portions on the go was not possible and so, detailed data about game statistics on different sections of a match could not be gathered.  
-%MORE reasoning TODO
 
 \subsection{Itemisation features}
 
@@ -302,8 +299,6 @@ The difference between the item difference feature and all other features used, 
 \end{figure}
 
 There are a few other notable results for the item encoding methods. Firstly, the hashed items was able to obtain accuracies higher than the one-hot encoded items for random forest, but not for the neural network. Moreover, the recall was relatively lower while the precision was higher in the random forest. 
-
-%TODO all start items vs all end items onehot encoding
 
 Secondly, the one-hot encoding of all items performed very similarly to the one-hot encoding of only starting items. This was surprising because the one-hot encoding of all items contained 250 more items than the starting items, which translates to 1500 more binary features. This was also the case in the previous classification task and it continues to be the case here, that the increased number of binary features had little effect on the performance of the models. The gap between the two methods is smaller than previously, which means just using starting items to differentiate between two players is more difficult than identifying a single player. This may be because a more diverse pool of players here leads to more similarity in starting items between any two players. 
 

@@ -161,6 +161,9 @@ Precision and recall are complementary metrics that measure the relevance of pre
 In other words, precision helps identify the accuracy of positive predictions and recall helps identify the accuracy of predicting positive samples. These measures are useful to help narrow down why certain features or models may be behaving in a certain way. For example, a high recall but low precision suggests the model or feature is biased towards positive samples, as there are low false negatives but high false positives. 
 
 
+\subsubsection{Dataset information}
+The dataset used in this experiment contained 58 players. 123 replays used were from a single player as the positive sample, while 2-3 replays were taken from each of the other 57 players, giving a total of 307 replays parsed with 123 positive samples and 184 negative samples.
+
 \subsection{Mouse movement features}\label{sec:mm-features-results}
 
 \subsubsection{Individual mouse actions}
@@ -239,10 +242,10 @@ The accuracy of the random forest classifier drops while it gets perfect precisi
 \centering
 \begin{tabular}{| c | c |}
 \hline
-\makecell{True positives \\ 16} & \makecell{False positives \\ 0} \\ \hline
-\makecell{False negatives \\ 39} & \makecell{True negatives \\ 44} \\ \hline
+\makecell{True positives \\ 10} & \makecell{False positives \\ 0} \\ \hline
+\makecell{False negatives \\ 26} & \makecell{True negatives \\ 29} \\ \hline
 \end{tabular}
-\caption{Confusion matrix of prediction samples from testing data for the random forest using only mouse movement features.}
+\caption{Confusion matrix of prediction samples from 5-fold cross validation for the random forest using only mouse movement features.}
 \label{tbl:rf-mouse-confusion-matrix}
 \end{table}
 
@@ -446,13 +449,14 @@ Mouse + Stats + Boots only & 0.959 & 0.615 & \textcolor{red}{0.928} \\
 \label{tbl:game-combination}
 \end{table}
 
-Logistic regression continued to perform well when the features are combined, but few are better compared to using each featureset individually. Using game statistics and boots only encoding allowed the logistic regression model to achieve 99\% accuracy, which is odd as the boots only encoding had the lowest accuracy of all item encoding methods for logistic regression. 
-%TODO problem is easy
-Furthermore, using mouse movement, game statistics and one-hot encoding of all items led to a drastic reduction in accuracy in an odd anomaly.  
+Logistic regression continued to perform well when the features are combined, but few are better compared to using each featureset individually. Using game statistics and boots only encoding allowed the logistic regression model to achieve 99\% accuracy, which is odd as the boots only encoding had the lowest accuracy of all item encoding methods for logistic regression. Furthermore, using mouse movement, game statistics and one-hot encoding of all items led to a drastic reduction in accuracy in an odd anomaly.
 
 The random forest results are also very interesting, and show reduced results in most combinations compared to the individual features. For example, the mouse movement feature had a 60\% accuracy while the various itemisation encoding methods had about 85-90\% accuracy. When the movement feature was combined together with the itemisation features, 3 combinations only achieved 60-65\% accuracy while the boots only combination with mouse movement achieved about the same accuracy as the boots feature by itself. A similar pattern is observed when all three featuresets are combined together, as the accuracy stays quite low with all the additional features. In general for random forests, the addition of the mouse movement features was a big factor in the poor performance when combining features. This is likely related to the perfect precision but low recall described earlier for mouse movement features on the random forest classifier. What is interesting, is the addition of game statistics, which did not hinder predictions when combined with itemisation data, could not help raise accuracies higher when combined with mouse movement features. In fact the itemisation features helped raise accuracies much more than the statistic features did when combing with the mouse movement features. This helps to suggest itemisation is one of the stronger indicators and can be combined with other features without introducing noise. %Something about RF properties makes it bad?
 
 Finally, the simple neural network model had little issues when combining features together, but gained little advantages as well. As it performed poorly when using only statistics, the addition of mouse movement and itemisation was able to help boost accuracies. For example, using mouse features and statistics features gives a 74\% accuracy rate and the addition of items pushes the accuracy to 90\% or more. The best individually performing item encoding methods were not always the best when combined with other features. Using mouse features with the items hashed and mouse features with boots only data gave very similar accuracy, even though the hashed encoding was more accurate when using alone compared to boots only data.
+
+There seems to be two different reasons for the varied performance and the overall very strong results of > 95\% accuracy for many features. First, the varied performance may come from the combination of features creating noise or interfering with each other, causing lowered accuracy compared to using some features individually. It may also be that the already strong performance makes the models overfit to the particular features, so the addition of more features that do not contribute well creates noise that affects performance drastically. Regarding the performance of the models being very strong, this may come from the problem itself being a relatively simple one as the models only have to determine the behaviour of one player out of a small pool. Overfitting to the particular dataset is also likely. Rudimentary tests on different players and heroes continue to show similar performance, but it is difficult to tell without more rigorous work on additional datasets. 
+
 
 \newcommand{\diffbarplot}[5]{
 \addplot+[bar shift={#5}] coordinates { (Logistic Regression, #1) (Random Forest, #2) (Multi-layer Perceptron, #3) };
@@ -502,12 +506,9 @@ extra y tick style={grid=major,major grid style={dashed,draw=black}}
 
 There is no clear picture from each itemisation method combined with mouse movement features if there is noise or improvement as it differs among the three models. Figure \ref{fig:itemisation-mouse-diff} shows the difference in accuracy of combining mouse movement features with itemisation features varies based on the itemisation method and model used. The hashing method looks to always give a decrease in accuracy when combined with mouse movement, but the difference is very small in logistic regression and the neural network. Encoding only boots is the only method which gives a consistent boost to accuracy. In the case of random forest, the boots method was able to almost negate the poor accuracy of identifying mouse movements. This shows a deeper level of complexity that these results do not penetrate regarding the combination of features as there is sometimes noise, but sometimes improvement. Ultimately, these findings are in a similar vein to the ones Liu et al. \cite{starcraft-identification} found, that performance varies among the different feature and model combinations. 
 
-%TODO lr also most consistent for performance, shows maybe its a linear problem that the non-linear models over complicate, leading to over/underfitting
-
 
 \subsection{Summary}
-In summary, a few different and interesting results were found for identifying a particular player in a match from a pool of players. For the different featuresets, the itemisation features gave the most consistent results across all three models, but the game statistics were able to achieve the highest accuracy with random forest. The forensic mouse movement features were also useful, but not in the case of random forests, where a lot of false negatives were predicted. Finally, the combination of multiple featuresets together did not achieve better performance in many cases. In some cases, the performance became worse due to the additional features adding noise. Overall the results were very positive, with many different feature and model combinations achieving more than 95\% accuracy. However, one must maintain a degree of scepticism as the dataset only contained a pool of 58 players and accuracies would likely fall in a more diverse dataset. 
-
+In summary, a few different and interesting results were found for identifying a particular player in a match from a pool of players. For the different featuresets, the itemisation features gave the most consistent results across all three models, but the game statistics were able to achieve the highest accuracy with random forest. The forensic mouse movement features were also useful, but not in the case of random forests, where a lot of false negatives were predicted. Finally, the combination of multiple featuresets together did not achieve better performance in many cases. In some cases, the performance became worse due to the additional features adding noise. Overall the results were very positive, with many different feature and model combinations achieving more than 95\% accuracy. However, one must maintain a degree of scepticism as the dataset only contained a pool of 58 players and accuracies would likely fall in a more diverse dataset.  
 
 
 \end{document}
